@@ -1,0 +1,8 @@
+# Skip node modules
+node_modules/
+
+# Skip build output
+dist/
+
+# Skip test coverage reports
+coverage/

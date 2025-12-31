@@ -1,0 +1,19 @@
+# Node dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Test coverage
+coverage/
+
+# Environment files
+.env
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs and temp files
+*.log
+*.tmp

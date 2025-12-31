@@ -1,0 +1,6 @@
+export enum ApiUserStatus {
+  PENDING = 'PENDING',
+  ACTIVE = 'ACTIVE',
+  SUSPENDED = 'SUSPENDED',
+  INACTIVE = 'INACTIVE',
+}

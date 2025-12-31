@@ -1,0 +1,12 @@
+# Skip node modules
+node_modules/
+
+# Skip build output
+dist/
+
+# Skip test coverage
+coverage/
+
+# Skip minified files or generated files if any
+*.min.js
+*.bundle.js

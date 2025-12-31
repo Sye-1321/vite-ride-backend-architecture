@@ -1,0 +1,175 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "monorepo": true,
+  "root": ".",
+  "projects": {
+    "api-gateway": {
+      "type": "application",
+      "root": "apps/api-gateway",
+      "entryFile": "main",
+      "sourceRoot": "apps/api-gateway/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api-gateway/tsconfig.app.json",
+        "deleteOutDir": true,
+        "webpack": true
+      }
+    },
+    "identity-service": {
+      "type": "application",
+      "root": "apps/identity-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/identity-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/identity-service/tsconfig.app.json",
+        "deleteOutDir": true
+      }
+    },
+    "authorization-service": {
+      "type": "application",
+      "root": "apps/authorization-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/authorization-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/authorization-service/tsconfig.app.json"
+      }
+    },
+    "notifications-service": {
+      "type": "application",
+      "root": "apps/notifications-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/notifications-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/notifications-service/tsconfig.app.json"
+      }
+    },
+    "tenants-service": {
+      "type": "application",
+      "root": "apps/tenants-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/tenants-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/tenants-service/tsconfig.app.json"
+      }
+    },
+    "adapters": {
+      "type": "library",
+      "root": "libs/adapters",
+      "entryFile": "index",
+      "sourceRoot": "libs/adapters/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/adapters/tsconfig.lib.json"
+      }
+    },
+    "application-core": {
+      "type": "library",
+      "root": "libs/application-core",
+      "entryFile": "index",
+      "sourceRoot": "libs/application-core/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/application-core/tsconfig.lib.json"
+      }
+    },
+    "audit": {
+      "type": "library",
+      "root": "libs/audit",
+      "entryFile": "index",
+      "sourceRoot": "libs/audit/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/audit/tsconfig.lib.json"
+      }
+    },
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
+    "context": {
+      "type": "library",
+      "root": "libs/context",
+      "entryFile": "index",
+      "sourceRoot": "libs/context/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/context/tsconfig.lib.json"
+      }
+    },
+    "persistence": {
+      "type": "library",
+      "root": "libs/persistence",
+      "entryFile": "index",
+      "sourceRoot": "libs/persistence/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/persistence/tsconfig.lib.json"
+      }
+    },
+    "redis": {
+      "type": "library",
+      "root": "libs/redis",
+      "entryFile": "index",
+      "sourceRoot": "libs/redis/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/redis/tsconfig.lib.json"
+      }
+    },
+    "redis-store": {
+      "type": "library",
+      "root": "libs/redis-store",
+      "entryFile": "index",
+      "sourceRoot": "libs/redis-store/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/redis-store/tsconfig.lib.json"
+      }
+    },
+    "shared-kernel": {
+      "type": "library",
+      "root": "libs/shared-kernel",
+      "entryFile": "index",
+      "sourceRoot": "libs/shared-kernel/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/shared-kernel/tsconfig.lib.json"
+      }
+    },
+    "proto-schema": {
+      "type": "library",
+      "root": "libs/proto-schema",
+      "entryFile": "index",
+      "sourceRoot": "libs/proto-schema/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/proto-schema/tsconfig.lib.json"
+      }
+    },
+    "routing": {
+      "type": "library",
+      "root": "libs/routing",
+      "entryFile": "index",
+      "sourceRoot": "libs/routing/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/routing/tsconfig.lib.json"
+      }
+    },
+    "dispatch-matching-service": {
+      "type": "application",
+      "root": "apps/dispatch-matching-service",
+      "entryFile": "main",
+      "sourceRoot": "apps/dispatch-matching-service/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/dispatch-matching-service/tsconfig.app.json"
+      }
+    },
+    "realtime": {
+      "type": "library",
+      "root": "libs/realtime",
+      "entryFile": "index",
+      "sourceRoot": "libs/realtime/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/realtime/tsconfig.lib.json"
+      }
+    }
+  },
+  "compilerOptions": {
+    "webpack": true
+  }
+}

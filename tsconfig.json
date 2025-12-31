@@ -1,0 +1,92 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2017",
+    "declaration": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "moduleResolution": "node",
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@app/adapters": [
+        "libs/adapters/src/index.ts"
+      ],
+      "@app/adapters/*": [
+        "libs/adapters/src/*"
+      ],
+      "@app/audit": [
+        "libs/audit/src/index.ts"
+      ],
+      "@app/audit/*": [
+        "libs/audit/src/*"
+      ],
+      "@app/common": [
+        "libs/common/src/index.ts"
+      ],
+      "@app/common/*": [
+        "libs/common/src/*"
+      ],
+      "@app/context": [
+        "libs/context/src/index.ts"
+      ],
+      "@app/context/*": [
+        "libs/context/src/*"
+      ],
+      "@app/persistence": [
+        "libs/persistence/src/index.ts"
+      ],
+      "@app/persistence/*": [
+        "libs/persistence/src/*"
+      ],
+      "@app/redis": [
+        "libs/redis/src/index.ts"
+      ],
+      "@app/redis/*": [
+        "libs/redis/src/*"
+      ],
+      "@app/redis-store": [
+        "libs/redis-store/src/index.ts"
+      ],
+      "@app/redis-store/*": [
+        "libs/redis-store/src/*"
+      ],
+      "@app/shared-kernel": [
+        "libs/shared-kernel/src/index.ts"
+      ],
+      "@app/shared-kernel/*": [
+        "libs/shared-kernel/src/*"
+      ],
+      "@app/application-core": [
+        "libs/application-core/src/index.ts"
+      ],
+      "@app/application-core/*": [
+        "libs/application-core/src/*"
+      ],
+      "@app/proto-schema": [
+        "libs/proto-schema/src"
+      ],
+      "@app/proto-schema/*": [
+        "libs/proto-schema/src/*"
+      ],
+      "@app/routing": [
+        "libs/routing/src/index.ts"
+      ],
+      "@app/routing/*": [
+        "libs/routing/src/*"
+      ],
+      "@app/realtime": [
+        "libs/realtime/src"
+      ],
+      "@app/realtime/*": [
+        "libs/realtime/src/*"
+      ]
+    },
+    "outDir": "dist"
+  }
+}
