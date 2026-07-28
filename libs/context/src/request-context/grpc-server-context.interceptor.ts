@@ -9,8 +9,6 @@ export class GrpcServerContextInterceptor implements NestInterceptor {
   constructor(private readonly cls: ClsService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    console.log('interceptor-2');
-
     const [, metadata] = context.getArgs();
 
     const correlationId = metadata?.get('x-correlation-id')?.[0] as string;
