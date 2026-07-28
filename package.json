@@ -32,11 +32,11 @@
     "test": "jest",
     "test:unit": "jest --config jest.config.js --runInBand",
     "test:integration": "jest --config jest-integration.config.js --runInBand --passWithNoTests",
-    "test:core": "npm run test:unit && npm run test:integration",
+    "test:core": "npm run test:unit && npm run test:integration && npm run test:e2e",
     "check:core": "npm run lint && npm run format:check && npm run build:core && npm run test:core",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:e2e": "jest --config jest-e2e.config.js",
+    "test:e2e": "jest --config jest-e2e.config.js --runInBand",
     "test:e2e:watch": "jest --config jest-e2e.config.js --watch",
     "test:e2e:coverage": "jest --config jest-e2e.config.js --coverage"
   },
