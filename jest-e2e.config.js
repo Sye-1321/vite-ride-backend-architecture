@@ -12,6 +12,5 @@ module.exports = {
     '^@app/([^/]+)/(.*)$': '<rootDir>/libs/$1/src/$2',
   },
   verbose: true,
-  collectCoverage: true,
   coverageDirectory: '<rootDir>/coverage-e2e',
 };
