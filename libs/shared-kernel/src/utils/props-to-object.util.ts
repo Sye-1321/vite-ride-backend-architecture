@@ -1,4 +1,4 @@
-import { Entity, ValueObject } from "../domain";
+import { Entity, ValueObject } from '../domain';
 
 function isEntity(obj: unknown): obj is Entity<unknown> {
   /**
@@ -23,7 +23,7 @@ function toPlainObject(item: any): any {
   if (isEntity(item)) {
     return item.toObject();
   }
-  
+
   return item;
 }
 

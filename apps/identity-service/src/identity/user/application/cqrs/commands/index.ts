@@ -13,7 +13,7 @@ import { SuspendUserHandler } from './suspend-user/suspend-user.handler';
 import { UpdateMyProfileHandler } from './update-my-profile/update-my-profile.handler';
 import { VerifyUserHandler } from './verify-user/verify-user.handler';
 import { UnsuspendUserHandler } from './unsuspend-user/unsuspend-user.handler';
-import { DeleteUserHandler  } from './delete-user/delete-user.handler';
+import { DeleteUserHandler } from './delete-user/delete-user.handler';
 import { RequestAccountVerificationHandler } from './request-account-verification/request-account-verification.handler';
 
 export const UserCommandHandlers = [
@@ -42,9 +42,7 @@ export const UserCommandHandlers = [
   SuspendUserHandler,
   DeactivateUserHandler,
 
-  // 
-  UnsuspendUserHandler, 
+  //
+  UnsuspendUserHandler,
   DeleteUserHandler,
-
 ];
-

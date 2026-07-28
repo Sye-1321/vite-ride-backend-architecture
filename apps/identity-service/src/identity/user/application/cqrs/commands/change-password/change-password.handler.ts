@@ -21,9 +21,7 @@ type ChangePasswordErrors =
   | NewPasswordSameAsCurrentError;
 
 @CommandHandler(ChangePasswordCommand)
-export class ChangePasswordHandler
-  implements ICommandHandler<ChangePasswordCommand>
-{
+export class ChangePasswordHandler implements ICommandHandler<ChangePasswordCommand> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
@@ -35,9 +33,7 @@ export class ChangePasswordHandler
     private readonly requestContext: RequestContextAccessor,
   ) {}
 
-  async execute(
-    command: ChangePasswordCommand,
-  ): Promise<Result<void, ChangePasswordErrors>> {
+  async execute(command: ChangePasswordCommand): Promise<Result<void, ChangePasswordErrors>> {
     const { userId, currentPassword, newPassword } = command;
 
     const found = await this.userRepository.findById(userId);
@@ -47,10 +43,7 @@ export class ChangePasswordHandler
 
     const user = found.unwrap();
 
-    const currentPasswordValid = await this.hasher.compare(
-      currentPassword,
-      user.passwordHash,
-    );
+    const currentPasswordValid = await this.hasher.compare(currentPassword, user.passwordHash);
 
     if (!currentPasswordValid) {
       return Err(new IncorrectCurrentPasswordError());
@@ -63,10 +56,7 @@ export class ChangePasswordHandler
     const newPasswordHash = await this.hasher.hash(newPassword);
 
     const ctx = this.requestContext.get();
-    const audit = AuditFactory.createForUpdate(
-      ctx.phoneNumber,
-      user.audit,
-    );
+    const audit = AuditFactory.createForUpdate(ctx.phoneNumber, user.audit);
 
     user.updatePasswordHash(newPasswordHash);
     user.updateAudit(audit);

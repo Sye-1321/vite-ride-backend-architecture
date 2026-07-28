@@ -3,7 +3,4 @@ import { VerificationSessionKey } from '../../domain/verification-session-key.vo
 import { KeyValueStorePort } from '@app/shared-kernel';
 
 export interface VerificationSessionRepositoryPort
-  extends KeyValueStorePort<
-    VerificationSession,
-    VerificationSessionKey
-  > {}
+  extends KeyValueStorePort<VerificationSession, VerificationSessionKey> {}

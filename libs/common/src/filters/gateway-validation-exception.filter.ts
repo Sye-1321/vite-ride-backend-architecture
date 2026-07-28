@@ -33,11 +33,9 @@ export class GatewayExceptionFilter implements ExceptionFilter {
       const httpStatus = exception.getStatus();
       const body = exception.getResponse();
 
-      response.status(httpStatus).json(
-        typeof body === 'string'
-          ? { statusCode: httpStatus, message: body }
-          : body,
-      );
+      response
+        .status(httpStatus)
+        .json(typeof body === 'string' ? { statusCode: httpStatus, message: body } : body);
       return;
     }
 
@@ -64,10 +62,7 @@ export class GatewayExceptionFilter implements ExceptionFilter {
       return;
     }
 
-    this.logger.error(
-      exception?.message ?? 'Unhandled exception',
-      exception?.stack,
-    );
+    this.logger.error(exception?.message ?? 'Unhandled exception', exception?.stack);
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,

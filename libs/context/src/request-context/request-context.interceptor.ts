@@ -1,9 +1,4 @@
-import {
-  CallHandler,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-} from '@nestjs/common';
+import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Request } from 'express';
 import { randomUUID } from 'crypto';
 
@@ -14,16 +9,12 @@ const GUEST_PHONE_NUMBER = 'GUEST';
 
 @Injectable()
 export class RequestContextInterceptor implements NestInterceptor {
-  constructor(
-    private readonly ctx: ClsRequestContextAccessor,
-  ) {}
+  constructor(private readonly ctx: ClsRequestContextAccessor) {}
 
   intercept(context: ExecutionContext, next: CallHandler) {
-    const req =
-      context.switchToHttp().getRequest<Request & { user?: any }>();
+    const req = context.switchToHttp().getRequest<Request & { user?: any }>();
 
-    let correlationId =
-      req.headers['x-correlation-id'] as string | undefined;
+    let correlationId = req.headers['x-correlation-id'] as string | undefined;
 
     if (!correlationId) {
       correlationId = randomUUID();

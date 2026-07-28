@@ -13,10 +13,6 @@ export class DriverDataModel extends MongoDocument {
   userId: string;
 }
 
-export const DriverSchema =
-  SchemaFactory.createForClass(DriverDataModel);
+export const DriverSchema = SchemaFactory.createForClass(DriverDataModel);
 
-DriverSchema.index(
-  { tenantId: 1, userId: 1 },
-  { unique: true },
-);
+DriverSchema.index({ tenantId: 1, userId: 1 }, { unique: true });

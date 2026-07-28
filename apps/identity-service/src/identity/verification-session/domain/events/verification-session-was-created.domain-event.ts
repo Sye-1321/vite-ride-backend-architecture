@@ -1,4 +1,4 @@
-import { DomainEvent, DomainEventProps } from "@app/shared-kernel";
+import { DomainEvent, DomainEventProps } from '@app/shared-kernel';
 
 export interface VerificationSessionWasCreatedEventProps {
   phoneNumber: string;

@@ -1,6 +1,6 @@
-import * as bcrypt from "bcrypt";
-import { Injectable } from "@nestjs/common";
-import { HasherPort } from "@app/shared-kernel";
+import * as bcrypt from 'bcrypt';
+import { Injectable } from '@nestjs/common';
+import { HasherPort } from '@app/shared-kernel';
 
 @Injectable()
 export class BcryptHasher implements HasherPort {

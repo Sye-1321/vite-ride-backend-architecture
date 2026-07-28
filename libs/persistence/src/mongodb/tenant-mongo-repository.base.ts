@@ -15,11 +15,12 @@ import { TenantRepositoryPort } from '@app/shared-kernel';
  * - Services/controllers never pass tenantId
  */
 export abstract class TenantMongoRepositoryBase<
-  Aggregate extends AggregateRoot<any>,
-  DbModel extends Document & { tenantId: string }
-> extends MongoRepositoryBase<Aggregate, DbModel>
-  implements TenantRepositoryPort<Aggregate> {
-
+    Aggregate extends AggregateRoot<any>,
+    DbModel extends Document & { tenantId: string },
+  >
+  extends MongoRepositoryBase<Aggregate, DbModel>
+  implements TenantRepositoryPort<Aggregate>
+{
   protected constructor(
     model: Model<DbModel>,
     connection: Connection,
@@ -41,39 +42,42 @@ export abstract class TenantMongoRepositoryBase<
   }
 
   async findById(id: string): Promise<Option<Aggregate>> {
-    const doc = await this.model.findOne({
-      _id: id,
-      ...this.tenantFilter(),
-    }).lean().exec();
+    const doc = await this.model
+      .findOne({
+        _id: id,
+        ...this.tenantFilter(),
+      })
+      .lean()
+      .exec();
 
     return this.toAggregate(doc);
   }
 
   async findOne(query: Record<string, any>): Promise<Option<Aggregate>> {
-    const doc = await this.model.findOne({
-      ...query,
-      ...this.tenantFilter(),
-    }).lean().exec();
+    const doc = await this.model
+      .findOne({
+        ...query,
+        ...this.tenantFilter(),
+      })
+      .lean()
+      .exec();
 
     return this.toAggregate(doc);
   }
 
   async findAll(): Promise<Aggregate[]> {
-    const docs = await this.model
-      .find(this.tenantFilter())
-      .lean()
-      .exec();
+    const docs = await this.model.find(this.tenantFilter()).lean().exec();
 
-    return docs.map(d => this.mapper.toDomain(d));
+    return docs.map((d) => this.mapper.toDomain(d));
   }
 
   async insert(entity: Aggregate | Aggregate[]): Promise<void> {
     const { tenantId } = this.tenantFilter();
     const entities = Array.isArray(entity) ? entity : [entity];
 
-    entities.forEach(e => e.validate());
+    entities.forEach((e) => e.validate());
 
-    const payload = entities.map(e => ({
+    const payload = entities.map((e) => ({
       ...this.mapper.toPersistence(e),
       tenantId,
     }));

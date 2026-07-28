@@ -9,9 +9,6 @@ export interface RequiredPermission {
   action: PermissionAction;
 }
 
-export function RequirePermission(
-  resource: string,
-  action: PermissionAction,
-): MethodDecorator {
+export function RequirePermission(resource: string, action: PermissionAction): MethodDecorator {
   return SetMetadata(PERMISSION_KEY, { resource, action });
 }

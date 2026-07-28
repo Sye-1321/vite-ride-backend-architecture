@@ -6,9 +6,7 @@ import { Tenant } from '../../../domain/tenant.entity';
 import { TenantDataModel } from './tenant.schema';
 
 @Injectable()
-export class TenantMapper
-  implements MongoMapper<Tenant, TenantDataModel>
-{
+export class TenantMapper implements MongoMapper<Tenant, TenantDataModel> {
   toPersistence(entity: Tenant): TenantDataModel {
     const props = entity.getProps();
 

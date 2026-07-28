@@ -1,9 +1,6 @@
 import { Result } from 'oxide.ts';
 import { VerificationTarget } from '../../domain/verification-session.types';
-import {
-  InvalidOtpError,
-  VerificationSessionNotFoundError,
-} from '../errors';
+import { InvalidOtpError, VerificationSessionNotFoundError } from '../errors';
 import {
   VerificationSessionExpiredError,
   VerificationSessionUsedError,
@@ -34,10 +31,5 @@ export interface IVerificationSessionService {
   resendSession(
     verificationToken: string,
     purpose: UserVerificationPurpose,
-  ): Promise<
-    Result<
-      { verificationToken: string },
-      VerificationSessionNotFoundError | Error
-    >
-  >;
+  ): Promise<Result<{ verificationToken: string }, VerificationSessionNotFoundError | Error>>;
 }

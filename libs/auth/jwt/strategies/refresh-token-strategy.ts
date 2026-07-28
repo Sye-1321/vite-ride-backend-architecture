@@ -7,10 +7,7 @@ import { JwtConfig } from '../config/jwt.config.schema';
 import { AuthPayload } from 'apps/identity-service/src/identity/user/application/types';
 
 @Injectable()
-export class RefreshTokenStrategy extends PassportStrategy(
-  Strategy,
-  'jwt-refresh',
-) {
+export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
   constructor(configService: ConfigService) {
     const jwtConfig = configService.get<JwtConfig>('jwt', { infer: true });
 
@@ -23,8 +20,7 @@ export class RefreshTokenStrategy extends PassportStrategy(
   }
 
   validate(request: Request, payload: AuthPayload) {
-    const refreshToken =
-      ExtractJwt.fromAuthHeaderAsBearerToken()(request);
+    const refreshToken = ExtractJwt.fromAuthHeaderAsBearerToken()(request);
 
     if (!refreshToken) {
       throw new Error('Refresh token missing');
@@ -36,4 +32,3 @@ export class RefreshTokenStrategy extends PassportStrategy(
     };
   }
 }
-

@@ -9,17 +9,13 @@ import { UserResponseDto } from '../../../../dto/user.response.dto';
 import { UserParser } from '../../../../user.parser';
 
 @QueryHandler(SearchUsersQuery)
-export class SearchUsersHandler
-  implements IQueryHandler<SearchUsersQuery>
-{
+export class SearchUsersHandler implements IQueryHandler<SearchUsersQuery> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
   ) {}
 
-  async execute(
-    query: SearchUsersQuery,
-  ): Promise<Result<Paginated<UserResponseDto>, never>> {
+  async execute(query: SearchUsersQuery): Promise<Result<Paginated<UserResponseDto>, never>> {
     const filter: Record<string, any> = {};
 
     if (query.phoneNumber) {

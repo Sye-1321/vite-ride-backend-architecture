@@ -1,25 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { Enforcer } from 'casbin';
 
-import {
-  AuthorizationQueryPort,
-  RoleAssignmentPort,
-} from '../../application/ports';
+import { AuthorizationQueryPort, RoleAssignmentPort } from '../../application/ports';
 
-import {
-  AccessCheckDto,
-  AssignRoleDto,
-  GetUserRolesDto,
-} from '../../application/dto';
+import { AccessCheckDto, AssignRoleDto, GetUserRolesDto } from '../../application/dto';
 
 import { TYPES } from '@app/shared-kernel';
 
 @Injectable()
-export class CasbinAuthorizationAdapter
-  implements
-    AuthorizationQueryPort,
-    RoleAssignmentPort
-{
+export class CasbinAuthorizationAdapter implements AuthorizationQueryPort, RoleAssignmentPort {
   constructor(
     @Inject(TYPES.AuthzEnforcerPort)
     private readonly enforcer: Enforcer,
@@ -28,12 +17,7 @@ export class CasbinAuthorizationAdapter
   async canAccess(dto: AccessCheckDto) {
     const domain = dto.domain?.length ? dto.domain : '*';
 
-    const allowed = await this.enforcer.enforce(
-      domain,
-      dto.sub,
-      dto.obj,
-      dto.act,
-    );
+    const allowed = await this.enforcer.enforce(domain, dto.sub, dto.obj, dto.act);
 
     return { allowed };
   }

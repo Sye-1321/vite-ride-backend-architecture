@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 
 import { UserGrpcClient } from '../client/user.grpc.client';
 
@@ -25,12 +17,7 @@ import {
   SearchUsersQueryDto,
 } from '../dto';
 
-import {
-  AccessAuthGuard,
-  RefreshAuthGuard,
-  GetCurrentUser,
-  GetCurrentUserId,
-} from '@app/common';
+import { AccessAuthGuard, RefreshAuthGuard, GetCurrentUser, GetCurrentUserId } from '@app/common';
 
 import { mapDomainPurposeToProto } from '../mappers/user-verification-purpose.mapper';
 import { mapDomainUserStatusToProto } from '../mappers/user-status.mapper';
@@ -38,9 +25,7 @@ import { UserStatus } from '@app/proto-schema';
 
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly userGrpc: UserGrpcClient,
-  ) {}
+  constructor(private readonly userGrpc: UserGrpcClient) {}
 
   @Post('login')
   login(@Body() dto: LoginRequestDto) {
@@ -61,7 +46,6 @@ export class UserController {
   logout(@GetCurrentUserId() userId: string) {
     return this.userGrpc.logout({ userId });
   }
-
 
   @Post('register')
   register(@Body() dto: RegisterUserRequestDto) {
@@ -86,13 +70,9 @@ export class UserController {
     return this.userGrpc.requestAccountVerification(dto);
   }
 
-
   @UseGuards(AccessAuthGuard)
   @Post('change-password')
-  changePassword(
-    @GetCurrentUserId() userId: string,
-    @Body() dto: ChangePasswordRequestDto,
-  ) {
+  changePassword(@GetCurrentUserId() userId: string, @Body() dto: ChangePasswordRequestDto) {
     return this.userGrpc.changePassword({
       userId,
       currentPassword: dto.currentPassword,
@@ -109,7 +89,6 @@ export class UserController {
   confirmPasswordReset(@Body() dto: ConfirmPasswordResetRequestDto) {
     return this.userGrpc.confirmPasswordReset(dto);
   }
-
 
   @UseGuards(AccessAuthGuard)
   @Post('request-phone-change')
@@ -130,7 +109,6 @@ export class UserController {
     return this.userGrpc.confirmPhoneNumberChange(dto);
   }
 
-
   @UseGuards(AccessAuthGuard)
   @Get('me')
   getMyProfile(@GetCurrentUserId() userId: string) {
@@ -139,10 +117,7 @@ export class UserController {
 
   @UseGuards(AccessAuthGuard)
   @Post('me')
-  updateMyProfile(
-    @GetCurrentUserId() userId: string,
-    @Body() dto: UpdateMyProfileRequestDto,
-  ) {
+  updateMyProfile(@GetCurrentUserId() userId: string, @Body() dto: UpdateMyProfileRequestDto) {
     return this.userGrpc.updateMyProfile({
       userId,
       firstName: dto.firstName,
@@ -155,7 +130,6 @@ export class UserController {
   deactivateMyAccount(@GetCurrentUserId() userId: string) {
     return this.userGrpc.deactivateUser({ userId });
   }
-
 
   @Get()
   listUsers(@Query() query: ListUsersQueryDto) {
@@ -192,7 +166,6 @@ export class UserController {
   checkUserExistsByPhone(@Body() dto: PhoneNumberRequestDto) {
     return this.userGrpc.checkUserExistsByPhone(dto);
   }
-
 
   @Post(':userId/suspend')
   suspend(@Param('userId') userId: string) {

@@ -6,16 +6,16 @@ import { GatewayContextModule } from '@app/context';
 
 @Module({
   imports: [
-        ConfigModule.forRoot({
-          isGlobal: true,
-          validationOptions: {
-            allowUnknown: true,
-            abortEarly: false,
-          },
-        }),
-    UserModule, 
-    JwtAuthModule, 
-    GatewayContextModule
-   ],
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationOptions: {
+        allowUnknown: true,
+        abortEarly: false,
+      },
+    }),
+    UserModule,
+    JwtAuthModule,
+    GatewayContextModule,
+  ],
 })
 export class AppModule {}

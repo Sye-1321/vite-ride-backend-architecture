@@ -12,17 +12,13 @@ import { UserParser } from '../../../../user.parser';
 type GetMyProfileErrors = NotFoundException;
 
 @QueryHandler(GetMyProfileQuery)
-export class GetMyProfileHandler
-  implements IQueryHandler<GetMyProfileQuery>
-{
+export class GetMyProfileHandler implements IQueryHandler<GetMyProfileQuery> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
   ) {}
 
-  async execute(
-    query: GetMyProfileQuery,
-  ): Promise<Result<UserResponseDto, GetMyProfileErrors>> {
+  async execute(query: GetMyProfileQuery): Promise<Result<UserResponseDto, GetMyProfileErrors>> {
     const found = await this.userRepository.findById(query.userId);
 
     if (found.isNone()) {
@@ -31,9 +27,6 @@ export class GetMyProfileHandler
 
     const user = found.unwrap();
 
-
-    return Ok(
-      UserParser.createUserResponse(user),
-    );
+    return Ok(UserParser.createUserResponse(user));
   }
 }

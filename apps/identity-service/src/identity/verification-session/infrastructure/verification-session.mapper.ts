@@ -14,9 +14,7 @@ export class VerificationSessionMapper {
       otpHash: props.otpHash,
       createdAt: props.createdAt.toISOString(),
       expiresAt: props.expiresAt.toISOString(),
-      consumedAt: props.consumedAt
-        ? props.consumedAt.toISOString()
-        : null,
+      consumedAt: props.consumedAt ? props.consumedAt.toISOString() : null,
     };
   }
 

@@ -6,7 +6,6 @@ import { TYPES } from '@app/shared-kernel';
 import { SmsTestController } from './sms-test.controller';
 import afroMessageConfig from './config/afro-message.config';
 
-
 @Module({
   imports: [HttpModule, ConfigModule.forFeature(afroMessageConfig)],
   controllers: [SmsTestController],

@@ -2,7 +2,6 @@ import { Audit } from './audit.vo';
 import { IAudit } from './audit.interface';
 
 export class AuditFactory {
-
   static createForCreate(phoneNumber: string): Audit {
     const audit: IAudit = {
       auditCreatedAt: new Date().toISOString(),
@@ -13,10 +12,7 @@ export class AuditFactory {
     return new Audit(audit);
   }
 
-  static createForUpdate(
-    phoneNumber: string,
-    existing: Audit,
-  ): Audit {
+  static createForUpdate(phoneNumber: string, existing: Audit): Audit {
     const audit: IAudit = {
       auditCreatedAt: existing.auditCreatedAt,
       auditCreatedBy: existing.auditCreatedBy,
@@ -32,10 +28,7 @@ export class AuditFactory {
     return new Audit(audit);
   }
 
-  static createForDelete(
-    phoneNumber: string,
-    existing: Audit,
-  ): Audit {
+  static createForDelete(phoneNumber: string, existing: Audit): Audit {
     const audit: IAudit = {
       auditCreatedAt: existing.auditCreatedAt,
       auditCreatedBy: existing.auditCreatedBy,

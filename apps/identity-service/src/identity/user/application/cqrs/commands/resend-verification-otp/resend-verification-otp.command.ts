@@ -5,10 +5,7 @@ export class ResendVerificationCommand extends Command {
   readonly verificationToken: string;
   readonly purpose: UserVerificationPurpose;
 
-  constructor(props: {
-    verificationToken: string;
-    purpose: UserVerificationPurpose;
-  }) {
+  constructor(props: { verificationToken: string; purpose: UserVerificationPurpose }) {
     super(props);
     this.verificationToken = props.verificationToken;
     this.purpose = props.purpose;

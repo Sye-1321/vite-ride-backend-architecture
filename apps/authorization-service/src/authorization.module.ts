@@ -29,10 +29,6 @@ import { TYPES } from '@app/shared-kernel';
       useClass: CasbinAuthorizationAdapter,
     },
   ],
-  exports: [
-    AuthorizationQueryService,
-    PolicyCommandService,
-    RoleAssignmentService,
-  ],
+  exports: [AuthorizationQueryService, PolicyCommandService, RoleAssignmentService],
 })
 export class AuthorizationModule {}

@@ -6,9 +6,7 @@ import firebaseConfig from './config/firebase.config';
 import { TYPES } from '@app/shared-kernel';
 
 @Module({
-  imports: [
-    ConfigModule.forFeature(firebaseConfig),
-  ],
+  imports: [ConfigModule.forFeature(firebaseConfig)],
   providers: [
     {
       provide: TYPES.PushPort,

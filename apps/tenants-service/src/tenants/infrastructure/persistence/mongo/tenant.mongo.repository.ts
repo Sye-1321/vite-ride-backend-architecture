@@ -9,10 +9,7 @@ import { TenantDataModel } from './tenant.schema';
 import { TenantMapper } from './tenant.mapper';
 
 @Injectable()
-export class TenantRepository extends MongoRepositoryBase<
-  Tenant,
-  TenantDataModel
-> {
+export class TenantRepository extends MongoRepositoryBase<Tenant, TenantDataModel> {
   constructor(
     @InjectModel(TenantDataModel.name)
     model: Model<TenantDataModel>,
@@ -24,13 +21,8 @@ export class TenantRepository extends MongoRepositoryBase<
   }
 
   async findByName(name: string): Promise<Option<Tenant>> {
-    const doc = await this.model
-      .findOne({ name })
-      .lean()
-      .exec();
+    const doc = await this.model.findOne({ name }).lean().exec();
 
-    return doc
-      ? Some(this.mapper.toDomain(doc))
-      : None;
+    return doc ? Some(this.mapper.toDomain(doc)) : None;
   }
 }

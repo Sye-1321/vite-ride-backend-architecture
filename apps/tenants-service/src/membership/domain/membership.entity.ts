@@ -1,21 +1,14 @@
 import { randomUUID } from 'crypto';
 import { AggregateRoot, AggregateID } from '@app/shared-kernel';
 
-import {
-  TenantMemberProps,
-  TenantMemberStatus,
-} from './membership.types';
-import {
-  TenantMemberSuspendedError,
-} from './membership.errors';
+import { TenantMemberProps, TenantMemberStatus } from './membership.types';
+import { TenantMemberSuspendedError } from './membership.errors';
 import { Err, Ok, Result } from 'oxide.ts';
 
 export class TenantMember extends AggregateRoot<TenantMemberProps> {
   protected readonly _id: AggregateID;
 
-  static create(
-    props: Omit<TenantMemberProps, 'status'>,
-  ): TenantMember {
+  static create(props: Omit<TenantMemberProps, 'status'>): TenantMember {
     return new TenantMember({
       id: randomUUID(),
       props: {
@@ -25,10 +18,7 @@ export class TenantMember extends AggregateRoot<TenantMemberProps> {
     });
   }
 
-  static rehydrate(
-    props: TenantMemberProps,
-    id: AggregateID,
-  ): TenantMember {
+  static rehydrate(props: TenantMemberProps, id: AggregateID): TenantMember {
     return new TenantMember({
       id,
       props,
@@ -41,11 +31,11 @@ export class TenantMember extends AggregateRoot<TenantMemberProps> {
 
   public assertCanAccessTenant(): Result<void, TenantMemberSuspendedError> {
     if (this.props.status === TenantMemberStatus.SUSPENDED) {
-        return Err(new TenantMemberSuspendedError());
+      return Err(new TenantMemberSuspendedError());
     }
 
     return Ok(undefined);
-    }
+  }
 
   get tenantId(): string {
     return this.props.tenantId;

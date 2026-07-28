@@ -11,9 +11,7 @@ import { AuditFactory } from '@app/audit';
 import { RequestContextAccessor } from '@app/context';
 
 @CommandHandler(UnsuspendUserCommand)
-export class UnsuspendUserHandler
-  implements ICommandHandler<UnsuspendUserCommand>
-{
+export class UnsuspendUserHandler implements ICommandHandler<UnsuspendUserCommand> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
@@ -22,9 +20,7 @@ export class UnsuspendUserHandler
     private readonly requestContext: RequestContextAccessor,
   ) {}
 
-  async execute(
-    command: UnsuspendUserCommand,
-  ): Promise<Result<void, NotFoundException>> {
+  async execute(command: UnsuspendUserCommand): Promise<Result<void, NotFoundException>> {
     const found = await this.userRepository.findById(command.userId);
 
     if (found.isNone()) {
@@ -34,10 +30,7 @@ export class UnsuspendUserHandler
     const user = found.unwrap();
 
     const ctx = this.requestContext.get();
-    const audit = AuditFactory.createForUpdate(
-      ctx.phoneNumber,
-      user.audit,
-    );
+    const audit = AuditFactory.createForUpdate(ctx.phoneNumber, user.audit);
 
     user.reactivate();
     user.updateAudit(audit);

@@ -9,23 +9,16 @@ import { ActivateTenantCommand } from './activate-tenant.command';
 import { TenantRepositoryPort } from '../../../ports';
 import { TenantSuspendedError } from '../../../../domain/tenant.errors';
 
-type ActivateTenantErrors =
-  | TenantSuspendedError
-  | NotFoundException
-  | Error;
+type ActivateTenantErrors = TenantSuspendedError | NotFoundException | Error;
 
 @CommandHandler(ActivateTenantCommand)
-export class ActivateTenantHandler
-  implements ICommandHandler<ActivateTenantCommand>
-{
+export class ActivateTenantHandler implements ICommandHandler<ActivateTenantCommand> {
   constructor(
     @Inject(TYPES.TenantRepositoryPort)
     private readonly tenantRepository: TenantRepositoryPort,
   ) {}
 
-  async execute(
-    command: ActivateTenantCommand,
-  ): Promise<Result<void, ActivateTenantErrors>> {
+  async execute(command: ActivateTenantCommand): Promise<Result<void, ActivateTenantErrors>> {
     const found = await this.tenantRepository.findById(command.tenantId);
 
     if (found.isNone()) {

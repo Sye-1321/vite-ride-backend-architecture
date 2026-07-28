@@ -12,10 +12,6 @@ import { RandomTokenGenerator } from './token-generator.adapter';
     { provide: TYPES.OtpGeneratorPort, useClass: NumericOtpGenerator },
     { provide: TYPES.TokenGeneratorPort, useClass: RandomTokenGenerator },
   ],
-  exports: [
-    TYPES.HasherPort,
-    TYPES.OtpGeneratorPort,
-    TYPES.TokenGeneratorPort,
-  ],
+  exports: [TYPES.HasherPort, TYPES.OtpGeneratorPort, TYPES.TokenGeneratorPort],
 })
 export class AdaptersModule {}

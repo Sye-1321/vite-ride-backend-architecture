@@ -5,8 +5,5 @@ export interface SmsPort {
    * @param to - Recipient phone number
    * @param message - Fully formatted message content to be delivered
    */
-  sendSms(params: {
-    to: string;
-    message: string;
-  }): Promise<void>;
+  sendSms(params: { to: string; message: string }): Promise<void>;
 }

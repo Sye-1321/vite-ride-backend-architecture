@@ -3,10 +3,7 @@ import axios from 'axios';
 export class NominatimClient {
   private readonly baseUrl = 'https://nominatim.openstreetmap.org';
 
-  async search(
-    query: string,
-    viewbox?: string,
-  ): Promise<any[]> {
+  async search(query: string, viewbox?: string): Promise<any[]> {
     const url = `${this.baseUrl}/search`;
     const response = await axios.get(url, {
       params: {

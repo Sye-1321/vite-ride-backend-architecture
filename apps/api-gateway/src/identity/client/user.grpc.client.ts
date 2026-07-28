@@ -53,14 +53,14 @@ export class UserGrpcClient implements OnModuleInit {
     registerUser: (d: RegisterUserRequest) => Promise<RegisterUserResponse>;
     verifyUser: (d: VerifyUserRequest) => Promise<Empty>;
     requestAccountVerification: (
-      d: RequestAccountVerificationRequest
+      d: RequestAccountVerificationRequest,
     ) => Promise<RequestAccountVerificationResponse>;
     resendVerification: (d: ResendVerificationRequest) => Promise<RegisterUserResponse>;
     changePassword: (d: ChangePasswordRequest) => Promise<Empty>;
     requestPasswordReset: (d: RequestPasswordResetRequest) => Promise<RequestPasswordResetResponse>;
     confirmPasswordReset: (d: ConfirmPasswordResetRequest) => Promise<Empty>;
     requestPhoneNumberChange: (
-      d: RequestPhoneNumberChangeRequest
+      d: RequestPhoneNumberChangeRequest,
     ) => Promise<RequestPhoneNumberChangeResponse>;
     confirmPhoneNumberChange: (d: ConfirmPhoneNumberChangeRequest) => Promise<Empty>;
     updateMyProfile: (d: UpdateMyProfileRequest) => Promise<Empty>;
@@ -70,22 +70,17 @@ export class UserGrpcClient implements OnModuleInit {
     listUsers: (d: ListUsersRequest) => Promise<PaginatedUsersResponse>;
     searchUsers: (d: SearchUsersRequest) => Promise<PaginatedUsersResponse>;
     checkUserExistsByPhone: (
-      d: CheckUserExistsByPhoneRequest
+      d: CheckUserExistsByPhoneRequest,
     ) => Promise<CheckUserExistsByPhoneResponse>;
     suspendUser: (d: SuspendUserRequest) => Promise<Empty>;
     unsuspendUser: (d: UnsuspendUserRequest) => Promise<Empty>;
     deleteUser: (d: DeleteUserRequest) => Promise<Empty>;
   };
 
-  constructor(
-    private readonly grpcContextInterceptor: GrpcClientContextInterceptor,
-  ) {}
+  constructor(private readonly grpcContextInterceptor: GrpcClientContextInterceptor) {}
 
   onModuleInit() {
-    const protoPath = join(
-      process.cwd(),
-      'libs/proto-schema/proto/identity.proto',
-    );
+    const protoPath = join(process.cwd(), 'libs/proto-schema/proto/identity.proto');
 
     const pkgDef = loadSync(protoPath, {
       keepCase: true,
@@ -112,21 +107,15 @@ export class UserGrpcClient implements OnModuleInit {
 
       registerUser: promisify(client.registerUser.bind(client)),
       verifyUser: promisify(client.verifyUser.bind(client)),
-      requestAccountVerification: promisify(
-        client.requestAccountVerification.bind(client),
-      ),
+      requestAccountVerification: promisify(client.requestAccountVerification.bind(client)),
       resendVerification: promisify(client.resendVerification.bind(client)),
 
       changePassword: promisify(client.changePassword.bind(client)),
       requestPasswordReset: promisify(client.requestPasswordReset.bind(client)),
       confirmPasswordReset: promisify(client.confirmPasswordReset.bind(client)),
 
-      requestPhoneNumberChange: promisify(
-        client.requestPhoneNumberChange.bind(client),
-      ),
-      confirmPhoneNumberChange: promisify(
-        client.confirmPhoneNumberChange.bind(client),
-      ),
+      requestPhoneNumberChange: promisify(client.requestPhoneNumberChange.bind(client)),
+      confirmPhoneNumberChange: promisify(client.confirmPhoneNumberChange.bind(client)),
 
       updateMyProfile: promisify(client.updateMyProfile.bind(client)),
       deactivateUser: promisify(client.deactivateMyAccount.bind(client)),
@@ -135,9 +124,7 @@ export class UserGrpcClient implements OnModuleInit {
       getUserById: promisify(client.getUserById.bind(client)),
       listUsers: promisify(client.listUsers.bind(client)),
       searchUsers: promisify(client.searchUsers.bind(client)),
-      checkUserExistsByPhone: promisify(
-        client.checkUserExistsByPhone.bind(client),
-      ),
+      checkUserExistsByPhone: promisify(client.checkUserExistsByPhone.bind(client)),
 
       suspendUser: promisify(client.suspendUser.bind(client)),
       unsuspendUser: promisify(client.unsuspendUser.bind(client)),
@@ -145,11 +132,15 @@ export class UserGrpcClient implements OnModuleInit {
     };
   }
 
-  login(d: LoginRequest) { return from(this.svc.login(d)); }
+  login(d: LoginRequest) {
+    return from(this.svc.login(d));
+  }
   refreshAccessToken(d: RefreshAccessTokenRequest) {
     return from(this.svc.refreshAccessToken(d));
   }
-  logout(d: LogoutRequest) { return from(this.svc.logout(d)); }
+  logout(d: LogoutRequest) {
+    return from(this.svc.logout(d));
+  }
 
   registerUser(d: RegisterUserRequest) {
     return from(this.svc.registerUser(d));

@@ -19,10 +19,7 @@ export class AfroMessageAdapter implements SmsPort {
     });
   }
 
-  async sendSms(params: {
-    to: string;
-    message: string;
-  }): Promise<void> {
+  async sendSms(params: { to: string; message: string }): Promise<void> {
     const payload = {
       to: params.to,
       message: params.message,

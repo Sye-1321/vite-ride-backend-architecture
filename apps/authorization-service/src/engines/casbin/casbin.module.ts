@@ -6,13 +6,7 @@ import { casbinEnforcerProvider } from './casbin-enforcer.provider';
 import { TYPES } from '@app/shared-kernel';
 
 @Module({
-  providers: [
-    casbinAdapterProvider,
-    casbinEnforcerProvider,
-  ],
-  exports: [
-    TYPES.AuthzAdapterPort,
-    TYPES.AuthzEnforcerPort,
-  ],
+  providers: [casbinAdapterProvider, casbinEnforcerProvider],
+  exports: [TYPES.AuthzAdapterPort, TYPES.AuthzEnforcerPort],
 })
 export class CasbinModule {}

@@ -1,11 +1,7 @@
 import { Option } from 'oxide.ts';
 
 export interface TenantKeyValueStorePort<Value, Key> {
-  insert(
-    value: Value,
-    key: Key,
-    ttlSeconds?: number,
-  ): Promise<void>;
+  insert(value: Value, key: Key, ttlSeconds?: number): Promise<void>;
 
   findOne(key: Key): Promise<Option<Value>>;
 

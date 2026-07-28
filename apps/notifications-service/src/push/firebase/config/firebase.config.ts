@@ -1,8 +1,5 @@
 import { registerAs } from '@nestjs/config';
-import {
-  firebaseConfigSchema,
-  FirebaseConfig,
-} from './firebase.config.schema';
+import { firebaseConfigSchema, FirebaseConfig } from './firebase.config.schema';
 
 export default registerAs('firebase', (): FirebaseConfig => {
   return firebaseConfigSchema.parse({

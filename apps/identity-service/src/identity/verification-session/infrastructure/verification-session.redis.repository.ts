@@ -7,15 +7,10 @@ import { VerificationSessionMapper } from './verification-session.mapper';
 
 @Injectable()
 export class VerificationSessionRedisRepository
-  extends GlobalRedisRepositoryBase<
-    VerificationSession,
-    VerificationSessionKey
-  >
+  extends GlobalRedisRepositoryBase<VerificationSession, VerificationSessionKey>
   implements VerificationSessionRepositoryPort
 {
-  constructor(
-    private readonly mapper: VerificationSessionMapper,
-  ) {
+  constructor(private readonly mapper: VerificationSessionMapper) {
     super();
   }
 

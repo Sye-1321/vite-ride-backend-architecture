@@ -12,10 +12,7 @@ import { TYPES } from '@app/shared-kernel';
 import { RequestContextAccessor } from '@app/context';
 
 @Injectable()
-export class UserRepository extends MongoRepositoryBase<
-  User,
-  UserDataModel
-> {
+export class UserRepository extends MongoRepositoryBase<User, UserDataModel> {
   constructor(
     @InjectModel(UserDataModel.name, 'IdentityConnection')
     model: Model<UserDataModel>,
@@ -42,20 +39,12 @@ export class UserRepository extends MongoRepositoryBase<
       tenantId: ctx.tenantId,
     });
 
-    const doc = await this.model
-      .findById(id)
-      .lean()
-      .exec();
+    const doc = await this.model.findById(id).lean().exec();
 
-    return doc
-      ? Some(this.mapper.toDomain(doc))
-      : None;
+    return doc ? Some(this.mapper.toDomain(doc)) : None;
   }
 
-    async findByPhoneNumber(
-    phoneNumber: string,
-  ): Promise<Option<User>> {
-
+  async findByPhoneNumber(phoneNumber: string): Promise<Option<User>> {
     const ctx = this.requestContext.get();
 
     console.log('REPO CONTEXT →', {
@@ -65,13 +54,8 @@ export class UserRepository extends MongoRepositoryBase<
       tenantId: ctx.tenantId,
     });
 
-    const doc = await this.model
-      .findOne({ phoneNumber })
-      .lean()
-      .exec();
+    const doc = await this.model.findOne({ phoneNumber }).lean().exec();
 
-    return doc
-      ? Some(this.mapper.toDomain(doc))
-      : None;
+    return doc ? Some(this.mapper.toDomain(doc)) : None;
   }
 }

@@ -11,9 +11,7 @@ export class SmsTestController {
   ) {}
 
   @Post()
-  async sendTestSms(
-    @Body() body: { to: string; message: string },
-  ) {
+  async sendTestSms(@Body() body: { to: string; message: string }) {
     await this.smsPort.sendSms({
       to: body.to,
       message: body.message,

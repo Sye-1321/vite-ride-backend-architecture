@@ -11,9 +11,7 @@ import { AuditFactory } from '@app/audit';
 import { RequestContextAccessor } from '@app/context';
 
 @CommandHandler(DeactivateUserCommand)
-export class DeactivateUserHandler
-  implements ICommandHandler<DeactivateUserCommand>
-{
+export class DeactivateUserHandler implements ICommandHandler<DeactivateUserCommand> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
@@ -22,9 +20,7 @@ export class DeactivateUserHandler
     private readonly requestContext: RequestContextAccessor,
   ) {}
 
-  async execute(
-    command: DeactivateUserCommand,
-  ): Promise<Result<void, NotFoundException>> {
+  async execute(command: DeactivateUserCommand): Promise<Result<void, NotFoundException>> {
     const found = await this.userRepository.findById(command.userId);
 
     if (found.isNone()) {
@@ -34,10 +30,7 @@ export class DeactivateUserHandler
     const user = found.unwrap();
 
     const ctx = this.requestContext.get();
-    const audit = AuditFactory.createForUpdate(
-      ctx.phoneNumber,
-      user.audit,
-    );
+    const audit = AuditFactory.createForUpdate(ctx.phoneNumber, user.audit);
 
     user.deactivate();
     user.updateAudit(audit);

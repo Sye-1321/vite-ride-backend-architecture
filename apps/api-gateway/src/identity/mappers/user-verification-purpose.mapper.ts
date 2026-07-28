@@ -1,11 +1,7 @@
-import {
-  UserVerificationPurpose as ProtoPurpose,
-} from '@app/proto-schema';
+import { UserVerificationPurpose as ProtoPurpose } from '@app/proto-schema';
 import { ApiUserVerificationPurpose } from '../dto/enums';
 
-export function mapDomainPurposeToProto(
-  purpose: ApiUserVerificationPurpose,
-): ProtoPurpose {
+export function mapDomainPurposeToProto(purpose: ApiUserVerificationPurpose): ProtoPurpose {
   switch (purpose) {
     case ApiUserVerificationPurpose.ACCOUNT_VERIFICATION:
       return ProtoPurpose.USER_VERIFICATION_ACCOUNT;

@@ -1,12 +1,6 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 // import { RequiredPermission } from '../decorators';
-
-
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
@@ -39,7 +33,7 @@ export class AuthorizationGuard implements CanActivate {
     //   act: permission.action,
     //   domain,
     // });
-    const decision = {'allowed': true}
+    const decision = { allowed: true };
     return decision.allowed;
   }
 }
