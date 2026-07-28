@@ -1,3 +1,5 @@
+import { DeliveryResult } from '../delivery.types';
+
 export interface PushPort {
   /**
    * Send a push notification to one or more devices.
@@ -12,5 +14,6 @@ export interface PushPort {
     title: string;
     body: string;
     data?: Record<string, string>;
-  }): Promise<void>;
+    correlationId?: string;
+  }): Promise<DeliveryResult>;
 }
