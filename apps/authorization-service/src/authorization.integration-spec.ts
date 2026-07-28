@@ -11,10 +11,7 @@ describe('authorization policy flow', () => {
   it('assigns and removes a tenant-scoped role idempotently', async () => {
     jest.spyOn(Logger.prototype, 'log').mockImplementation(() => undefined);
     const enforcer = await newEnforcer(
-      join(
-        process.cwd(),
-        'apps/authorization-service/src/engines/casbin/rbac_model.conf',
-      ),
+      join(process.cwd(), 'apps/authorization-service/src/engines/casbin/rbac_model.conf'),
     );
     await new PolicyBootstrapService(enforcer).onModuleInit();
 
@@ -55,6 +52,20 @@ describe('authorization policy flow', () => {
         act: 'read',
       }),
     ).resolves.toEqual({ allowed: false });
+
+    await roleService.assignRole({
+      userId: 'admin-1',
+      domain: 'tenant-a',
+      role: 'tenant-admin',
+    });
+    await expect(
+      queryService.canAccess({
+        sub: 'admin-1',
+        domain: 'tenant-a',
+        obj: 'tenant',
+        act: 'manage-members',
+      }),
+    ).resolves.toEqual({ allowed: true });
 
     await expect(
       roleService.removeRole({
