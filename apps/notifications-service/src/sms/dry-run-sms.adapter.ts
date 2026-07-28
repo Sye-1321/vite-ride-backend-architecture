@@ -7,7 +7,12 @@ import { SmsPort } from './sms.port';
 export class DryRunSmsAdapter implements SmsPort {
   private readonly logger = new Logger(DryRunSmsAdapter.name);
 
-  async sendSms(): Promise<DeliveryResult> {
+  async sendSms(params: {
+    to: string;
+    message: string;
+    correlationId?: string;
+  }): Promise<DeliveryResult> {
+    void params;
     const deliveryId = randomUUID();
     this.logger.log({ deliveryId, channel: 'sms', outcome: 'accepted' });
     return { deliveryId, outcome: 'accepted' };
