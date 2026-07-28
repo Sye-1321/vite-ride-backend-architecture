@@ -14,6 +14,7 @@
 ## Scope
 
 Adapters in this library:
+
 - Implement ports defined in the shared kernel
 - Are stateless, lightweight, and easily replaceable
 
@@ -48,8 +49,5 @@ Each adapter implements **one domain port** and remains domain-agnostic.
 Always import via the package root:
 
 ```ts
-import {
-  BcryptHasher,
-  NumericOtpGenerator,
-  RandomTokenGenerator,
-} from '@app/adapters';
+import { BcryptHasher, NumericOtpGenerator, RandomTokenGenerator } from '@app/adapters';
+```
