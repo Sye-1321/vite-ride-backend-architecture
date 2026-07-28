@@ -7,9 +7,10 @@
 
 ## Purpose
 
-`@app/persistence` defines **how persistence works across services**, not **what is persisted**.
----
+`@app/persistence` defines **how persistence works across services**, not **what
+is persisted**.
 
+---
 
 ## Design Approach
 
@@ -37,7 +38,6 @@ mongodb/
 mongo.module.ts
 mongo-entity.base.ts
 mongo.repository.ts
-
 
 ### MongoDB Engine
 
@@ -76,7 +76,6 @@ user.schema.ts
 user.mapper.ts
 user.repository.ts
 
-
 The persistence library provides the **shared infrastructure foundation**;  
 each microservice owns its **data, mappings, and repository behavior**.
 
@@ -88,6 +87,7 @@ Database connections are configured **per microservice** via environment variabl
 and resolved using `ConfigService`.
 
 The persistence library:
+
 - Does **not** define environment variables
 - Does **not** own deployment configuration
 - Assumes each microservice provides its own configuration
@@ -103,8 +103,9 @@ The persistence library:
 5. New database engines must follow the same structural conventions.
 
 ---
+
 ## Notes
 
--This library is intentionally **open and extensible**.  
+- This library is intentionally **open and extensible**.
 
 ---

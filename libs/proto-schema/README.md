@@ -16,11 +16,11 @@ service implementations.
 
 ## Contracts
 
-| File | Package | Service |
-| --- | --- | --- |
-| `proto/identity.proto` | `identity` | `UserService` |
+| File                        | Package         | Service                |
+| --------------------------- | --------------- | ---------------------- |
+| `proto/identity.proto`      | `identity`      | `UserService`          |
 | `proto/authorization.proto` | `authorization` | `AuthorizationService` |
-| `proto/tenants.proto` | `tenants` | `TenantsService` |
+| `proto/tenants.proto`       | `tenants`       | `TenantsService`       |
 | `proto/notifications.proto` | `notifications` | `NotificationsService` |
 
 ## Importing
@@ -28,10 +28,7 @@ service implementations.
 Use the library entry point rather than importing another application's types:
 
 ```ts
-import {
-  AccessCheckRequest,
-  AUTHORIZATION_SERVICE_NAME,
-} from '@app/proto-schema';
+import { AccessCheckRequest, AUTHORIZATION_SERVICE_NAME } from '@app/proto-schema';
 ```
 
 ## Dependency rules
