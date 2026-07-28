@@ -22,23 +22,23 @@ describe('authorization policy flow', () => {
     await expect(
       roleService.assignRole({
         userId: 'user-1',
-        domain: 'tenant-a',
-        role: 'user',
+        domain: '*',
+        role: 'system-admin',
       }),
-    ).resolves.toEqual({ changed: true, roles: ['user'] });
+    ).resolves.toEqual({ changed: true, roles: ['system-admin'] });
 
     await expect(
       roleService.assignRole({
         userId: 'user-1',
-        domain: 'tenant-a',
-        role: 'user',
+        domain: '*',
+        role: 'system-admin',
       }),
-    ).resolves.toEqual({ changed: false, roles: ['user'] });
+    ).resolves.toEqual({ changed: false, roles: ['system-admin'] });
 
     await expect(
       queryService.canAccess({
         sub: 'user-1',
-        domain: 'tenant-a',
+        domain: '*',
         obj: 'user',
         act: 'read',
       }),
@@ -70,15 +70,15 @@ describe('authorization policy flow', () => {
     await expect(
       roleService.removeRole({
         userId: 'user-1',
-        domain: 'tenant-a',
-        role: 'user',
+        domain: '*',
+        role: 'system-admin',
       }),
     ).resolves.toEqual({ changed: true, roles: [] });
 
     await expect(
       queryService.canAccess({
         sub: 'user-1',
-        domain: 'tenant-a',
+        domain: '*',
         obj: 'user',
         act: 'read',
       }),

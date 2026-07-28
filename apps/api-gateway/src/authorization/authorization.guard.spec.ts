@@ -49,4 +49,36 @@ describe('AuthorizationGuard', () => {
       new AuthorizationGuard(reflector, authorization).canActivate(context),
     ).rejects.toThrow(ForbiddenException);
   });
+
+  it('uses the global domain for non-tenant permissions', async () => {
+    const reflector = {
+      getAllAndOverride: jest.fn().mockReturnValue({
+        resource: 'user',
+        action: 'read',
+      }),
+    } as unknown as Reflector;
+    const authorization = {
+      checkAccess: jest.fn().mockReturnValue(of({ allowed: true })),
+    } as unknown as AuthorizationGrpcClient;
+    const globalContext = {
+      getHandler: jest.fn(),
+      getClass: jest.fn(),
+      switchToHttp: () => ({
+        getRequest: () => ({
+          user: { userId: 'admin-1' },
+          params: {},
+          headers: {},
+        }),
+      }),
+    } as unknown as ExecutionContext;
+
+    await new AuthorizationGuard(reflector, authorization).canActivate(globalContext);
+
+    expect(authorization.checkAccess).toHaveBeenCalledWith({
+      userId: 'admin-1',
+      domain: '*',
+      resource: 'user',
+      action: 'read',
+    });
+  });
 });
