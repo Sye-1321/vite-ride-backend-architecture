@@ -150,15 +150,6 @@
         "tsConfigPath": "libs/routing/tsconfig.lib.json"
       }
     },
-    "dispatch-matching-service": {
-      "type": "application",
-      "root": "apps/dispatch-matching-service",
-      "entryFile": "main",
-      "sourceRoot": "apps/dispatch-matching-service/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/dispatch-matching-service/tsconfig.app.json"
-      }
-    },
     "realtime": {
       "type": "library",
       "root": "libs/realtime",

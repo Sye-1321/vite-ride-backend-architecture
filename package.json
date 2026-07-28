@@ -8,11 +8,8 @@
     "libs/*"
   ],
   "scripts": {
-    "start:dev:ums": "nest start ums --watch",
     "start:dev:api-gateway": "nest start api-gateway --watch",
-    "build:ums": "nest build ums",
     "build:api-gateway": "nest build api-gateway",
-    "start:prod:ums": "node dist/apps/ums/main.js",
     "start:prod:api-gateway": "node dist/apps/api-gateway/main.js",
     "start:dev:identity": "nest start identity-service --watch",
     "build:identity": "nest build identity-service",
@@ -26,7 +23,7 @@
     "start:dev:tenants": "nest start tenants-service --watch",
     "build:tenants": "nest build tenants-service",
     "start:prod:tenants": "node dist/apps/tenants-service/main.js",
-    "dev:all": "concurrently \"npm run start:dev:identity\" \"npm run start:dev:tenants\" \"npm run start:dev:notifications\"",
+    "start:dev:core": "concurrently --names gateway,identity,authorization,tenants,notifications \"npm run start:dev:api-gateway\" \"npm run start:dev:identity\" \"npm run start:dev:authorization\" \"npm run start:dev:tenants\" \"npm run start:dev:notifications\"",
     "lint": "eslint \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "lint:fix": "eslint \"apps/**/*.ts\" \"libs/**/*.ts\" --fix",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
