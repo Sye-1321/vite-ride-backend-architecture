@@ -22,4 +22,7 @@ export class TenantMemberDataModel extends MongoDocument {
 }
 
 export const TenantMemberSchema = SchemaFactory.createForClass(TenantMemberDataModel);
-TenantMemberSchema.index({ tenantId: 1, userId: 1, role: 1 }, { unique: true });
+TenantMemberSchema.index(
+  { tenantId: 1, userId: 1, role: 1 },
+  { unique: true, partialFilterExpression: { isDeleted: false } },
+);

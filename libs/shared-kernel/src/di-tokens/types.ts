@@ -20,6 +20,8 @@ export const TYPES = {
   AuthzAdapterPort: Symbol('AuthzAdapterPort'),
   AuthzEnforcerPort: Symbol('AuthzEnforcerPort'),
   TenantRepositoryPort: Symbol('TenantRepositoryPort'),
+  TenantMemberRepositoryPort: Symbol('TenantMemberRepositoryPort'),
+  DriverRepositoryPort: Symbol('DriverRepositoryPort'),
 
   // interfaces
   IUserRequestContextService: Symbol('IUserRequestContextService'),

@@ -11,9 +11,9 @@ import { TenantMapper } from './tenant.mapper';
 @Injectable()
 export class TenantRepository extends MongoRepositoryBase<Tenant, TenantDataModel> {
   constructor(
-    @InjectModel(TenantDataModel.name)
+    @InjectModel(TenantDataModel.name, 'TenantsConnection')
     model: Model<TenantDataModel>,
-    @InjectConnection()
+    @InjectConnection('TenantsConnection')
     connection: Connection,
     mapper: TenantMapper,
   ) {
