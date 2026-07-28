@@ -17,9 +17,9 @@ export class TenantMemberMongoRepository
   implements TenantMemberRepositoryPort
 {
   constructor(
-    @InjectModel(TenantMemberDataModel.name)
+    @InjectModel(TenantMemberDataModel.name, 'TenantsConnection')
     model: Model<TenantMemberDataModel>,
-    @InjectConnection()
+    @InjectConnection('TenantsConnection')
     connection: Connection,
     mapper: TenantMemberMapper,
   ) {
@@ -27,13 +27,18 @@ export class TenantMemberMongoRepository
   }
 
   async findByTenantAndUser(tenantId: string, userId: string): Promise<Option<TenantMember>> {
-    const doc = await this.model.findOne({ tenantId, userId }).lean().exec();
+    const doc = await this.model
+      .findOne({ tenantId, userId, isDeleted: { $ne: true } })
+      .lean()
+      .exec();
 
     return doc ? Some(this.mapper.toDomain(doc)) : None;
   }
 
   async exists(tenantId: string, userId: string, role: TenantMemberRole): Promise<boolean> {
-    const count = await this.model.countDocuments({ tenantId, userId, role }).exec();
+    const count = await this.model
+      .countDocuments({ tenantId, userId, role, isDeleted: { $ne: true } })
+      .exec();
 
     return count > 0;
   }

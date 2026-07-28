@@ -15,9 +15,9 @@ export class DriverMongoRepository
   implements DriverRepositoryPort
 {
   constructor(
-    @InjectModel(DriverDataModel.name)
+    @InjectModel(DriverDataModel.name, 'TenantsConnection')
     model: Model<DriverDataModel>,
-    @InjectConnection()
+    @InjectConnection('TenantsConnection')
     connection: Connection,
     mapper: DriverMapper,
   ) {
