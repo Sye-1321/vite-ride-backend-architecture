@@ -16,8 +16,11 @@ export function defineStaticPolicies(): PolicyDefinition[] {
       resource: 'tenant',
       domain: '*',
       permissions: {
-        read: ['super-admin'],
+        read: ['super-admin', 'tenant-admin'],
         create: ['super-admin'],
+        update: ['super-admin', 'tenant-admin'],
+        'manage-members': ['super-admin', 'tenant-admin'],
+        'manage-drivers': ['super-admin', 'tenant-admin'],
       },
     },
   ];
