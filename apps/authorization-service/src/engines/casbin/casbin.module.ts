@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
 
-import { casbinAdapterProvider } from './casbin-adapter.provider';
 import { casbinEnforcerProvider } from './casbin-enforcer.provider';
+import { PolicyBootstrapService } from './policy-bootstrap.service';
 
 import { TYPES } from '@app/shared-kernel';
 
 @Module({
-  providers: [casbinAdapterProvider, casbinEnforcerProvider],
-  exports: [TYPES.AuthzAdapterPort, TYPES.AuthzEnforcerPort],
+  providers: [casbinEnforcerProvider, PolicyBootstrapService],
+  exports: [TYPES.AuthzEnforcerPort],
 })
 export class CasbinModule {}
