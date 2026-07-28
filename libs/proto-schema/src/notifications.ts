@@ -32,3 +32,10 @@ export interface DeliveryResponse {
 export interface NotificationsHealthResponse {
   status: string;
 }
+
+export interface NotificationsServiceClient {
+  sendSms(request: SendSmsRequest): Observable<DeliveryResponse>;
+  sendPush(request: SendPushRequest): Observable<DeliveryResponse>;
+  health(request: NotificationsEmpty): Observable<NotificationsHealthResponse>;
+}
+import { Observable } from 'rxjs';

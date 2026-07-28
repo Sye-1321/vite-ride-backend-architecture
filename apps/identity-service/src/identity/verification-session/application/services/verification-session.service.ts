@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Err, Ok, Result } from 'oxide.ts';
 
-import { VerificationSessionRepositoryPort } from '../ports';
+import { VerificationNotificationPort, VerificationSessionRepositoryPort } from '../ports';
 
 import { VerificationTarget } from '../../domain/verification-session.types';
 import { VerificationSessionKey } from '../../domain/verification-session-key.vo';
@@ -34,6 +34,9 @@ export class VerificationSessionService implements IVerificationSessionService {
 
     @Inject(TYPES.OtpGeneratorPort)
     private readonly otpGenerator: OtpGeneratorPort,
+
+    @Inject(TYPES.VerificationNotificationPort)
+    private readonly verificationNotification: VerificationNotificationPort,
   ) {}
 
   async requestSession(
@@ -57,12 +60,16 @@ export class VerificationSessionService implements IVerificationSessionService {
       subjectMeta,
     });
 
-    console.log(rawOtp);
     try {
       await this.verificationSessionRepository.insert(session, key);
+      await this.verificationNotification.sendOtp({
+        recipient: target.phoneNumber,
+        otp: rawOtp,
+        purpose,
+      });
       return Ok({ verificationToken });
-    } catch (error: any) {
-      return Err(error);
+    } catch (error: unknown) {
+      return Err(this.toError(error));
     }
   }
 
@@ -142,9 +149,18 @@ export class VerificationSessionService implements IVerificationSessionService {
 
     try {
       await this.verificationSessionRepository.insert(newSession, newKey);
+      await this.verificationNotification.sendOtp({
+        recipient: existingSession.target.phoneNumber,
+        otp: rawOtp,
+        purpose,
+      });
       return Ok({ verificationToken: newVerificationToken });
-    } catch (error: any) {
-      return Err(error);
+    } catch (error: unknown) {
+      return Err(this.toError(error));
     }
+  }
+
+  private toError(error: unknown): Error {
+    return error instanceof Error ? error : new Error('Verification operation failed');
   }
 }

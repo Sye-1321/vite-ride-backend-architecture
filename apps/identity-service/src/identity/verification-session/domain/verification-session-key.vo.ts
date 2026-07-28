@@ -38,8 +38,6 @@ export class VerificationSessionKey extends ValueObject<VerificationSessionKeyPr
   }
 
   static rehydrate(props: VerificationSessionKeyProps): VerificationSessionKey {
-    console.log(props.purpose, 'purpose');
-    console.log(props.verificationToken, 'verificationToken');
     return new VerificationSessionKey(props);
   }
 }

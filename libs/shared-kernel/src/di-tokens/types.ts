@@ -37,6 +37,7 @@ export const TYPES = {
   //
   SmsPort: Symbol('SmsPort'),
   PushPort: Symbol('PushPort'),
+  VerificationNotificationPort: Symbol('VerificationNotificationPort'),
   RedisClientPort: Symbol('RedisClientPort'),
   RequestContextAccessor: Symbol('RequestContextAccessor'),
 
