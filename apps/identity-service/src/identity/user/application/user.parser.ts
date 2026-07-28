@@ -1,7 +1,7 @@
 import { mapAuditToResponse } from '@app/common';
 import { User } from '../domain/user.entity';
 import { UserResponse, UserResponseDto, UserSignedInResponse } from './dto/user.response.dto';
-import { AuthTokens } from './types';
+import { AuthTokens } from '@app/auth';
 
 export class UserParser {
   static createUserResponse(user: User, tokens?: AuthTokens): UserResponseDto {

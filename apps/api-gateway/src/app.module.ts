@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from './identity/user/user.module';
-import { JwtAuthModule } from 'libs/auth/jwt';
+import { JwtAuthModule } from '@app/auth';
 import { ConfigModule } from '@nestjs/config';
 import { GatewayContextModule } from '@app/context';
 

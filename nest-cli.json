@@ -60,6 +60,15 @@
         "tsConfigPath": "libs/adapters/tsconfig.lib.json"
       }
     },
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
     "application-core": {
       "type": "library",
       "root": "libs/application-core",

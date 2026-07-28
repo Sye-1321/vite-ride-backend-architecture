@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { JwtAuthModule } from '../../../../../libs/auth/jwt/jwt-auth.module';
+import { JwtAuthModule } from '@app/auth';
 import { VerificationSessionModule } from '../verification-session/verification-session.module';
 import { TYPES } from '@app/shared-kernel';
 
