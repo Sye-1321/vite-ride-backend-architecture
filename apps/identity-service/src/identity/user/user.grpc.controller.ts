@@ -62,7 +62,7 @@ import { ListUsersQuery } from './application/cqrs/queries/queries/list-users/li
 import { SearchUsersQuery } from './application/cqrs/queries/queries/search-users/search-users.query';
 import { CheckUserExistsByPhoneQuery } from './application/cqrs/queries/queries/check-user-exists-by-phone/check-user-exists-by-phone.query';
 
-import { mapProtoUserStatusToDomain } from 'apps/api-gateway/src/identity/mappers';
+import { mapProtoPurposeToDomain, mapProtoUserStatusToDomain } from './infrastructure/mappers';
 
 function unwrapResult<T>(result: Result<T, Error>): T {
   if (result.isErr()) {
@@ -116,19 +116,17 @@ export class UserGrpcController {
     );
   }
 
-  // @GrpcMethod('UserService', 'ResendVerification')
-  // async resendVerification(
-  //   request: ResendVerificationRequest,
-  // ): Promise<RegisterUserResponse> {
-  //   return unwrapResult(
-  //     await this.commandBus.execute(
-  //       new ResendVerificationCommand({
-  //         verificationToken: request.verificationToken,
-  //         purpose: mapProtoPurposeToDomain(request.purpose),
-  //       }),
-  //     ),
-  //   );
-  // }
+  @GrpcMethod('UserService', 'ResendVerification')
+  async resendVerification(request: ResendVerificationRequest): Promise<RegisterUserResponse> {
+    return unwrapResult(
+      await this.commandBus.execute(
+        new ResendVerificationCommand({
+          verificationToken: request.verificationToken,
+          purpose: mapProtoPurposeToDomain(request.purpose),
+        }),
+      ),
+    );
+  }
 
   @GrpcMethod('UserService', 'ChangePassword')
   async changePassword(request: ChangePasswordRequest): Promise<Empty> {

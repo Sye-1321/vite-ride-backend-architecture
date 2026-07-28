@@ -1,5 +1,5 @@
 import { ResponseBase } from '@app/common/api';
-import { AuthTokens } from '../types';
+import { AuthTokens } from '@app/auth';
 
 export interface UserResponse extends ResponseBase {
   id: string;

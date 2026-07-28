@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package tenants;
+
+message Empty {}
+
+enum TenantStatus {
+  TENANT_STATUS_UNSPECIFIED = 0;
+  TENANT_STATUS_ACTIVE = 1;
+  TENANT_STATUS_INACTIVE = 2;
+  TENANT_STATUS_SUSPENDED = 3;
+}
+
+enum MemberRole {
+  MEMBER_ROLE_UNSPECIFIED = 0;
+  MEMBER_ROLE_ADMIN = 1;
+  MEMBER_ROLE_DRIVER = 2;
+}
+
+enum MemberStatus {
+  MEMBER_STATUS_UNSPECIFIED = 0;
+  MEMBER_STATUS_ACTIVE = 1;
+  MEMBER_STATUS_SUSPENDED = 2;
+}
+
+message CreateTenantRequest {
+  string name = 1;
+  string owner_user_id = 2;
+}
+
+message TenantIdRequest {
+  string tenant_id = 1;
+}
+
+message UpdateTenantRequest {
+  string tenant_id = 1;
+  string name = 2;
+}
+
+message ChangeTenantStatusRequest {
+  string tenant_id = 1;
+  TenantStatus status = 2;
+}
+
+message ListTenantsRequest {
+  uint32 page = 1;
+  uint32 limit = 2;
+  TenantStatus status = 3;
+}
+
+message TenantResponse {
+  string id = 1;
+  string name = 2;
+  TenantStatus status = 3;
+}
+
+message TenantListResponse {
+  repeated TenantResponse data = 1;
+  uint32 page = 2;
+  uint32 limit = 3;
+  uint64 total = 4;
+}
+
+message MemberRequest {
+  string tenant_id = 1;
+  string user_id = 2;
+  MemberRole role = 3;
+}
+
+message MemberIdRequest {
+  string tenant_id = 1;
+  string user_id = 2;
+}
+
+message ListMembersRequest {
+  string tenant_id = 1;
+  uint32 page = 2;
+  uint32 limit = 3;
+}
+
+message MemberResponse {
+  string id = 1;
+  string tenant_id = 2;
+  string user_id = 3;
+  MemberRole role = 4;
+  MemberStatus status = 5;
+}
+
+message MemberListResponse {
+  repeated MemberResponse data = 1;
+  uint32 page = 2;
+  uint32 limit = 3;
+  uint64 total = 4;
+}
+
+message DriverRequest {
+  string tenant_id = 1;
+  string user_id = 2;
+}
+
+message DriverResponse {
+  string id = 1;
+  string tenant_id = 2;
+  string user_id = 3;
+}
+
+message HealthResponse {
+  string status = 1;
+}
+
+service TenantsService {
+  rpc CreateTenant(CreateTenantRequest) returns (TenantResponse);
+  rpc GetTenant(TenantIdRequest) returns (TenantResponse);
+  rpc ListTenants(ListTenantsRequest) returns (TenantListResponse);
+  rpc UpdateTenant(UpdateTenantRequest) returns (TenantResponse);
+  rpc ChangeTenantStatus(ChangeTenantStatusRequest) returns (TenantResponse);
+
+  rpc AddMember(MemberRequest) returns (MemberResponse);
+  rpc SuspendMember(MemberIdRequest) returns (MemberResponse);
+  rpc RemoveMember(MemberIdRequest) returns (Empty);
+  rpc ListMembers(ListMembersRequest) returns (MemberListResponse);
+
+  rpc RegisterDriver(DriverRequest) returns (DriverResponse);
+  rpc GetDriver(DriverRequest) returns (DriverResponse);
+  rpc Health(Empty) returns (HealthResponse);
+}

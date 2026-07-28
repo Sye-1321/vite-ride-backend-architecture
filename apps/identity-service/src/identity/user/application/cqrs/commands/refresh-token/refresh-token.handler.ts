@@ -5,7 +5,7 @@ import { Err, Ok, Result } from 'oxide.ts';
 import { TYPES } from '@app/shared-kernel';
 
 import { UserRepositoryPort } from '../../../ports';
-import { AuthTokenProviderPort } from '../../../ports';
+import { AuthTokenProviderPort } from '@app/auth';
 import { HasherPort } from '@app/shared-kernel';
 
 import { RefreshAccessTokenCommand } from './refresh-token.command';

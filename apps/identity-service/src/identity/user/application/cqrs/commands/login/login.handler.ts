@@ -3,7 +3,8 @@ import { Inject } from '@nestjs/common';
 import { Err, Ok, Result } from 'oxide.ts';
 
 import { LoginCommand } from './login.command';
-import { AuthTokenProviderPort, UserRepositoryPort } from '../../../ports';
+import { UserRepositoryPort } from '../../../ports';
+import { AuthTokenProviderPort } from '@app/auth';
 import { UserSuspendedError, UserNotVerifiedError } from '../../../../domain/user.errors';
 import { UserParser } from '../../../user.parser';
 import { UserResponseDto } from '../../../dto/user.response.dto';
