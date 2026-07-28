@@ -1,7 +1,9 @@
-import { Injectable, Inject, Logger, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import type { Enforcer } from 'casbin';
-import { defineStaticPolicies } from '../../application/interfaces';
+
 import { TYPES } from '@app/shared-kernel';
+
+import { defineStaticPolicies } from '../../application/interfaces';
 
 @Injectable()
 export class PolicyBootstrapService implements OnModuleInit {
@@ -13,10 +15,6 @@ export class PolicyBootstrapService implements OnModuleInit {
   ) {}
 
   async onModuleInit(): Promise<void> {
-    await this.syncStaticPolicies();
-  }
-
-  private async syncStaticPolicies(): Promise<void> {
     const policies = defineStaticPolicies();
 
     for (const policy of policies) {
@@ -26,8 +24,7 @@ export class PolicyBootstrapService implements OnModuleInit {
 
           if (!exists) {
             await this.enforcer.addPolicy(role, policy.resource, action);
-
-            this.logger.log(`Policy added: ${role} → ${policy.resource}:${action}`);
+            this.logger.log(`Policy added: ${role} -> ${policy.resource}:${action}`);
           }
         }
       }

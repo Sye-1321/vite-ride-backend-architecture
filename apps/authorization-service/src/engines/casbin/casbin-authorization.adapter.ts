@@ -23,15 +23,22 @@ export class CasbinAuthorizationAdapter implements AuthorizationQueryPort, RoleA
   }
 
   async assignRole(dto: AssignRoleDto) {
-    const userKey = `${dto.domain}::${dto.userId}`;
+    const domain = dto.domain?.length ? dto.domain : '*';
+    const userKey = `${domain}::${dto.userId}`;
 
-    const added = await this.enforcer.addRoleForUser(userKey, dto.role);
-    if (!added) {
-      throw new Error('Role assignment failed');
-    }
+    const changed = await this.enforcer.addRoleForUser(userKey, dto.role);
 
     const roles = await this.enforcer.getRolesForUser(userKey);
-    return { success: true, roles };
+    return { changed, roles };
+  }
+
+  async removeRole(dto: AssignRoleDto) {
+    const domain = dto.domain?.length ? dto.domain : '*';
+    const userKey = `${domain}::${dto.userId}`;
+
+    const changed = await this.enforcer.deleteRoleForUser(userKey, dto.role);
+    const roles = await this.enforcer.getRolesForUser(userKey);
+    return { changed, roles };
   }
 
   async readUserRoles(dto: GetUserRolesDto) {
