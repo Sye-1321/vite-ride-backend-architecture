@@ -8,10 +8,13 @@ import { MongoModule } from '@app/persistence';
 import { AdaptersModule } from '@app/adapters';
 import { MicroserviceContextModule } from '@app/context';
 
+import identityConfig from './config/identity.config';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      load: [identityConfig],
       validationOptions: {
         allowUnknown: true,
         abortEarly: false,
