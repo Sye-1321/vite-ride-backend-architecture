@@ -63,7 +63,6 @@ The public repository contains only a sanitized portion of the backend I impleme
 
 ## Repository Purpose
 
-This repository is provided as a portfolio sample demonstrating selected backend architecture and implementation patterns.
 
 It demonstrates experience with:
 
@@ -505,6 +504,5 @@ Working as the project manager and sole backend developer provided practical exp
 
 Vite Ride is an initiative of Vite Technologies PLC. The project name, company materials, internal documentation, commercial concepts and non-public implementation remain the property of their respective owner.
 
-This repository is shared only as a limited technical portfolio sample. It is not an official public release, open-source distribution or complete version of Vite Ride.
 
 The repository author claims responsibility only for the work personally performed and does not claim ownership of confidential company materials that are not included.
