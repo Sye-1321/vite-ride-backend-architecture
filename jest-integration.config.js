@@ -6,7 +6,10 @@ module.exports = {
   testRegex: '.*\\.integration-spec\\.ts$',
   moduleFileExtensions: ['ts', 'js', 'json'],
   moduleNameMapper: {
-    '^@app/(.*)$': '<rootDir>/libs/$1/src',
+    '^@app/auth$': '<rootDir>/libs/auth/index.ts',
+    '^@app/auth/(.*)$': '<rootDir>/libs/auth/$1',
+    '^@app/([^/]+)$': '<rootDir>/libs/$1/src',
+    '^@app/([^/]+)/(.*)$': '<rootDir>/libs/$1/src/$2',
   },
   verbose: true,
 };
