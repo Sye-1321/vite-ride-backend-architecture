@@ -41,10 +41,7 @@ export class VerificationSession extends AggregateRoot<VerificationSessionProps>
     });
   }
 
-  public consume(): Result<
-    void,
-    VerificationSessionExpiredError | VerificationSessionUsedError
-  > {
+  public consume(): Result<void, VerificationSessionExpiredError | VerificationSessionUsedError> {
     if (this.isExpired()) {
       return Err(new VerificationSessionExpiredError());
     }

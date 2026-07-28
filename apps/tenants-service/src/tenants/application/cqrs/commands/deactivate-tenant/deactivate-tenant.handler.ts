@@ -9,17 +9,13 @@ import { DeactivateTenantCommand } from './deactivate-tenant.command';
 import { TenantRepositoryPort } from '../../../ports';
 
 @CommandHandler(DeactivateTenantCommand)
-export class DeactivateTenantHandler
-  implements ICommandHandler<DeactivateTenantCommand>
-{
+export class DeactivateTenantHandler implements ICommandHandler<DeactivateTenantCommand> {
   constructor(
     @Inject(TYPES.TenantRepositoryPort)
     private readonly tenantRepository: TenantRepositoryPort,
   ) {}
 
-  async execute(
-    command: DeactivateTenantCommand,
-  ): Promise<Result<void, NotFoundException>> {
+  async execute(command: DeactivateTenantCommand): Promise<Result<void, NotFoundException>> {
     const found = await this.tenantRepository.findById(command.tenantId);
 
     if (found.isNone()) {

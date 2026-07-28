@@ -2,10 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtConfig } from './config';
-import { StringValue } from 'ms'; 
+import { StringValue } from 'ms';
 import { AuthTokenProviderPort } from 'apps/identity-service/src/identity/user/application/ports';
 import { AuthPayload, AuthTokens } from 'apps/identity-service/src/identity/user/application/types';
-
 
 @Injectable()
 export class JwtAuthAdapter implements AuthTokenProviderPort {

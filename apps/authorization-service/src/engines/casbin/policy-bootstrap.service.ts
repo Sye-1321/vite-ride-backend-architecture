@@ -1,5 +1,5 @@
 import { Injectable, Inject, Logger, OnModuleInit } from '@nestjs/common';
-import type { Enforcer } from 'casbin'
+import type { Enforcer } from 'casbin';
 import { defineStaticPolicies } from '../../application/interfaces';
 import { TYPES } from '@app/shared-kernel';
 
@@ -22,22 +22,12 @@ export class PolicyBootstrapService implements OnModuleInit {
     for (const policy of policies) {
       for (const [action, roles] of Object.entries(policy.permissions)) {
         for (const role of roles ?? []) {
-          const exists = await this.enforcer.hasPolicy(
-            role,
-            policy.resource,
-            action,
-          );
+          const exists = await this.enforcer.hasPolicy(role, policy.resource, action);
 
           if (!exists) {
-            await this.enforcer.addPolicy(
-              role,
-              policy.resource,
-              action,
-            );
+            await this.enforcer.addPolicy(role, policy.resource, action);
 
-            this.logger.log(
-              `Policy added: ${role} → ${policy.resource}:${action}`,
-            );
+            this.logger.log(`Policy added: ${role} → ${policy.resource}:${action}`);
           }
         }
       }

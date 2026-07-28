@@ -18,8 +18,7 @@ import {
   VerificationSessionUsedError,
 } from 'apps/identity-service/src/identity/verification-session/domain/verification-session.error';
 
-import { IVerificationSessionService } from
-  'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
+import { IVerificationSessionService } from 'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
 
 import { UserNotFoundInvariantViolationError } from '../../../errors';
 import { UserAlreadyVerifiedError } from '../../../../domain/user.errors';
@@ -36,9 +35,7 @@ type VerifyUserErrors =
   | UserNotFoundInvariantViolationError;
 
 @CommandHandler(VerifyUserCommand)
-export class VerifyUserHandler
-  implements ICommandHandler<VerifyUserCommand>
-{
+export class VerifyUserHandler implements ICommandHandler<VerifyUserCommand> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
@@ -50,17 +47,14 @@ export class VerifyUserHandler
     private readonly requestContext: RequestContextAccessor,
   ) {}
 
-  async execute(
-    command: VerifyUserCommand,
-  ): Promise<Result<void, VerifyUserErrors>> {
+  async execute(command: VerifyUserCommand): Promise<Result<void, VerifyUserErrors>> {
     const { otp, verificationToken } = command;
 
-    const sessionResult =
-      await this.verificationSessionService.verifySession(
-        verificationToken,
-        UserVerificationPurpose.ACCOUNT_VERIFICATION,
-        otp,
-      );
+    const sessionResult = await this.verificationSessionService.verifySession(
+      verificationToken,
+      UserVerificationPurpose.ACCOUNT_VERIFICATION,
+      otp,
+    );
 
     if (sessionResult.isErr()) {
       return Err(sessionResult.unwrapErr());
@@ -82,10 +76,7 @@ export class VerifyUserHandler
     }
 
     const ctx = this.requestContext.get();
-    const audit = AuditFactory.createForUpdate(
-      ctx.phoneNumber,
-      user.audit,
-    );
+    const audit = AuditFactory.createForUpdate(ctx.phoneNumber, user.audit);
 
     user.updateAudit(audit);
 

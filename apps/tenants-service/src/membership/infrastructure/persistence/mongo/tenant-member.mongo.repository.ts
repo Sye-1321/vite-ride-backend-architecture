@@ -26,26 +26,14 @@ export class TenantMemberMongoRepository
     super(model, connection, mapper);
   }
 
-  async findByTenantAndUser(
-    tenantId: string,
-    userId: string,
-  ): Promise<Option<TenantMember>> {
-    const doc = await this.model
-      .findOne({ tenantId, userId })
-      .lean()
-      .exec();
+  async findByTenantAndUser(tenantId: string, userId: string): Promise<Option<TenantMember>> {
+    const doc = await this.model.findOne({ tenantId, userId }).lean().exec();
 
     return doc ? Some(this.mapper.toDomain(doc)) : None;
   }
 
-  async exists(
-    tenantId: string,
-    userId: string,
-    role: TenantMemberRole,
-  ): Promise<boolean> {
-    const count = await this.model
-      .countDocuments({ tenantId, userId, role })
-      .exec();
+  async exists(tenantId: string, userId: string, role: TenantMemberRole): Promise<boolean> {
+    const count = await this.model.countDocuments({ tenantId, userId, role }).exec();
 
     return count > 0;
   }

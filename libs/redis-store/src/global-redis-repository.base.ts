@@ -5,10 +5,9 @@ import { KeyValueStorePort, ValueObject } from '@app/shared-kernel';
 import { TYPES } from '@app/shared-kernel';
 import { RedisClientPort } from '@app/redis';
 
-export abstract class GlobalRedisRepositoryBase<
-  Value,
-  Key extends ValueObject<any>,
-> implements KeyValueStorePort<Value, Key> {
+export abstract class GlobalRedisRepositoryBase<Value, Key extends ValueObject<any>>
+  implements KeyValueStorePort<Value, Key>
+{
   @Inject(TYPES.RedisClientPort)
   protected readonly redisClientPort: RedisClientPort;
 
@@ -24,11 +23,7 @@ export abstract class GlobalRedisRepositoryBase<
     return `${this.buildNamespace()}:${JSON.stringify(key.unpack())}`;
   }
 
-  async insert(
-    value: Value,
-    key: Key,
-    ttlSeconds?: number,
-  ): Promise<void> {
+  async insert(value: Value, key: Key, ttlSeconds?: number): Promise<void> {
     const redisKey = this.buildKey(key);
     const payload = JSON.stringify(this.serialize(value));
 

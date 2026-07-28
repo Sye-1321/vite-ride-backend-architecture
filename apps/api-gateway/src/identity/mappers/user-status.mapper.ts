@@ -1,9 +1,7 @@
 import { UserStatus as ProtoStatus } from '@app/proto-schema';
 import { ApiUserStatus } from '../dto/enums';
 
-export function mapDomainUserStatusToProto(
-  status: ApiUserStatus,
-): ProtoStatus {
+export function mapDomainUserStatusToProto(status: ApiUserStatus): ProtoStatus {
   switch (status) {
     case ApiUserStatus.PENDING:
       return ProtoStatus.USER_STATUS_PENDING;

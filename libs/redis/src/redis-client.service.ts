@@ -6,7 +6,6 @@ import Redis, { Redis as RedisClient } from 'ioredis';
 import { RedisClientPort } from './redis-client.port';
 import { RedisConfig } from './config/redis.config.schema';
 
-
 @Injectable()
 export class RedisClientService implements RedisClientPort, OnModuleDestroy {
   private readonly config: RedisConfig;
@@ -17,7 +16,7 @@ export class RedisClientService implements RedisClientPort, OnModuleDestroy {
 
     this.client = new Redis(this.config.REDIS_URL, {
       maxRetriesPerRequest: 3,
-      retryStrategy: times => Math.min(times * 100, 3000),
+      retryStrategy: (times) => Math.min(times * 100, 3000),
       connectTimeout: 5000,
       enableReadyCheck: false,
     });

@@ -3,18 +3,13 @@ import { IAudit } from './audit.interface';
 import { ArgumentNotProvidedException } from '@app/common';
 
 export class Audit extends ValueObject<IAudit> {
-
   protected validate(props: IAudit): void {
     if (!props.auditCreatedAt) {
-      throw new ArgumentNotProvidedException(
-        'auditCreatedAt cannot be empty',
-      );
+      throw new ArgumentNotProvidedException('auditCreatedAt cannot be empty');
     }
 
     if (!props.auditCreatedBy) {
-      throw new ArgumentNotProvidedException(
-        'auditCreatedBy cannot be empty',
-      );
+      throw new ArgumentNotProvidedException('auditCreatedBy cannot be empty');
     }
   }
 

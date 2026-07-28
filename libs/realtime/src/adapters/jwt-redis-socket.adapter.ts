@@ -20,18 +20,16 @@ export class JwtRedisSocketAdapter extends IoAdapter {
     super(app);
   }
 
-  override createIOServer(
-    port: number,
-    options?: Partial<ServerOptions>,
-  ): Server {
+  override createIOServer(port: number, options?: Partial<ServerOptions>): Server {
     const server = super.createIOServer(port, {
       ...options,
       transports: SOCKET_TRANSPORTS,
-      allowRequest: (req: AuthenticatedRequest, callback: (arg0: string | null, arg1: boolean) => void) => {
+      allowRequest: (
+        req: AuthenticatedRequest,
+        callback: (arg0: string | null, arg1: boolean) => void,
+      ) => {
         try {
-          const token = extractBearerToken(
-            req.headers['authorization'] as string | undefined,
-          );
+          const token = extractBearerToken(req.headers['authorization'] as string | undefined);
           if (!token) return callback('Unauthorized', false);
 
           const payload = this.jwtService.verify<{
@@ -53,12 +51,18 @@ export class JwtRedisSocketAdapter extends IoAdapter {
 
     server.adapter(createAdapter(this.pubClient, this.subClient));
 
-    server.on('connection', (socket: { request: AuthenticatedRequest; data: { user: { userId: string; phoneNumber: string; }; }; }) => {
-      const user = (socket.request as AuthenticatedRequest).user;
-      if (user) {
-        socket.data.user = user;
-      }
-    });
+    server.on(
+      'connection',
+      (socket: {
+        request: AuthenticatedRequest;
+        data: { user: { userId: string; phoneNumber: string } };
+      }) => {
+        const user = (socket.request as AuthenticatedRequest).user;
+        if (user) {
+          socket.data.user = user;
+        }
+      },
+    );
 
     return server;
   }

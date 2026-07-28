@@ -1,5 +1,4 @@
-import { propsToObject } from "@app/shared-kernel/utils";
-
+import { propsToObject } from '@app/shared-kernel/utils';
 
 /**
  * Domain Primitive is an object that contains only a single value
@@ -52,9 +51,7 @@ export abstract class ValueObject<T> {
     // TODO
   }
 
-  private isDomainPrimitive(
-    obj: unknown,
-  ): obj is DomainPrimitive<T & (Primitives | Date)> {
+  private isDomainPrimitive(obj: unknown): obj is DomainPrimitive<T & (Primitives | Date)> {
     if (Object.prototype.hasOwnProperty.call(obj, 'value')) {
       return true;
     }

@@ -4,9 +4,7 @@ import { RequestContext } from './request-context';
 import { RequestContextAccessor } from './request-context.accessor';
 
 @Injectable()
-export class ClsRequestContextAccessor
-  implements RequestContextAccessor {
-
+export class ClsRequestContextAccessor implements RequestContextAccessor {
   private static readonly KEY = 'ctx.request';
 
   constructor(private readonly cls: ClsService) {}
@@ -16,9 +14,7 @@ export class ClsRequestContextAccessor
   }
 
   get(): RequestContext {
-    const ctx = this.cls.get<RequestContext>(
-      ClsRequestContextAccessor.KEY,
-    );
+    const ctx = this.cls.get<RequestContext>(ClsRequestContextAccessor.KEY);
     return ctx;
   }
 }

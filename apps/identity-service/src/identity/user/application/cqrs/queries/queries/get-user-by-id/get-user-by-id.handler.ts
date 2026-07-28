@@ -12,25 +12,19 @@ import { UserParser } from '../../../../user.parser';
 type GetUserByIdErrors = NotFoundException;
 
 @QueryHandler(GetUserByIdQuery)
-export class GetUserByIdHandler
-  implements IQueryHandler<GetUserByIdQuery>
-{
+export class GetUserByIdHandler implements IQueryHandler<GetUserByIdQuery> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
   ) {}
 
-  async execute(
-    query: GetUserByIdQuery,
-  ): Promise<Result<UserResponseDto, GetUserByIdErrors>> {
+  async execute(query: GetUserByIdQuery): Promise<Result<UserResponseDto, GetUserByIdErrors>> {
     const found = await this.userRepository.findById(query.userId);
 
     if (found.isNone()) {
       return Err(new NotFoundException('User not found'));
     }
 
-    return Ok(
-      UserParser.createUserResponse(found.unwrap()),
-    );
+    return Ok(UserParser.createUserResponse(found.unwrap()));
   }
 }

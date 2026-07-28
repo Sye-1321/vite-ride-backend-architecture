@@ -1,6 +1,5 @@
 import { ExceptionBase } from '@app/common/exceptions';
 
-
 export class UserAlreadyVerifiedError extends ExceptionBase {
   static readonly message = 'User account is already verified.';
   public readonly code = 'USER.ACCOUNT.ALREADY_VERIFIED';
@@ -9,7 +8,6 @@ export class UserAlreadyVerifiedError extends ExceptionBase {
     super(UserAlreadyVerifiedError.message, cause, metadata);
   }
 }
-
 
 export class UserSuspendedError extends ExceptionBase {
   static readonly message = 'User account is suspended. Please contact support.';
@@ -30,12 +28,10 @@ export class UserNotVerifiedError extends ExceptionBase {
 }
 
 export class PhoneNumberUnchangedError extends ExceptionBase {
-  static readonly message =
-    'The new phone number must be different from the current phone number.';
+  static readonly message = 'The new phone number must be different from the current phone number.';
   public readonly code = 'USER.PHONE.UNCHANGED';
 
   constructor(metadata?: unknown, cause?: Error) {
     super(PhoneNumberUnchangedError.message, cause, metadata);
   }
 }
-

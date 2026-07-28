@@ -7,9 +7,7 @@ import { ClsRequestContextAccessor } from './cls-request-context.accessor';
 import { TYPES } from '@app/shared-kernel';
 
 @Module({
-  imports: [
-    ClsModule.forRoot({ global: true }),
-  ],
+  imports: [ClsModule.forRoot({ global: true })],
   providers: [
     {
       provide: APP_INTERCEPTOR,
@@ -20,8 +18,6 @@ import { TYPES } from '@app/shared-kernel';
       useClass: ClsRequestContextAccessor,
     },
   ],
-  exports: [
-    TYPES.RequestContextAccessor, 
-  ],
+  exports: [TYPES.RequestContextAccessor],
 })
 export class MicroserviceContextModule {}

@@ -9,7 +9,7 @@ import {
   PhoneNumberUnchangedError,
   UserAlreadyVerifiedError,
 } from './user.errors';
-import {  } from '../application/errors';
+import {} from '../application/errors';
 
 export class User extends AggregateRoot<UserProps> {
   protected readonly _id: AggregateID;
@@ -42,11 +42,11 @@ export class User extends AggregateRoot<UserProps> {
 
   public assertCanResendVerification(): Result<void, UserAlreadyVerifiedError> {
     if (this.props.status !== UserStatus.PENDING) {
-        return Err(new UserAlreadyVerifiedError());
-      }
+      return Err(new UserAlreadyVerifiedError());
+    }
 
     return Ok(undefined);
-}
+  }
 
   public suspend(): void {
     this.props.status = UserStatus.SUSPENDED;
@@ -64,10 +64,7 @@ export class User extends AggregateRoot<UserProps> {
     this.invalidateRefreshToken();
   }
 
-  public assertCanAuthenticate(): Result<
-    void,
-    UserSuspendedError | UserNotVerifiedError
-  > {
+  public assertCanAuthenticate(): Result<void, UserSuspendedError | UserNotVerifiedError> {
     if (this.props.status === UserStatus.SUSPENDED) {
       return Err(new UserSuspendedError());
     }
@@ -106,10 +103,7 @@ export class User extends AggregateRoot<UserProps> {
     this.props.refreshTokenHash = refreshTokenHash;
   }
 
-  public updateProfile(
-    firstName?: string,
-    lastName?: string,
-  ): void {
+  public updateProfile(firstName?: string, lastName?: string): void {
     if (firstName !== undefined) {
       this.props.firstName = firstName;
     }
@@ -118,7 +112,6 @@ export class User extends AggregateRoot<UserProps> {
       this.props.lastName = lastName;
     }
   }
-
 
   get refreshTokenHash(): string | null {
     return this.props.refreshTokenHash;
@@ -136,10 +129,15 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.passwordHash;
   }
 
-  get firstName() { return this.props.firstName }
-  get lastName() { return this.props.lastName }
-  get audit() { return this.props.audit }
-
+  get firstName() {
+    return this.props.firstName;
+  }
+  get lastName() {
+    return this.props.lastName;
+  }
+  get audit() {
+    return this.props.audit;
+  }
 
   public updateAudit(audit: UserProps['audit']): void {
     this.props.audit = audit;

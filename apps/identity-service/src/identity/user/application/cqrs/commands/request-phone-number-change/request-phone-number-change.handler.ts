@@ -1,16 +1,18 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { RequestPhoneNumberChangeCommand } from "./request-phone-number-change.command";
-import { HasherPort, TYPES } from "@app/shared-kernel";
-import { UserRepositoryPort } from "../../../ports";
-import { IVerificationSessionService } from "apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface";
-import { Inject } from "@nestjs/common";
-import { Err, Ok, Result } from "oxide.ts";
-import { NotFoundException } from "@app/common";
-import { PhoneNumberUnchangedError } from "../../../../domain/user.errors";
-import { InvalidCredentialsError, PhoneNumberAlreadyInUseError } from "../../../errors";
-import { VerificationChannel, VerificationTarget } from "apps/identity-service/src/identity/verification-session/domain/verification-session.types";
-import { UserVerificationPurpose } from "../../../types";
-
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { RequestPhoneNumberChangeCommand } from './request-phone-number-change.command';
+import { HasherPort, TYPES } from '@app/shared-kernel';
+import { UserRepositoryPort } from '../../../ports';
+import { IVerificationSessionService } from 'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
+import { Inject } from '@nestjs/common';
+import { Err, Ok, Result } from 'oxide.ts';
+import { NotFoundException } from '@app/common';
+import { PhoneNumberUnchangedError } from '../../../../domain/user.errors';
+import { InvalidCredentialsError, PhoneNumberAlreadyInUseError } from '../../../errors';
+import {
+  VerificationChannel,
+  VerificationTarget,
+} from 'apps/identity-service/src/identity/verification-session/domain/verification-session.types';
+import { UserVerificationPurpose } from '../../../types';
 
 export type RequestPhoneNumberChangeResult = {
   verificationToken: string;
@@ -36,10 +38,7 @@ export class RequestPhoneNumberChangeHandler
   ): Promise<
     Result<
       RequestPhoneNumberChangeResult,
-      | NotFoundException
-      | PhoneNumberUnchangedError
-      | PhoneNumberAlreadyInUseError
-      | Error
+      NotFoundException | PhoneNumberUnchangedError | PhoneNumberAlreadyInUseError | Error
     >
   > {
     const { userId, newPhoneNumber, currentPassword } = command;
@@ -51,24 +50,19 @@ export class RequestPhoneNumberChangeHandler
 
     const user = foundUser.unwrap();
 
-    const phoneChangeCheck =
-      user.checkPhoneNumberChangePossible(newPhoneNumber);
+    const phoneChangeCheck = user.checkPhoneNumberChangePossible(newPhoneNumber);
     if (phoneChangeCheck.isErr()) {
       return Err(phoneChangeCheck.unwrapErr());
     }
 
-    const existing =
-      await this.userRepository.findByPhoneNumber(newPhoneNumber);
+    const existing = await this.userRepository.findByPhoneNumber(newPhoneNumber);
     if (existing.isSome()) {
       return Err(new PhoneNumberAlreadyInUseError());
     }
 
-    const passwordValid = await this.hasher.compare(
-      currentPassword,
-      user.passwordHash,
-    );
+    const passwordValid = await this.hasher.compare(currentPassword, user.passwordHash);
     if (!passwordValid) {
-    return Err(new InvalidCredentialsError());
+      return Err(new InvalidCredentialsError());
     }
 
     const target: VerificationTarget = {
@@ -76,15 +70,14 @@ export class RequestPhoneNumberChangeHandler
       phoneNumber: newPhoneNumber,
     };
 
-    const sessionResult =
-      await this.verificationSessionService.requestSession(
-        target,
-        UserVerificationPurpose.PHONE_NUMBER_CHANGE,
-        {
-          userId: user.id,
-          newPhoneNumber,
-        },
-      );
+    const sessionResult = await this.verificationSessionService.requestSession(
+      target,
+      UserVerificationPurpose.PHONE_NUMBER_CHANGE,
+      {
+        userId: user.id,
+        newPhoneNumber,
+      },
+    );
 
     if (sessionResult.isErr()) {
       return Err(sessionResult.unwrapErr());

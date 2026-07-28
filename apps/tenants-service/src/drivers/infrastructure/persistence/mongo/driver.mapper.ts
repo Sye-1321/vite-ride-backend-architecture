@@ -6,9 +6,7 @@ import { Driver } from '../../../domain/driver.entity';
 import { DriverDataModel } from './driver.schema';
 
 @Injectable()
-export class DriverMapper
-  implements MongoMapper<Driver, DriverDataModel>
-{
+export class DriverMapper implements MongoMapper<Driver, DriverDataModel> {
   toPersistence(entity: Driver): DriverDataModel {
     const props = entity.getProps();
 

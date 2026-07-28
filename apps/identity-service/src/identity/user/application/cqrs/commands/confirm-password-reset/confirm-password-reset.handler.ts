@@ -6,22 +6,19 @@ import { ConfirmPasswordResetCommand } from './confirm-password-reset.command';
 import { TYPES } from '@app/shared-kernel';
 
 import { UserRepositoryPort } from '../../../ports';
-import { IVerificationSessionService } from
-  'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
+import { IVerificationSessionService } from 'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
 
 import { UserVerificationPurpose } from '../../../types';
 
 import {
   InvalidOtpError,
   VerificationSessionNotFoundError,
-} from
-  'apps/identity-service/src/identity/verification-session/application/errors';
+} from 'apps/identity-service/src/identity/verification-session/application/errors';
 
 import {
   VerificationSessionExpiredError,
   VerificationSessionUsedError,
-} from
-  'apps/identity-service/src/identity/verification-session/domain/verification-session.error';
+} from 'apps/identity-service/src/identity/verification-session/domain/verification-session.error';
 
 import { HasherPort } from '@app/shared-kernel';
 import { UserNotFoundInvariantViolationError } from '../../../errors';
@@ -37,9 +34,7 @@ type ConfirmPasswordResetErrors =
   | UserNotFoundInvariantViolationError;
 
 @CommandHandler(ConfirmPasswordResetCommand)
-export class ConfirmPasswordResetHandler
-  implements ICommandHandler<ConfirmPasswordResetCommand>
-{
+export class ConfirmPasswordResetHandler implements ICommandHandler<ConfirmPasswordResetCommand> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
@@ -59,12 +54,11 @@ export class ConfirmPasswordResetHandler
   ): Promise<Result<void, ConfirmPasswordResetErrors>> {
     const { otp, verificationToken, newPassword } = command;
 
-    const sessionResult =
-      await this.verificationSessionService.verifySession(
-        verificationToken,
-        UserVerificationPurpose.PASSWORD_RESET,
-        otp,
-      );
+    const sessionResult = await this.verificationSessionService.verifySession(
+      verificationToken,
+      UserVerificationPurpose.PASSWORD_RESET,
+      otp,
+    );
 
     if (sessionResult.isErr()) {
       return Err(sessionResult.unwrapErr());
@@ -83,10 +77,7 @@ export class ConfirmPasswordResetHandler
     const newPasswordHash = await this.hasher.hash(newPassword);
 
     const ctx = this.requestContext.get();
-    const audit = AuditFactory.createForUpdate(
-      ctx.phoneNumber,
-      user.audit,
-    );
+    const audit = AuditFactory.createForUpdate(ctx.phoneNumber, user.audit);
 
     user.updatePasswordHash(newPasswordHash);
     user.updateAudit(audit);

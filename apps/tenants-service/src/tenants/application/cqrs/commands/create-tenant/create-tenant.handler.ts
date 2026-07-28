@@ -11,14 +11,10 @@ import { Tenant } from '../../../../domain/tenant.entity';
 import { TenantProps } from '../../../../domain/tenant.types';
 import { TenantNameAlreadyExistsError } from '../../../errors';
 
-type CreateTenantErrors =
-  | TenantNameAlreadyExistsError
-  | Error;
+type CreateTenantErrors = TenantNameAlreadyExistsError | Error;
 
 @CommandHandler(CreateTenantCommand)
-export class CreateTenantHandler
-  implements ICommandHandler<CreateTenantCommand>
-{
+export class CreateTenantHandler implements ICommandHandler<CreateTenantCommand> {
   constructor(
     @Inject(TYPES.TenantRepositoryPort)
     private readonly tenantRepository: TenantRepositoryPort,

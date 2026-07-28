@@ -7,31 +7,21 @@ import { VerificationTarget } from '../../domain/verification-session.types';
 import { VerificationSessionKey } from '../../domain/verification-session-key.vo';
 import { VerificationSession } from '../../domain/verification-session.entity';
 
-import {
-  InvalidOtpError,
-  VerificationSessionNotFoundError,
-} from '../errors';
+import { InvalidOtpError, VerificationSessionNotFoundError } from '../errors';
 import {
   VerificationSessionExpiredError,
   VerificationSessionUsedError,
 } from '../../domain/verification-session.error';
 
 import { IVerificationSessionService } from './verification-session.service.interface';
-import {
-  HasherPort,
-  OtpGeneratorPort,
-  TokenGeneratorPort,
-  TYPES,
-} from '@app/shared-kernel';
+import { HasherPort, OtpGeneratorPort, TokenGeneratorPort, TYPES } from '@app/shared-kernel';
 import { UserVerificationPurpose } from '../../../user/application/types';
 
 const TOKEN_LENGTH = 32;
 const OTP_LENGTH = 6;
 
 @Injectable()
-export class VerificationSessionService
-  implements IVerificationSessionService
-{
+export class VerificationSessionService implements IVerificationSessionService {
   constructor(
     @Inject(TYPES.VerificationSessionRepository)
     private readonly verificationSessionRepository: VerificationSessionRepositoryPort,
@@ -51,8 +41,7 @@ export class VerificationSessionService
     purpose: UserVerificationPurpose,
     subjectMeta: Record<string, any>,
   ): Promise<Result<{ verificationToken: string }, Error>> {
-    const verificationToken =
-      this.tokenGenerator.generateToken(TOKEN_LENGTH);
+    const verificationToken = this.tokenGenerator.generateToken(TOKEN_LENGTH);
     const rawOtp = this.otpGenerator.generateOtp(OTP_LENGTH);
     const otpHash = await this.hasher.hash(rawOtp);
 
@@ -60,7 +49,7 @@ export class VerificationSessionService
       verificationToken,
       purpose,
     });
-    
+
     const session = VerificationSession.createNew({
       key,
       target,
@@ -90,7 +79,6 @@ export class VerificationSessionService
       | InvalidOtpError
     >
   > {
-
     const key = VerificationSessionKey.create({
       verificationToken,
       purpose,
@@ -102,10 +90,7 @@ export class VerificationSessionService
     }
 
     const session = result.unwrap();
-    const otpValid = await this.hasher.compare(
-      otp,
-      session.otpHash,
-    );
+    const otpValid = await this.hasher.compare(otp, session.otpHash);
 
     if (!otpValid) {
       return Err(new InvalidOtpError());
@@ -124,19 +109,13 @@ export class VerificationSessionService
   async resendSession(
     verificationToken: string,
     purpose: UserVerificationPurpose,
-  ): Promise<
-    Result<
-      { verificationToken: string },
-      VerificationSessionNotFoundError | Error
-    >
-  > {
+  ): Promise<Result<{ verificationToken: string }, VerificationSessionNotFoundError | Error>> {
     const oldKey = VerificationSessionKey.create({
       verificationToken,
       purpose,
     });
 
-    const existingResult =
-      await this.verificationSessionRepository.findOne(oldKey);
+    const existingResult = await this.verificationSessionRepository.findOne(oldKey);
 
     if (existingResult.isNone()) {
       return Err(new VerificationSessionNotFoundError());
@@ -144,8 +123,7 @@ export class VerificationSessionService
 
     const existingSession = existingResult.unwrap();
 
-    const newVerificationToken =
-      this.tokenGenerator.generateToken(TOKEN_LENGTH);
+    const newVerificationToken = this.tokenGenerator.generateToken(TOKEN_LENGTH);
 
     const rawOtp = this.otpGenerator.generateOtp(OTP_LENGTH);
     const otpHash = await this.hasher.hash(rawOtp);

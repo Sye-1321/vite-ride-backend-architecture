@@ -1,6 +1,4 @@
-import {
-  RouteMetrics,
-} from '../../application/ports/routing.service.port';
+import { RouteMetrics } from '../../application/ports/routing.service.port';
 
 export class OsrmMapper {
   static toRouteMetrics(raw: any): RouteMetrics {

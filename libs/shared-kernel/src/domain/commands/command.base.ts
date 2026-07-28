@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 
-export type CommandProps<T> = Omit<T, 'id'> & Partial<Command>;;
+export type CommandProps<T> = Omit<T, 'id'> & Partial<Command>;
 
 export abstract class Command {
   readonly id: string;

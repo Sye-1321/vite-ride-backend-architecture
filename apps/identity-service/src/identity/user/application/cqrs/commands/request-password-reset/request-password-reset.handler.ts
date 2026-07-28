@@ -1,23 +1,23 @@
-import { CommandHandler, ICommandHandler } from "@nestjs/cqrs";
-import { RequestPasswordResetCommand } from "./request-password-reset.command";
-import { TYPES } from "@app/shared-kernel";
-import { UserRepositoryPort } from "../../../ports";
-import { Inject } from "@nestjs/common";
-import { IVerificationSessionService } from "apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface";
-import { NotFoundException } from "@app/common";
-import { Err, Ok, Result } from "oxide.ts";
-import { VerificationChannel, VerificationTarget } from "apps/identity-service/src/identity/verification-session/domain/verification-session.types";
-import { UserVerificationPurpose } from "../../../types";
-
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { RequestPasswordResetCommand } from './request-password-reset.command';
+import { TYPES } from '@app/shared-kernel';
+import { UserRepositoryPort } from '../../../ports';
+import { Inject } from '@nestjs/common';
+import { IVerificationSessionService } from 'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
+import { NotFoundException } from '@app/common';
+import { Err, Ok, Result } from 'oxide.ts';
+import {
+  VerificationChannel,
+  VerificationTarget,
+} from 'apps/identity-service/src/identity/verification-session/domain/verification-session.types';
+import { UserVerificationPurpose } from '../../../types';
 
 export type RequestPasswordResetResult = {
   verificationToken: string;
 };
 
 @CommandHandler(RequestPasswordResetCommand)
-export class RequestPasswordResetHandler
-  implements ICommandHandler<RequestPasswordResetCommand>
-{
+export class RequestPasswordResetHandler implements ICommandHandler<RequestPasswordResetCommand> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
@@ -44,10 +44,10 @@ export class RequestPasswordResetHandler
     };
 
     const sessionResult = await this.verificationSessionService.requestSession(
-        target,
-        UserVerificationPurpose.PASSWORD_RESET,
-        { userId: user.id },
-      );
+      target,
+      UserVerificationPurpose.PASSWORD_RESET,
+      { userId: user.id },
+    );
 
     if (sessionResult.isErr()) {
       return Err(sessionResult.unwrapErr());

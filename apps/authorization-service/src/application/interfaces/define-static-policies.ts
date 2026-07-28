@@ -19,6 +19,6 @@ export function defineStaticPolicies(): PolicyDefinition[] {
         read: ['super-admin'],
         create: ['super-admin'],
       },
-    }
+    },
   ];
 }

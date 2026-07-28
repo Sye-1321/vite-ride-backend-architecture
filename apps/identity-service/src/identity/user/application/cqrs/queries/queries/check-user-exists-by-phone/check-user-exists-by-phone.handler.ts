@@ -7,17 +7,13 @@ import { TYPES } from '@app/shared-kernel';
 import { UserRepositoryPort } from '../../../../ports';
 
 @QueryHandler(CheckUserExistsByPhoneQuery)
-export class CheckUserExistsByPhoneHandler
-  implements IQueryHandler<CheckUserExistsByPhoneQuery>
-{
+export class CheckUserExistsByPhoneHandler implements IQueryHandler<CheckUserExistsByPhoneQuery> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
   ) {}
 
-  async execute(
-    query: CheckUserExistsByPhoneQuery,
-  ): Promise<Result<boolean, never>> {
+  async execute(query: CheckUserExistsByPhoneQuery): Promise<Result<boolean, never>> {
     const found = await this.userRepository.findOne({
       phoneNumber: query.phoneNumber,
     });

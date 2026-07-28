@@ -5,12 +5,12 @@
 // source: identity.proto
 
 /* eslint-disable */
-import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
-import type { handleUnaryCall, UntypedServiceImplementation } from "@grpc/grpc-js";
-import { GrpcMethod, GrpcStreamMethod } from "@nestjs/microservices";
-import { Observable } from "rxjs";
+import { BinaryReader, BinaryWriter } from '@bufbuild/protobuf/wire';
+import type { handleUnaryCall, UntypedServiceImplementation } from '@grpc/grpc-js';
+import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
+import { Observable } from 'rxjs';
 
-export const protobufPackage = "identity";
+export const protobufPackage = 'identity';
 
 export enum UserStatus {
   USER_STATUS_UNSPECIFIED = 0,
@@ -29,8 +29,7 @@ export enum UserVerificationPurpose {
   UNRECOGNIZED = -1,
 }
 
-export interface Empty {
-}
+export interface Empty {}
 
 export interface PaginationRequest {
   page: number;
@@ -203,7 +202,7 @@ export interface DeleteUserRequest {
   userId: string;
 }
 
-export const IDENTITY_PACKAGE_NAME = "identity";
+export const IDENTITY_PACKAGE_NAME = 'identity';
 
 function createBaseEmpty(): Empty {
   return {};
@@ -339,15 +338,15 @@ export const PaginationMeta: MessageFns<PaginationMeta> = {
 };
 
 function createBaseAuthTokens(): AuthTokens {
-  return { accessToken: "", refreshToken: "" };
+  return { accessToken: '', refreshToken: '' };
 }
 
 export const AuthTokens: MessageFns<AuthTokens> = {
   encode(message: AuthTokens, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.accessToken !== "") {
+    if (message.accessToken !== '') {
       writer.uint32(10).string(message.accessToken);
     }
-    if (message.refreshToken !== "") {
+    if (message.refreshToken !== '') {
       writer.uint32(18).string(message.refreshToken);
     }
     return writer;
@@ -388,46 +387,46 @@ export const AuthTokens: MessageFns<AuthTokens> = {
 
 function createBaseUserResponse(): UserResponse {
   return {
-    id: "",
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
+    id: '',
+    firstName: '',
+    lastName: '',
+    phoneNumber: '',
     status: 0,
-    auditCreatedAt: "",
-    auditCreatedBy: "",
-    auditUpdatedAt: "",
-    auditUpdatedBy: "",
+    auditCreatedAt: '',
+    auditCreatedBy: '',
+    auditUpdatedAt: '',
+    auditUpdatedBy: '',
     isDeleted: false,
   };
 }
 
 export const UserResponse: MessageFns<UserResponse> = {
   encode(message: UserResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.id !== "") {
+    if (message.id !== '') {
       writer.uint32(10).string(message.id);
     }
-    if (message.firstName !== "") {
+    if (message.firstName !== '') {
       writer.uint32(18).string(message.firstName);
     }
-    if (message.lastName !== "") {
+    if (message.lastName !== '') {
       writer.uint32(26).string(message.lastName);
     }
-    if (message.phoneNumber !== "") {
+    if (message.phoneNumber !== '') {
       writer.uint32(34).string(message.phoneNumber);
     }
     if (message.status !== 0) {
       writer.uint32(40).int32(message.status);
     }
-    if (message.auditCreatedAt !== "") {
+    if (message.auditCreatedAt !== '') {
       writer.uint32(50).string(message.auditCreatedAt);
     }
-    if (message.auditCreatedBy !== "") {
+    if (message.auditCreatedBy !== '') {
       writer.uint32(58).string(message.auditCreatedBy);
     }
-    if (message.auditUpdatedAt !== "") {
+    if (message.auditUpdatedAt !== '') {
       writer.uint32(66).string(message.auditUpdatedAt);
     }
-    if (message.auditUpdatedBy !== "") {
+    if (message.auditUpdatedBy !== '') {
       writer.uint32(74).string(message.auditUpdatedBy);
     }
     if (message.isDeleted !== false) {
@@ -534,15 +533,15 @@ export const UserResponse: MessageFns<UserResponse> = {
 };
 
 function createBaseLoginRequest(): LoginRequest {
-  return { phoneNumber: "", password: "" };
+  return { phoneNumber: '', password: '' };
 }
 
 export const LoginRequest: MessageFns<LoginRequest> = {
   encode(message: LoginRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.phoneNumber !== "") {
+    if (message.phoneNumber !== '') {
       writer.uint32(10).string(message.phoneNumber);
     }
-    if (message.password !== "") {
+    if (message.password !== '') {
       writer.uint32(18).string(message.password);
     }
     return writer;
@@ -630,15 +629,18 @@ export const LoginResponse: MessageFns<LoginResponse> = {
 };
 
 function createBaseRefreshAccessTokenRequest(): RefreshAccessTokenRequest {
-  return { userId: "", refreshToken: "" };
+  return { userId: '', refreshToken: '' };
 }
 
 export const RefreshAccessTokenRequest: MessageFns<RefreshAccessTokenRequest> = {
-  encode(message: RefreshAccessTokenRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
+  encode(
+    message: RefreshAccessTokenRequest,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.userId !== '') {
       writer.uint32(10).string(message.userId);
     }
-    if (message.refreshToken !== "") {
+    if (message.refreshToken !== '') {
       writer.uint32(18).string(message.refreshToken);
     }
     return writer;
@@ -678,12 +680,15 @@ export const RefreshAccessTokenRequest: MessageFns<RefreshAccessTokenRequest> = 
 };
 
 function createBaseRefreshAccessTokenResponse(): RefreshAccessTokenResponse {
-  return { accessToken: "" };
+  return { accessToken: '' };
 }
 
 export const RefreshAccessTokenResponse: MessageFns<RefreshAccessTokenResponse> = {
-  encode(message: RefreshAccessTokenResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.accessToken !== "") {
+  encode(
+    message: RefreshAccessTokenResponse,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.accessToken !== '') {
       writer.uint32(10).string(message.accessToken);
     }
     return writer;
@@ -715,12 +720,12 @@ export const RefreshAccessTokenResponse: MessageFns<RefreshAccessTokenResponse> 
 };
 
 function createBaseLogoutRequest(): LogoutRequest {
-  return { userId: "" };
+  return { userId: '' };
 }
 
 export const LogoutRequest: MessageFns<LogoutRequest> = {
   encode(message: LogoutRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
+    if (message.userId !== '') {
       writer.uint32(10).string(message.userId);
     }
     return writer;
@@ -752,21 +757,21 @@ export const LogoutRequest: MessageFns<LogoutRequest> = {
 };
 
 function createBaseRegisterUserRequest(): RegisterUserRequest {
-  return { firstName: "", lastName: "", phoneNumber: "", password: "" };
+  return { firstName: '', lastName: '', phoneNumber: '', password: '' };
 }
 
 export const RegisterUserRequest: MessageFns<RegisterUserRequest> = {
   encode(message: RegisterUserRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.firstName !== "") {
+    if (message.firstName !== '') {
       writer.uint32(10).string(message.firstName);
     }
-    if (message.lastName !== "") {
+    if (message.lastName !== '') {
       writer.uint32(18).string(message.lastName);
     }
-    if (message.phoneNumber !== "") {
+    if (message.phoneNumber !== '') {
       writer.uint32(26).string(message.phoneNumber);
     }
-    if (message.password !== "") {
+    if (message.password !== '') {
       writer.uint32(34).string(message.password);
     }
     return writer;
@@ -822,12 +827,12 @@ export const RegisterUserRequest: MessageFns<RegisterUserRequest> = {
 };
 
 function createBaseRegisterUserResponse(): RegisterUserResponse {
-  return { verificationToken: "" };
+  return { verificationToken: '' };
 }
 
 export const RegisterUserResponse: MessageFns<RegisterUserResponse> = {
   encode(message: RegisterUserResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.verificationToken !== "") {
+    if (message.verificationToken !== '') {
       writer.uint32(10).string(message.verificationToken);
     }
     return writer;
@@ -859,15 +864,15 @@ export const RegisterUserResponse: MessageFns<RegisterUserResponse> = {
 };
 
 function createBaseVerifyUserRequest(): VerifyUserRequest {
-  return { verificationToken: "", otp: "" };
+  return { verificationToken: '', otp: '' };
 }
 
 export const VerifyUserRequest: MessageFns<VerifyUserRequest> = {
   encode(message: VerifyUserRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.verificationToken !== "") {
+    if (message.verificationToken !== '') {
       writer.uint32(10).string(message.verificationToken);
     }
-    if (message.otp !== "") {
+    if (message.otp !== '') {
       writer.uint32(18).string(message.otp);
     }
     return writer;
@@ -907,12 +912,15 @@ export const VerifyUserRequest: MessageFns<VerifyUserRequest> = {
 };
 
 function createBaseRequestAccountVerificationRequest(): RequestAccountVerificationRequest {
-  return { phoneNumber: "" };
+  return { phoneNumber: '' };
 }
 
 export const RequestAccountVerificationRequest: MessageFns<RequestAccountVerificationRequest> = {
-  encode(message: RequestAccountVerificationRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.phoneNumber !== "") {
+  encode(
+    message: RequestAccountVerificationRequest,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.phoneNumber !== '') {
       writer.uint32(10).string(message.phoneNumber);
     }
     return writer;
@@ -944,12 +952,15 @@ export const RequestAccountVerificationRequest: MessageFns<RequestAccountVerific
 };
 
 function createBaseRequestAccountVerificationResponse(): RequestAccountVerificationResponse {
-  return { verificationToken: "" };
+  return { verificationToken: '' };
 }
 
 export const RequestAccountVerificationResponse: MessageFns<RequestAccountVerificationResponse> = {
-  encode(message: RequestAccountVerificationResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.verificationToken !== "") {
+  encode(
+    message: RequestAccountVerificationResponse,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.verificationToken !== '') {
       writer.uint32(10).string(message.verificationToken);
     }
     return writer;
@@ -981,12 +992,15 @@ export const RequestAccountVerificationResponse: MessageFns<RequestAccountVerifi
 };
 
 function createBaseResendVerificationRequest(): ResendVerificationRequest {
-  return { verificationToken: "", purpose: 0 };
+  return { verificationToken: '', purpose: 0 };
 }
 
 export const ResendVerificationRequest: MessageFns<ResendVerificationRequest> = {
-  encode(message: ResendVerificationRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.verificationToken !== "") {
+  encode(
+    message: ResendVerificationRequest,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.verificationToken !== '') {
       writer.uint32(10).string(message.verificationToken);
     }
     if (message.purpose !== 0) {
@@ -1029,18 +1043,18 @@ export const ResendVerificationRequest: MessageFns<ResendVerificationRequest> = 
 };
 
 function createBaseChangePasswordRequest(): ChangePasswordRequest {
-  return { userId: "", currentPassword: "", newPassword: "" };
+  return { userId: '', currentPassword: '', newPassword: '' };
 }
 
 export const ChangePasswordRequest: MessageFns<ChangePasswordRequest> = {
   encode(message: ChangePasswordRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
+    if (message.userId !== '') {
       writer.uint32(10).string(message.userId);
     }
-    if (message.currentPassword !== "") {
+    if (message.currentPassword !== '') {
       writer.uint32(18).string(message.currentPassword);
     }
-    if (message.newPassword !== "") {
+    if (message.newPassword !== '') {
       writer.uint32(26).string(message.newPassword);
     }
     return writer;
@@ -1088,12 +1102,15 @@ export const ChangePasswordRequest: MessageFns<ChangePasswordRequest> = {
 };
 
 function createBaseRequestPasswordResetRequest(): RequestPasswordResetRequest {
-  return { phoneNumber: "" };
+  return { phoneNumber: '' };
 }
 
 export const RequestPasswordResetRequest: MessageFns<RequestPasswordResetRequest> = {
-  encode(message: RequestPasswordResetRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.phoneNumber !== "") {
+  encode(
+    message: RequestPasswordResetRequest,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.phoneNumber !== '') {
       writer.uint32(10).string(message.phoneNumber);
     }
     return writer;
@@ -1125,12 +1142,15 @@ export const RequestPasswordResetRequest: MessageFns<RequestPasswordResetRequest
 };
 
 function createBaseRequestPasswordResetResponse(): RequestPasswordResetResponse {
-  return { verificationToken: "" };
+  return { verificationToken: '' };
 }
 
 export const RequestPasswordResetResponse: MessageFns<RequestPasswordResetResponse> = {
-  encode(message: RequestPasswordResetResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.verificationToken !== "") {
+  encode(
+    message: RequestPasswordResetResponse,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.verificationToken !== '') {
       writer.uint32(10).string(message.verificationToken);
     }
     return writer;
@@ -1162,18 +1182,21 @@ export const RequestPasswordResetResponse: MessageFns<RequestPasswordResetRespon
 };
 
 function createBaseConfirmPasswordResetRequest(): ConfirmPasswordResetRequest {
-  return { verificationToken: "", otp: "", newPassword: "" };
+  return { verificationToken: '', otp: '', newPassword: '' };
 }
 
 export const ConfirmPasswordResetRequest: MessageFns<ConfirmPasswordResetRequest> = {
-  encode(message: ConfirmPasswordResetRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.verificationToken !== "") {
+  encode(
+    message: ConfirmPasswordResetRequest,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.verificationToken !== '') {
       writer.uint32(10).string(message.verificationToken);
     }
-    if (message.otp !== "") {
+    if (message.otp !== '') {
       writer.uint32(18).string(message.otp);
     }
-    if (message.newPassword !== "") {
+    if (message.newPassword !== '') {
       writer.uint32(26).string(message.newPassword);
     }
     return writer;
@@ -1221,18 +1244,21 @@ export const ConfirmPasswordResetRequest: MessageFns<ConfirmPasswordResetRequest
 };
 
 function createBaseRequestPhoneNumberChangeRequest(): RequestPhoneNumberChangeRequest {
-  return { userId: "", newPhoneNumber: "", currentPassword: "" };
+  return { userId: '', newPhoneNumber: '', currentPassword: '' };
 }
 
 export const RequestPhoneNumberChangeRequest: MessageFns<RequestPhoneNumberChangeRequest> = {
-  encode(message: RequestPhoneNumberChangeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
+  encode(
+    message: RequestPhoneNumberChangeRequest,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.userId !== '') {
       writer.uint32(10).string(message.userId);
     }
-    if (message.newPhoneNumber !== "") {
+    if (message.newPhoneNumber !== '') {
       writer.uint32(18).string(message.newPhoneNumber);
     }
-    if (message.currentPassword !== "") {
+    if (message.currentPassword !== '') {
       writer.uint32(26).string(message.currentPassword);
     }
     return writer;
@@ -1280,12 +1306,15 @@ export const RequestPhoneNumberChangeRequest: MessageFns<RequestPhoneNumberChang
 };
 
 function createBaseRequestPhoneNumberChangeResponse(): RequestPhoneNumberChangeResponse {
-  return { verificationToken: "" };
+  return { verificationToken: '' };
 }
 
 export const RequestPhoneNumberChangeResponse: MessageFns<RequestPhoneNumberChangeResponse> = {
-  encode(message: RequestPhoneNumberChangeResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.verificationToken !== "") {
+  encode(
+    message: RequestPhoneNumberChangeResponse,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.verificationToken !== '') {
       writer.uint32(10).string(message.verificationToken);
     }
     return writer;
@@ -1317,15 +1346,18 @@ export const RequestPhoneNumberChangeResponse: MessageFns<RequestPhoneNumberChan
 };
 
 function createBaseConfirmPhoneNumberChangeRequest(): ConfirmPhoneNumberChangeRequest {
-  return { verificationToken: "", otp: "" };
+  return { verificationToken: '', otp: '' };
 }
 
 export const ConfirmPhoneNumberChangeRequest: MessageFns<ConfirmPhoneNumberChangeRequest> = {
-  encode(message: ConfirmPhoneNumberChangeRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.verificationToken !== "") {
+  encode(
+    message: ConfirmPhoneNumberChangeRequest,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.verificationToken !== '') {
       writer.uint32(10).string(message.verificationToken);
     }
-    if (message.otp !== "") {
+    if (message.otp !== '') {
       writer.uint32(18).string(message.otp);
     }
     return writer;
@@ -1365,12 +1397,12 @@ export const ConfirmPhoneNumberChangeRequest: MessageFns<ConfirmPhoneNumberChang
 };
 
 function createBaseUpdateMyProfileRequest(): UpdateMyProfileRequest {
-  return { userId: "" };
+  return { userId: '' };
 }
 
 export const UpdateMyProfileRequest: MessageFns<UpdateMyProfileRequest> = {
   encode(message: UpdateMyProfileRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
+    if (message.userId !== '') {
       writer.uint32(10).string(message.userId);
     }
     if (message.firstName !== undefined) {
@@ -1424,12 +1456,15 @@ export const UpdateMyProfileRequest: MessageFns<UpdateMyProfileRequest> = {
 };
 
 function createBaseDeactivateMyAccountRequest(): DeactivateMyAccountRequest {
-  return { userId: "" };
+  return { userId: '' };
 }
 
 export const DeactivateMyAccountRequest: MessageFns<DeactivateMyAccountRequest> = {
-  encode(message: DeactivateMyAccountRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
+  encode(
+    message: DeactivateMyAccountRequest,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.userId !== '') {
       writer.uint32(10).string(message.userId);
     }
     return writer;
@@ -1461,12 +1496,12 @@ export const DeactivateMyAccountRequest: MessageFns<DeactivateMyAccountRequest> 
 };
 
 function createBaseGetMyProfileRequest(): GetMyProfileRequest {
-  return { userId: "" };
+  return { userId: '' };
 }
 
 export const GetMyProfileRequest: MessageFns<GetMyProfileRequest> = {
   encode(message: GetMyProfileRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
+    if (message.userId !== '') {
       writer.uint32(10).string(message.userId);
     }
     return writer;
@@ -1498,12 +1533,12 @@ export const GetMyProfileRequest: MessageFns<GetMyProfileRequest> = {
 };
 
 function createBaseGetUserByIdRequest(): GetUserByIdRequest {
-  return { userId: "" };
+  return { userId: '' };
 }
 
 export const GetUserByIdRequest: MessageFns<GetUserByIdRequest> = {
   encode(message: GetUserByIdRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
+    if (message.userId !== '') {
       writer.uint32(10).string(message.userId);
     }
     return writer;
@@ -1594,7 +1629,7 @@ export const ListUsersRequest: MessageFns<ListUsersRequest> = {
 };
 
 function createBaseSearchUsersRequest(): SearchUsersRequest {
-  return { phoneNumber: "", name: "" };
+  return { phoneNumber: '', name: '' };
 }
 
 export const SearchUsersRequest: MessageFns<SearchUsersRequest> = {
@@ -1602,10 +1637,10 @@ export const SearchUsersRequest: MessageFns<SearchUsersRequest> = {
     if (message.pagination !== undefined) {
       PaginationRequest.encode(message.pagination, writer.uint32(10).fork()).join();
     }
-    if (message.phoneNumber !== "") {
+    if (message.phoneNumber !== '') {
       writer.uint32(18).string(message.phoneNumber);
     }
-    if (message.name !== "") {
+    if (message.name !== '') {
       writer.uint32(26).string(message.name);
     }
     return writer;
@@ -1701,12 +1736,15 @@ export const PaginatedUsersResponse: MessageFns<PaginatedUsersResponse> = {
 };
 
 function createBaseCheckUserExistsByPhoneRequest(): CheckUserExistsByPhoneRequest {
-  return { phoneNumber: "" };
+  return { phoneNumber: '' };
 }
 
 export const CheckUserExistsByPhoneRequest: MessageFns<CheckUserExistsByPhoneRequest> = {
-  encode(message: CheckUserExistsByPhoneRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.phoneNumber !== "") {
+  encode(
+    message: CheckUserExistsByPhoneRequest,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
+    if (message.phoneNumber !== '') {
       writer.uint32(10).string(message.phoneNumber);
     }
     return writer;
@@ -1742,7 +1780,10 @@ function createBaseCheckUserExistsByPhoneResponse(): CheckUserExistsByPhoneRespo
 }
 
 export const CheckUserExistsByPhoneResponse: MessageFns<CheckUserExistsByPhoneResponse> = {
-  encode(message: CheckUserExistsByPhoneResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+  encode(
+    message: CheckUserExistsByPhoneResponse,
+    writer: BinaryWriter = new BinaryWriter(),
+  ): BinaryWriter {
     if (message.exists !== false) {
       writer.uint32(8).bool(message.exists);
     }
@@ -1775,12 +1816,12 @@ export const CheckUserExistsByPhoneResponse: MessageFns<CheckUserExistsByPhoneRe
 };
 
 function createBaseSuspendUserRequest(): SuspendUserRequest {
-  return { userId: "" };
+  return { userId: '' };
 }
 
 export const SuspendUserRequest: MessageFns<SuspendUserRequest> = {
   encode(message: SuspendUserRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
+    if (message.userId !== '') {
       writer.uint32(10).string(message.userId);
     }
     return writer;
@@ -1812,12 +1853,12 @@ export const SuspendUserRequest: MessageFns<SuspendUserRequest> = {
 };
 
 function createBaseUnsuspendUserRequest(): UnsuspendUserRequest {
-  return { userId: "" };
+  return { userId: '' };
 }
 
 export const UnsuspendUserRequest: MessageFns<UnsuspendUserRequest> = {
   encode(message: UnsuspendUserRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
+    if (message.userId !== '') {
       writer.uint32(10).string(message.userId);
     }
     return writer;
@@ -1849,12 +1890,12 @@ export const UnsuspendUserRequest: MessageFns<UnsuspendUserRequest> = {
 };
 
 function createBaseDeleteUserRequest(): DeleteUserRequest {
-  return { userId: "" };
+  return { userId: '' };
 }
 
 export const DeleteUserRequest: MessageFns<DeleteUserRequest> = {
   encode(message: DeleteUserRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    if (message.userId !== "") {
+    if (message.userId !== '') {
       writer.uint32(10).string(message.userId);
     }
     return writer;
@@ -1904,11 +1945,15 @@ export interface UserServiceClient {
 
   changePassword(request: ChangePasswordRequest): Observable<Empty>;
 
-  requestPasswordReset(request: RequestPasswordResetRequest): Observable<RequestPasswordResetResponse>;
+  requestPasswordReset(
+    request: RequestPasswordResetRequest,
+  ): Observable<RequestPasswordResetResponse>;
 
   confirmPasswordReset(request: ConfirmPasswordResetRequest): Observable<Empty>;
 
-  requestPhoneNumberChange(request: RequestPhoneNumberChangeRequest): Observable<RequestPhoneNumberChangeResponse>;
+  requestPhoneNumberChange(
+    request: RequestPhoneNumberChangeRequest,
+  ): Observable<RequestPhoneNumberChangeResponse>;
 
   confirmPhoneNumberChange(request: ConfirmPhoneNumberChangeRequest): Observable<Empty>;
 
@@ -1924,7 +1969,9 @@ export interface UserServiceClient {
 
   searchUsers(request: SearchUsersRequest): Observable<PaginatedUsersResponse>;
 
-  checkUserExistsByPhone(request: CheckUserExistsByPhoneRequest): Observable<CheckUserExistsByPhoneResponse>;
+  checkUserExistsByPhone(
+    request: CheckUserExistsByPhoneRequest,
+  ): Observable<CheckUserExistsByPhoneResponse>;
 
   suspendUser(request: SuspendUserRequest): Observable<Empty>;
 
@@ -1938,7 +1985,10 @@ export interface UserServiceController {
 
   refreshAccessToken(
     request: RefreshAccessTokenRequest,
-  ): Promise<RefreshAccessTokenResponse> | Observable<RefreshAccessTokenResponse> | RefreshAccessTokenResponse;
+  ):
+    | Promise<RefreshAccessTokenResponse>
+    | Observable<RefreshAccessTokenResponse>
+    | RefreshAccessTokenResponse;
 
   logout(request: LogoutRequest): Promise<Empty> | Observable<Empty> | Empty;
 
@@ -1963,9 +2013,14 @@ export interface UserServiceController {
 
   requestPasswordReset(
     request: RequestPasswordResetRequest,
-  ): Promise<RequestPasswordResetResponse> | Observable<RequestPasswordResetResponse> | RequestPasswordResetResponse;
+  ):
+    | Promise<RequestPasswordResetResponse>
+    | Observable<RequestPasswordResetResponse>
+    | RequestPasswordResetResponse;
 
-  confirmPasswordReset(request: ConfirmPasswordResetRequest): Promise<Empty> | Observable<Empty> | Empty;
+  confirmPasswordReset(
+    request: ConfirmPasswordResetRequest,
+  ): Promise<Empty> | Observable<Empty> | Empty;
 
   requestPhoneNumberChange(
     request: RequestPhoneNumberChangeRequest,
@@ -1974,15 +2029,23 @@ export interface UserServiceController {
     | Observable<RequestPhoneNumberChangeResponse>
     | RequestPhoneNumberChangeResponse;
 
-  confirmPhoneNumberChange(request: ConfirmPhoneNumberChangeRequest): Promise<Empty> | Observable<Empty> | Empty;
+  confirmPhoneNumberChange(
+    request: ConfirmPhoneNumberChangeRequest,
+  ): Promise<Empty> | Observable<Empty> | Empty;
 
   updateMyProfile(request: UpdateMyProfileRequest): Promise<Empty> | Observable<Empty> | Empty;
 
-  deactivateMyAccount(request: DeactivateMyAccountRequest): Promise<Empty> | Observable<Empty> | Empty;
+  deactivateMyAccount(
+    request: DeactivateMyAccountRequest,
+  ): Promise<Empty> | Observable<Empty> | Empty;
 
-  getMyProfile(request: GetMyProfileRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
+  getMyProfile(
+    request: GetMyProfileRequest,
+  ): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
-  getUserById(request: GetUserByIdRequest): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
+  getUserById(
+    request: GetUserByIdRequest,
+  ): Promise<UserResponse> | Observable<UserResponse> | UserResponse;
 
   listUsers(
     request: ListUsersRequest,
@@ -2009,95 +2072,103 @@ export interface UserServiceController {
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
-      "login",
-      "refreshAccessToken",
-      "logout",
-      "registerUser",
-      "verifyUser",
-      "requestAccountVerification",
-      "resendVerification",
-      "changePassword",
-      "requestPasswordReset",
-      "confirmPasswordReset",
-      "requestPhoneNumberChange",
-      "confirmPhoneNumberChange",
-      "updateMyProfile",
-      "deactivateMyAccount",
-      "getMyProfile",
-      "getUserById",
-      "listUsers",
-      "searchUsers",
-      "checkUserExistsByPhone",
-      "suspendUser",
-      "unsuspendUser",
-      "deleteUser",
+      'login',
+      'refreshAccessToken',
+      'logout',
+      'registerUser',
+      'verifyUser',
+      'requestAccountVerification',
+      'resendVerification',
+      'changePassword',
+      'requestPasswordReset',
+      'confirmPasswordReset',
+      'requestPhoneNumberChange',
+      'confirmPhoneNumberChange',
+      'updateMyProfile',
+      'deactivateMyAccount',
+      'getMyProfile',
+      'getUserById',
+      'listUsers',
+      'searchUsers',
+      'checkUserExistsByPhone',
+      'suspendUser',
+      'unsuspendUser',
+      'deleteUser',
     ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcMethod("UserService", method)(constructor.prototype[method], method, descriptor);
+      GrpcMethod('UserService', method)(constructor.prototype[method], method, descriptor);
     }
     const grpcStreamMethods: string[] = [];
     for (const method of grpcStreamMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(constructor.prototype, method);
-      GrpcStreamMethod("UserService", method)(constructor.prototype[method], method, descriptor);
+      GrpcStreamMethod('UserService', method)(constructor.prototype[method], method, descriptor);
     }
   };
 }
 
-export const USER_SERVICE_NAME = "UserService";
+export const USER_SERVICE_NAME = 'UserService';
 
 export type UserServiceService = typeof UserServiceService;
 export const UserServiceService = {
   login: {
-    path: "/identity.UserService/Login",
+    path: '/identity.UserService/Login',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: LoginRequest): Buffer => Buffer.from(LoginRequest.encode(value).finish()),
+    requestSerialize: (value: LoginRequest): Buffer =>
+      Buffer.from(LoginRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): LoginRequest => LoginRequest.decode(value),
-    responseSerialize: (value: LoginResponse): Buffer => Buffer.from(LoginResponse.encode(value).finish()),
+    responseSerialize: (value: LoginResponse): Buffer =>
+      Buffer.from(LoginResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer): LoginResponse => LoginResponse.decode(value),
   },
   refreshAccessToken: {
-    path: "/identity.UserService/RefreshAccessToken",
+    path: '/identity.UserService/RefreshAccessToken',
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: RefreshAccessTokenRequest): Buffer =>
       Buffer.from(RefreshAccessTokenRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): RefreshAccessTokenRequest => RefreshAccessTokenRequest.decode(value),
+    requestDeserialize: (value: Buffer): RefreshAccessTokenRequest =>
+      RefreshAccessTokenRequest.decode(value),
     responseSerialize: (value: RefreshAccessTokenResponse): Buffer =>
       Buffer.from(RefreshAccessTokenResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): RefreshAccessTokenResponse => RefreshAccessTokenResponse.decode(value),
+    responseDeserialize: (value: Buffer): RefreshAccessTokenResponse =>
+      RefreshAccessTokenResponse.decode(value),
   },
   logout: {
-    path: "/identity.UserService/Logout",
+    path: '/identity.UserService/Logout',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: LogoutRequest): Buffer => Buffer.from(LogoutRequest.encode(value).finish()),
+    requestSerialize: (value: LogoutRequest): Buffer =>
+      Buffer.from(LogoutRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): LogoutRequest => LogoutRequest.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
   registerUser: {
-    path: "/identity.UserService/RegisterUser",
+    path: '/identity.UserService/RegisterUser',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: RegisterUserRequest): Buffer => Buffer.from(RegisterUserRequest.encode(value).finish()),
+    requestSerialize: (value: RegisterUserRequest): Buffer =>
+      Buffer.from(RegisterUserRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): RegisterUserRequest => RegisterUserRequest.decode(value),
     responseSerialize: (value: RegisterUserResponse): Buffer =>
       Buffer.from(RegisterUserResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): RegisterUserResponse => RegisterUserResponse.decode(value),
+    responseDeserialize: (value: Buffer): RegisterUserResponse =>
+      RegisterUserResponse.decode(value),
   },
   verifyUser: {
-    path: "/identity.UserService/VerifyUser",
+    path: '/identity.UserService/VerifyUser',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: VerifyUserRequest): Buffer => Buffer.from(VerifyUserRequest.encode(value).finish()),
+    requestSerialize: (value: VerifyUserRequest): Buffer =>
+      Buffer.from(VerifyUserRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): VerifyUserRequest => VerifyUserRequest.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
   requestAccountVerification: {
-    path: "/identity.UserService/RequestAccountVerification",
+    path: '/identity.UserService/RequestAccountVerification',
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: RequestAccountVerificationRequest): Buffer =>
@@ -2110,49 +2181,55 @@ export const UserServiceService = {
       RequestAccountVerificationResponse.decode(value),
   },
   resendVerification: {
-    path: "/identity.UserService/ResendVerification",
+    path: '/identity.UserService/ResendVerification',
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: ResendVerificationRequest): Buffer =>
       Buffer.from(ResendVerificationRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): ResendVerificationRequest => ResendVerificationRequest.decode(value),
+    requestDeserialize: (value: Buffer): ResendVerificationRequest =>
+      ResendVerificationRequest.decode(value),
     responseSerialize: (value: RegisterUserResponse): Buffer =>
       Buffer.from(RegisterUserResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): RegisterUserResponse => RegisterUserResponse.decode(value),
+    responseDeserialize: (value: Buffer): RegisterUserResponse =>
+      RegisterUserResponse.decode(value),
   },
   changePassword: {
-    path: "/identity.UserService/ChangePassword",
+    path: '/identity.UserService/ChangePassword',
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: ChangePasswordRequest): Buffer =>
       Buffer.from(ChangePasswordRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): ChangePasswordRequest => ChangePasswordRequest.decode(value),
+    requestDeserialize: (value: Buffer): ChangePasswordRequest =>
+      ChangePasswordRequest.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
   requestPasswordReset: {
-    path: "/identity.UserService/RequestPasswordReset",
+    path: '/identity.UserService/RequestPasswordReset',
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: RequestPasswordResetRequest): Buffer =>
       Buffer.from(RequestPasswordResetRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): RequestPasswordResetRequest => RequestPasswordResetRequest.decode(value),
+    requestDeserialize: (value: Buffer): RequestPasswordResetRequest =>
+      RequestPasswordResetRequest.decode(value),
     responseSerialize: (value: RequestPasswordResetResponse): Buffer =>
       Buffer.from(RequestPasswordResetResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): RequestPasswordResetResponse => RequestPasswordResetResponse.decode(value),
+    responseDeserialize: (value: Buffer): RequestPasswordResetResponse =>
+      RequestPasswordResetResponse.decode(value),
   },
   confirmPasswordReset: {
-    path: "/identity.UserService/ConfirmPasswordReset",
+    path: '/identity.UserService/ConfirmPasswordReset',
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: ConfirmPasswordResetRequest): Buffer =>
       Buffer.from(ConfirmPasswordResetRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): ConfirmPasswordResetRequest => ConfirmPasswordResetRequest.decode(value),
+    requestDeserialize: (value: Buffer): ConfirmPasswordResetRequest =>
+      ConfirmPasswordResetRequest.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
   requestPhoneNumberChange: {
-    path: "/identity.UserService/RequestPhoneNumberChange",
+    path: '/identity.UserService/RequestPhoneNumberChange',
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: RequestPhoneNumberChangeRequest): Buffer =>
@@ -2165,7 +2242,7 @@ export const UserServiceService = {
       RequestPhoneNumberChangeResponse.decode(value),
   },
   confirmPhoneNumberChange: {
-    path: "/identity.UserService/ConfirmPhoneNumberChange",
+    path: '/identity.UserService/ConfirmPhoneNumberChange',
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: ConfirmPhoneNumberChangeRequest): Buffer =>
@@ -2176,98 +2253,112 @@ export const UserServiceService = {
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
   updateMyProfile: {
-    path: "/identity.UserService/UpdateMyProfile",
+    path: '/identity.UserService/UpdateMyProfile',
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: UpdateMyProfileRequest): Buffer =>
       Buffer.from(UpdateMyProfileRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): UpdateMyProfileRequest => UpdateMyProfileRequest.decode(value),
+    requestDeserialize: (value: Buffer): UpdateMyProfileRequest =>
+      UpdateMyProfileRequest.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
   deactivateMyAccount: {
-    path: "/identity.UserService/DeactivateMyAccount",
+    path: '/identity.UserService/DeactivateMyAccount',
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: DeactivateMyAccountRequest): Buffer =>
       Buffer.from(DeactivateMyAccountRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): DeactivateMyAccountRequest => DeactivateMyAccountRequest.decode(value),
+    requestDeserialize: (value: Buffer): DeactivateMyAccountRequest =>
+      DeactivateMyAccountRequest.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
   getMyProfile: {
-    path: "/identity.UserService/GetMyProfile",
+    path: '/identity.UserService/GetMyProfile',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: GetMyProfileRequest): Buffer => Buffer.from(GetMyProfileRequest.encode(value).finish()),
+    requestSerialize: (value: GetMyProfileRequest): Buffer =>
+      Buffer.from(GetMyProfileRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): GetMyProfileRequest => GetMyProfileRequest.decode(value),
-    responseSerialize: (value: UserResponse): Buffer => Buffer.from(UserResponse.encode(value).finish()),
+    responseSerialize: (value: UserResponse): Buffer =>
+      Buffer.from(UserResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer): UserResponse => UserResponse.decode(value),
   },
   getUserById: {
-    path: "/identity.UserService/GetUserById",
+    path: '/identity.UserService/GetUserById',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: GetUserByIdRequest): Buffer => Buffer.from(GetUserByIdRequest.encode(value).finish()),
+    requestSerialize: (value: GetUserByIdRequest): Buffer =>
+      Buffer.from(GetUserByIdRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): GetUserByIdRequest => GetUserByIdRequest.decode(value),
-    responseSerialize: (value: UserResponse): Buffer => Buffer.from(UserResponse.encode(value).finish()),
+    responseSerialize: (value: UserResponse): Buffer =>
+      Buffer.from(UserResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer): UserResponse => UserResponse.decode(value),
   },
   listUsers: {
-    path: "/identity.UserService/ListUsers",
+    path: '/identity.UserService/ListUsers',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: ListUsersRequest): Buffer => Buffer.from(ListUsersRequest.encode(value).finish()),
+    requestSerialize: (value: ListUsersRequest): Buffer =>
+      Buffer.from(ListUsersRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): ListUsersRequest => ListUsersRequest.decode(value),
     responseSerialize: (value: PaginatedUsersResponse): Buffer =>
       Buffer.from(PaginatedUsersResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): PaginatedUsersResponse => PaginatedUsersResponse.decode(value),
+    responseDeserialize: (value: Buffer): PaginatedUsersResponse =>
+      PaginatedUsersResponse.decode(value),
   },
   searchUsers: {
-    path: "/identity.UserService/SearchUsers",
+    path: '/identity.UserService/SearchUsers',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: SearchUsersRequest): Buffer => Buffer.from(SearchUsersRequest.encode(value).finish()),
+    requestSerialize: (value: SearchUsersRequest): Buffer =>
+      Buffer.from(SearchUsersRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): SearchUsersRequest => SearchUsersRequest.decode(value),
     responseSerialize: (value: PaginatedUsersResponse): Buffer =>
       Buffer.from(PaginatedUsersResponse.encode(value).finish()),
-    responseDeserialize: (value: Buffer): PaginatedUsersResponse => PaginatedUsersResponse.decode(value),
+    responseDeserialize: (value: Buffer): PaginatedUsersResponse =>
+      PaginatedUsersResponse.decode(value),
   },
   checkUserExistsByPhone: {
-    path: "/identity.UserService/CheckUserExistsByPhone",
+    path: '/identity.UserService/CheckUserExistsByPhone',
     requestStream: false,
     responseStream: false,
     requestSerialize: (value: CheckUserExistsByPhoneRequest): Buffer =>
       Buffer.from(CheckUserExistsByPhoneRequest.encode(value).finish()),
-    requestDeserialize: (value: Buffer): CheckUserExistsByPhoneRequest => CheckUserExistsByPhoneRequest.decode(value),
+    requestDeserialize: (value: Buffer): CheckUserExistsByPhoneRequest =>
+      CheckUserExistsByPhoneRequest.decode(value),
     responseSerialize: (value: CheckUserExistsByPhoneResponse): Buffer =>
       Buffer.from(CheckUserExistsByPhoneResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer): CheckUserExistsByPhoneResponse =>
       CheckUserExistsByPhoneResponse.decode(value),
   },
   suspendUser: {
-    path: "/identity.UserService/SuspendUser",
+    path: '/identity.UserService/SuspendUser',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: SuspendUserRequest): Buffer => Buffer.from(SuspendUserRequest.encode(value).finish()),
+    requestSerialize: (value: SuspendUserRequest): Buffer =>
+      Buffer.from(SuspendUserRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): SuspendUserRequest => SuspendUserRequest.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
   unsuspendUser: {
-    path: "/identity.UserService/UnsuspendUser",
+    path: '/identity.UserService/UnsuspendUser',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: UnsuspendUserRequest): Buffer => Buffer.from(UnsuspendUserRequest.encode(value).finish()),
+    requestSerialize: (value: UnsuspendUserRequest): Buffer =>
+      Buffer.from(UnsuspendUserRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): UnsuspendUserRequest => UnsuspendUserRequest.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
   },
   deleteUser: {
-    path: "/identity.UserService/DeleteUser",
+    path: '/identity.UserService/DeleteUser',
     requestStream: false,
     responseStream: false,
-    requestSerialize: (value: DeleteUserRequest): Buffer => Buffer.from(DeleteUserRequest.encode(value).finish()),
+    requestSerialize: (value: DeleteUserRequest): Buffer =>
+      Buffer.from(DeleteUserRequest.encode(value).finish()),
     requestDeserialize: (value: Buffer): DeleteUserRequest => DeleteUserRequest.decode(value),
     responseSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
     responseDeserialize: (value: Buffer): Empty => Empty.decode(value),
@@ -2280,12 +2371,18 @@ export interface UserServiceServer extends UntypedServiceImplementation {
   logout: handleUnaryCall<LogoutRequest, Empty>;
   registerUser: handleUnaryCall<RegisterUserRequest, RegisterUserResponse>;
   verifyUser: handleUnaryCall<VerifyUserRequest, Empty>;
-  requestAccountVerification: handleUnaryCall<RequestAccountVerificationRequest, RequestAccountVerificationResponse>;
+  requestAccountVerification: handleUnaryCall<
+    RequestAccountVerificationRequest,
+    RequestAccountVerificationResponse
+  >;
   resendVerification: handleUnaryCall<ResendVerificationRequest, RegisterUserResponse>;
   changePassword: handleUnaryCall<ChangePasswordRequest, Empty>;
   requestPasswordReset: handleUnaryCall<RequestPasswordResetRequest, RequestPasswordResetResponse>;
   confirmPasswordReset: handleUnaryCall<ConfirmPasswordResetRequest, Empty>;
-  requestPhoneNumberChange: handleUnaryCall<RequestPhoneNumberChangeRequest, RequestPhoneNumberChangeResponse>;
+  requestPhoneNumberChange: handleUnaryCall<
+    RequestPhoneNumberChangeRequest,
+    RequestPhoneNumberChangeResponse
+  >;
   confirmPhoneNumberChange: handleUnaryCall<ConfirmPhoneNumberChangeRequest, Empty>;
   updateMyProfile: handleUnaryCall<UpdateMyProfileRequest, Empty>;
   deactivateMyAccount: handleUnaryCall<DeactivateMyAccountRequest, Empty>;
@@ -2293,7 +2390,10 @@ export interface UserServiceServer extends UntypedServiceImplementation {
   getUserById: handleUnaryCall<GetUserByIdRequest, UserResponse>;
   listUsers: handleUnaryCall<ListUsersRequest, PaginatedUsersResponse>;
   searchUsers: handleUnaryCall<SearchUsersRequest, PaginatedUsersResponse>;
-  checkUserExistsByPhone: handleUnaryCall<CheckUserExistsByPhoneRequest, CheckUserExistsByPhoneResponse>;
+  checkUserExistsByPhone: handleUnaryCall<
+    CheckUserExistsByPhoneRequest,
+    CheckUserExistsByPhoneResponse
+  >;
   suspendUser: handleUnaryCall<SuspendUserRequest, Empty>;
   unsuspendUser: handleUnaryCall<UnsuspendUserRequest, Empty>;
   deleteUser: handleUnaryCall<DeleteUserRequest, Empty>;
@@ -2302,10 +2402,10 @@ export interface UserServiceServer extends UntypedServiceImplementation {
 function longToNumber(int64: { toString(): string }): number {
   const num = globalThis.Number(int64.toString());
   if (num > globalThis.Number.MAX_SAFE_INTEGER) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
+    throw new globalThis.Error('Value is larger than Number.MAX_SAFE_INTEGER');
   }
   if (num < globalThis.Number.MIN_SAFE_INTEGER) {
-    throw new globalThis.Error("Value is smaller than Number.MIN_SAFE_INTEGER");
+    throw new globalThis.Error('Value is smaller than Number.MIN_SAFE_INTEGER');
   }
   return num;
 }

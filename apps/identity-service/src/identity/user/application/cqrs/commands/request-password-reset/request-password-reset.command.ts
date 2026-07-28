@@ -1,4 +1,4 @@
-import { Command, CommandProps } from "@app/shared-kernel";
+import { Command, CommandProps } from '@app/shared-kernel';
 
 export class RequestPasswordResetCommand extends Command {
   readonly phoneNumber: string;

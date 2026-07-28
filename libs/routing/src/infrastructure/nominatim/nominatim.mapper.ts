@@ -9,8 +9,6 @@ export class NominatimMapper {
   }
 
   static toSuggestions(results: any[]): string[] {
-    return results
-      .map(r => r.display_name)
-      .filter(Boolean);
+    return results.map((r) => r.display_name).filter(Boolean);
   }
 }

@@ -24,26 +24,14 @@ export class DriverMongoRepository
     super(model, connection, mapper);
   }
 
-  async findByUserIdAndTenantId(
-    userId: string,
-    tenantId: string,
-  ): Promise<Option<Driver>> {
-    const doc = await this.model
-      .findOne({ userId, tenantId })
-      .lean()
-      .exec();
+  async findByUserIdAndTenantId(userId: string, tenantId: string): Promise<Option<Driver>> {
+    const doc = await this.model.findOne({ userId, tenantId }).lean().exec();
 
     return doc ? Some(this.mapper.toDomain(doc)) : None;
   }
 
-  async findByDriverIdAndTenantId(
-    driverId: string,
-    tenantId: string,
-  ): Promise<Option<Driver>> {
-    const doc = await this.model
-      .findOne({ driverId, tenantId })
-      .lean()
-      .exec();
+  async findByDriverIdAndTenantId(driverId: string, tenantId: string): Promise<Option<Driver>> {
+    const doc = await this.model.findOne({ driverId, tenantId }).lean().exec();
 
     return doc ? Some(this.mapper.toDomain(doc)) : None;
   }

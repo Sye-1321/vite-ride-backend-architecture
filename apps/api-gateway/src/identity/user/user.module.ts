@@ -4,9 +4,7 @@ import { UserGrpcClient } from '../client/user.grpc.client';
 import { GatewayContextModule } from '@app/context';
 
 @Module({
-  imports: [
-    GatewayContextModule, 
-  ],
+  imports: [GatewayContextModule],
   controllers: [UserController],
   providers: [UserGrpcClient],
   exports: [UserGrpcClient],

@@ -18,7 +18,7 @@ import { GrpcClientContextInterceptor } from './grpc-client-context.interceptor'
   providers: [
     ClsRequestContextAccessor,
 
-    GrpcClientContextInterceptor, 
+    GrpcClientContextInterceptor,
 
     {
       provide: TYPES.RequestContextAccessor,
@@ -29,9 +29,6 @@ import { GrpcClientContextInterceptor } from './grpc-client-context.interceptor'
       useClass: RequestContextInterceptor,
     },
   ],
-  exports: [
-    TYPES.RequestContextAccessor,
-    GrpcClientContextInterceptor,
-  ],
+  exports: [TYPES.RequestContextAccessor, GrpcClientContextInterceptor],
 })
 export class GatewayContextModule {}

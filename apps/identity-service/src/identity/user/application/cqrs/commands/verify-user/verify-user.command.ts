@@ -1,4 +1,4 @@
-import { Command, CommandProps } from "@app/shared-kernel";
+import { Command, CommandProps } from '@app/shared-kernel';
 
 export class VerifyUserCommand extends Command {
   readonly otp: string;
