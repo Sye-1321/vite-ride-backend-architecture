@@ -28,10 +28,11 @@ export class AuthorizationGuard implements CanActivate {
 
     const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
     const userId = request.user?.userId;
-    const domain = request.params.tenantId || this.headerValue(request.headers['x-tenant-id']);
+    const domain =
+      request.params.tenantId || this.headerValue(request.headers['x-tenant-id']) || '*';
 
-    if (!userId || !domain) {
-      throw new ForbiddenException('Tenant authorization context is required');
+    if (!userId) {
+      throw new ForbiddenException('Authenticated authorization context is required');
     }
 
     const result = await firstValueFrom(
