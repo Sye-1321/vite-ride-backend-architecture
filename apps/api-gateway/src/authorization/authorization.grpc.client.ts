@@ -1,0 +1,67 @@
+import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { from, Observable } from 'rxjs';
+
+import { GrpcClientContextInterceptor } from '@app/context';
+import {
+  AccessCheckRequest,
+  AccessCheckResponse,
+  AUTHORIZATION_PACKAGE_NAME,
+  AUTHORIZATION_SERVICE_NAME,
+  GetRolesRequest,
+  GetRolesResponse,
+  RoleRequest,
+  RoleResponse,
+} from '@app/proto-schema';
+
+import { GatewayConfig } from '../config';
+import { createGrpcUnaryClient } from '../grpc/grpc-unary-client.factory';
+
+interface AuthorizationGrpcService {
+  checkAccess(request: AccessCheckRequest): Promise<AccessCheckResponse>;
+  assignRole(request: RoleRequest): Promise<RoleResponse>;
+  removeRole(request: RoleRequest): Promise<RoleResponse>;
+  getRoles(request: GetRolesRequest): Promise<GetRolesResponse>;
+}
+
+@Injectable()
+export class AuthorizationGrpcClient implements OnModuleInit {
+  private service!: AuthorizationGrpcService;
+
+  constructor(
+    private readonly contextInterceptor: GrpcClientContextInterceptor,
+    private readonly configService: ConfigService,
+  ) {}
+
+  onModuleInit(): void {
+    const config = this.configService.get<GatewayConfig>('gateway');
+    if (!config) {
+      throw new Error('Gateway configuration is unavailable');
+    }
+
+    this.service = createGrpcUnaryClient<AuthorizationGrpcService>({
+      packageName: AUTHORIZATION_PACKAGE_NAME,
+      serviceName: AUTHORIZATION_SERVICE_NAME,
+      protoFile: 'authorization.proto',
+      url: config.AUTHORIZATION_GRPC_URL,
+      methods: ['checkAccess', 'assignRole', 'removeRole', 'getRoles'],
+      contextInterceptor: this.contextInterceptor,
+    });
+  }
+
+  checkAccess(request: AccessCheckRequest): Observable<AccessCheckResponse> {
+    return from(this.service.checkAccess(request));
+  }
+
+  assignRole(request: RoleRequest): Observable<RoleResponse> {
+    return from(this.service.assignRole(request));
+  }
+
+  removeRole(request: RoleRequest): Observable<RoleResponse> {
+    return from(this.service.removeRole(request));
+  }
+
+  getRoles(request: GetRolesRequest): Observable<GetRolesResponse> {
+    return from(this.service.getRoles(request));
+  }
+}

@@ -1,4 +1,5 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { from } from 'rxjs';
 import { join } from 'path';
 import { promisify } from 'util';
@@ -44,6 +45,8 @@ import {
 
 import { GrpcClientContextInterceptor } from '@app/context';
 
+import { GatewayConfig } from '../../config';
+
 @Injectable()
 export class UserGrpcClient implements OnModuleInit {
   private svc!: {
@@ -77,23 +80,31 @@ export class UserGrpcClient implements OnModuleInit {
     deleteUser: (d: DeleteUserRequest) => Promise<Empty>;
   };
 
-  constructor(private readonly grpcContextInterceptor: GrpcClientContextInterceptor) {}
+  constructor(
+    private readonly grpcContextInterceptor: GrpcClientContextInterceptor,
+    private readonly configService: ConfigService,
+  ) {}
 
   onModuleInit() {
     const protoPath = join(process.cwd(), 'libs/proto-schema/proto/identity.proto');
 
     const pkgDef = loadSync(protoPath, {
-      keepCase: true,
+      keepCase: false,
       longs: String,
-      enums: String,
+      enums: Number,
       defaults: true,
       oneofs: true,
     });
 
     const grpcPkg: any = loadPackageDefinition(pkgDef);
 
+    const config = this.configService.get<GatewayConfig>('gateway');
+    if (!config) {
+      throw new Error('Gateway configuration is unavailable');
+    }
+
     const client = new grpcPkg.identity.UserService(
-      'localhost:50051',
+      config.IDENTITY_GRPC_URL,
       grpc.credentials.createInsecure(),
       {
         interceptors: [this.grpcContextInterceptor.interceptor()],
