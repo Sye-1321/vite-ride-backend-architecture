@@ -5,6 +5,7 @@ import { Option, Some, None } from 'oxide.ts';
 
 import { MongoRepositoryBase } from '@app/persistence/mongodb/mongo-repository.base';
 import { Tenant } from '../../../domain/tenant.entity';
+import { normalizeTenantName } from '../../../domain/tenant-name';
 import { TenantDataModel } from './tenant.schema';
 import { TenantMapper } from './tenant.mapper';
 
@@ -21,7 +22,10 @@ export class TenantRepository extends MongoRepositoryBase<Tenant, TenantDataMode
   }
 
   async findByName(name: string): Promise<Option<Tenant>> {
-    const doc = await this.model.findOne({ name }).lean().exec();
+    const doc = await this.model
+      .findOne({ normalizedName: normalizeTenantName(name) })
+      .lean()
+      .exec();
 
     return doc ? Some(this.mapper.toDomain(doc)) : None;
   }

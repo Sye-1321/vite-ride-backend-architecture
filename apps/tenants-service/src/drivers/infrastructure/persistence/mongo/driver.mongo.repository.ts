@@ -31,7 +31,7 @@ export class DriverMongoRepository
   }
 
   async findByDriverIdAndTenantId(driverId: string, tenantId: string): Promise<Option<Driver>> {
-    const doc = await this.model.findOne({ driverId, tenantId }).lean().exec();
+    const doc = await this.model.findOne({ _id: driverId, tenantId }).lean().exec();
 
     return doc ? Some(this.mapper.toDomain(doc)) : None;
   }
