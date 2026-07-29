@@ -214,6 +214,9 @@ git diff core-services-baseline-2026-07-28..core-services-hardening-2026-07-28
   this cross-service sequence is not a distributed transaction.
 - Routing and Realtime are retained libraries without end-to-end application
   flows in this repository.
+- The automated Gateway boundary test uses controlled service clients. A live
+  five-process MongoDB/Redis smoke test still requires a running Docker daemon
+  or equivalent local infrastructure.
 - Passing the included checks does not establish production scale,
   observability, disaster recovery, or deployment readiness.
 
