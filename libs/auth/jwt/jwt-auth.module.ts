@@ -17,6 +17,12 @@ import { PassportModule } from '@nestjs/passport';
       useClass: JwtAuthAdapter,
     },
   ],
-  exports: [TYPES.AuthTokenProvider, AccessTokenStrategy, RefreshTokenStrategy, PassportModule],
+  exports: [
+    TYPES.AuthTokenProvider,
+    AccessTokenStrategy,
+    RefreshTokenStrategy,
+    PassportModule,
+    JwtModule,
+  ],
 })
 export class JwtAuthModule {}

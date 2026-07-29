@@ -21,6 +21,7 @@ export function defineStaticPolicies(): PolicyDefinition[] {
         update: ['super-admin', 'tenant-admin'],
         'manage-members': ['super-admin', 'tenant-admin'],
         'manage-drivers': ['super-admin', 'tenant-admin'],
+        'publish-location': ['super-admin', 'tenant-admin', 'driver'],
       },
     },
   ];

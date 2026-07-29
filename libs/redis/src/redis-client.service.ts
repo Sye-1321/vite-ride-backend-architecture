@@ -27,8 +27,8 @@ export class RedisClientService implements RedisClientPort, OnModuleDestroy {
   }
 
   async getPubSubClients(): Promise<{ pubClient: RedisClient; subClient: RedisClient }> {
-    const pubClient = this.client.duplicate();
-    const subClient = this.client.duplicate();
+    const pubClient = this.client.duplicate({ lazyConnect: true });
+    const subClient = this.client.duplicate({ lazyConnect: true });
 
     await Promise.all([pubClient.connect(), subClient.connect()]);
 
