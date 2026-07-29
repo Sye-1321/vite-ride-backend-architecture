@@ -5,7 +5,7 @@ import { Option, Some, None } from 'oxide.ts';
 
 import { MongoRepositoryBase } from '@app/persistence/mongodb/mongo-repository.base';
 import { TenantMember } from '../../../domain/membership.entity';
-import { TenantMemberRole } from '../../../domain/membership.types';
+import { TenantMemberRole, TenantMemberStatus } from '../../../domain/membership.types';
 import { TenantMemberRepositoryPort } from '../../../application/ports';
 
 import { TenantMemberDataModel } from './tenant-member.schema';
@@ -33,6 +33,16 @@ export class TenantMemberMongoRepository
       .exec();
 
     return doc ? Some(this.mapper.toDomain(doc)) : None;
+  }
+
+  findActiveTenantIdsByUserId(userId: string): Promise<string[]> {
+    return this.model
+      .distinct('tenantId', {
+        userId,
+        status: TenantMemberStatus.ACTIVE,
+        isDeleted: { $ne: true },
+      })
+      .exec();
   }
 
   async exists(tenantId: string, userId: string, role: TenantMemberRole): Promise<boolean> {

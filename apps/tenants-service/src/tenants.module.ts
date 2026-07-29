@@ -11,6 +11,7 @@ import { MembershipModule } from './membership/membership.module';
 import { TenantsReadinessService } from './health/tenants-readiness.service';
 import { ProvisioningModule } from './provisioning/provisioning.module';
 import { TenantModule } from './tenants/tenants.module';
+import { TenantAccessQueryModule } from './tenants/tenant-access-query.module';
 import { TenantsGrpcController } from './transports/tenants.grpc.controller';
 
 @Module({
@@ -24,6 +25,7 @@ import { TenantsGrpcController } from './transports/tenants.grpc.controller';
     MongoModule.forRoot('TENANTS', 'TenantsConnection'),
     TenantModule,
     MembershipModule,
+    TenantAccessQueryModule,
     DriverModule,
     ProvisioningModule,
   ],

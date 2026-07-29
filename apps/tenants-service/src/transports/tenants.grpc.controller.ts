@@ -73,7 +73,12 @@ export class TenantsGrpcController {
   @GrpcMethod(TENANTS_SERVICE_NAME, 'ListTenants')
   async listTenants(request: ListTenantsRequest): Promise<TenantListResponse> {
     const result = await this.query<Paginated<Tenant>>(
-      new ListTenantsQuery(request.page, request.limit, this.toTenantStatus(request.status, true)),
+      new ListTenantsQuery(
+        request.userId,
+        request.page,
+        request.limit,
+        this.toTenantStatus(request.status, true),
+      ),
     );
     return {
       data: result.data.map((tenant) => this.mapTenant(tenant)),

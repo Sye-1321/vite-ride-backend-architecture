@@ -6,6 +6,7 @@ export class GetTenantQuery {
 
 export class ListTenantsQuery {
   constructor(
+    public readonly userId: string,
     public readonly page: number,
     public readonly limit: number,
     public readonly status?: TenantStatus,

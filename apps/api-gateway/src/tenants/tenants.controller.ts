@@ -35,11 +35,12 @@ export class TenantsController {
   }
 
   @Get()
-  listTenants(@Query() query: ListTenantsDto) {
+  listTenants(@GetCurrentUserId() userId: string, @Query() query: ListTenantsDto) {
     return this.tenants.listTenants({
       page: query.page ?? 1,
       limit: query.limit ?? 20,
       status: query.status ?? ProtoTenantStatus.TENANT_STATUS_UNSPECIFIED,
+      userId,
     });
   }
 

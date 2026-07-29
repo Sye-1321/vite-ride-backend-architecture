@@ -40,7 +40,11 @@ import {
   UpdateTenantCommand,
 } from './tenants/application/commands';
 import { TenantRepositoryPort } from './tenants/application/ports';
-import { TenantQueryHandlers } from './tenants/application/queries';
+import {
+  ListTenantsHandler,
+  ListTenantsQuery,
+  TenantQueryHandlers,
+} from './tenants/application/queries';
 import { Tenant } from './tenants/domain/tenant.entity';
 import { TenantStatus } from './tenants/domain/tenant.types';
 import { USER_DIRECTORY_PORT, UserDirectoryPort } from './users/application/user-directory.port';
@@ -99,10 +103,16 @@ abstract class RepositoryDouble<Aggregate extends AggregateRoot<object>>
   private matches(candidate: Aggregate, query: Record<string, unknown>): boolean {
     const props = candidate.getProps() as Record<string, unknown>;
     return Object.entries(query).every(([key, value]) => {
-      if (typeof value === 'object' && value !== null && '$ne' in value) {
-        return props[key] !== (value as { $ne: unknown }).$ne;
+      const candidateValue = key === '_id' ? candidate.id : props[key];
+      if (typeof value === 'object' && value !== null) {
+        if ('$ne' in value) {
+          return candidateValue !== (value as { $ne: unknown }).$ne;
+        }
+        if ('$in' in value) {
+          return (value as { $in: unknown[] }).$in.includes(candidateValue);
+        }
       }
-      return props[key] === value;
+      return candidateValue === value;
     });
   }
 }
@@ -126,6 +136,15 @@ class MemberRepositoryDouble
       (candidate) => candidate.tenantId === tenantId && candidate.userId === userId,
     );
     return member ? Some(member) : None;
+  }
+
+  async findActiveTenantIdsByUserId(userId: string): Promise<string[]> {
+    return [...this.records.values()]
+      .filter(
+        (candidate) =>
+          candidate.userId === userId && candidate.getProps().status === TenantMemberStatus.ACTIVE,
+      )
+      .map((candidate) => candidate.tenantId);
   }
 
   async exists(tenantId: string, userId: string, role: TenantMemberRole): Promise<boolean> {
@@ -161,6 +180,7 @@ describe('Tenants CQRS application', () => {
       providers: [
         ...TenantCommandHandlers,
         ...TenantQueryHandlers,
+        ListTenantsHandler,
         ...MembershipCommandHandlers,
         ...MembershipQueryHandlers,
         ...DriverCommandHandlers,
@@ -260,6 +280,20 @@ describe('Tenants CQRS application', () => {
         (member) => member.userId === 'driver-1' && member.role === TenantMemberRole.DRIVER,
       ),
     ).toBe(true);
+  });
+
+  it('returns only tenants where the user has an active membership', async () => {
+    const accessible = await commands.execute<ProvisionTenantCommand, Tenant>(
+      new ProvisionTenantCommand('Accessible Region', 'owner-6'),
+    );
+    await commands.execute(new ProvisionTenantCommand('Different Organization', 'different-owner'));
+
+    const result = await queries.execute<ListTenantsQuery, Paginated<Tenant>>(
+      new ListTenantsQuery('owner-6', 1, 20),
+    );
+
+    expect(result.data.map((tenant) => tenant.id)).toEqual([accessible.id]);
+    expect(result.count).toBe(1);
   });
 
   it('suspends and removes a tenant member', async () => {

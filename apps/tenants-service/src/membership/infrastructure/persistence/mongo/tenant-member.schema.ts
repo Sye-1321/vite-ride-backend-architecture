@@ -26,3 +26,4 @@ TenantMemberSchema.index(
   { tenantId: 1, userId: 1, role: 1 },
   { unique: true, partialFilterExpression: { isDeleted: false } },
 );
+TenantMemberSchema.index({ userId: 1, status: 1, tenantId: 1 });

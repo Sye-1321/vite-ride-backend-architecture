@@ -46,6 +46,7 @@ message ListTenantsRequest {
   uint32 page = 1;
   uint32 limit = 2;
   TenantStatus status = 3;
+  string user_id = 4;
 }
 
 message TenantResponse {

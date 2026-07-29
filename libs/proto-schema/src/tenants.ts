@@ -45,6 +45,7 @@ export interface ListTenantsRequest {
   page: number;
   limit: number;
   status: ProtoTenantStatus;
+  userId: string;
 }
 
 export interface TenantResponse {
