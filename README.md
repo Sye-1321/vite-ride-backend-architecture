@@ -32,11 +32,11 @@ Redis. Notifications uses dry-run SMS and push adapters by default.
 
 | Application   | Transport | Default           | Documentation                                 |
 | ------------- | --------- | ----------------- | --------------------------------------------- |
-| API Gateway   | HTTP      | `:3000/vite-ride` | [Guide](apps/api-gateway/Readme.md)           |
-| Identity      | gRPC      | `:50051`          | [Guide](apps/identity-service/Readme.md)      |
-| Authorization | gRPC      | `:50052`          | [Guide](apps/authorization-service/Readme.md) |
-| Tenants       | gRPC      | `:50053`          | [Guide](apps/tenants-service/Readme.md)       |
-| Notifications | gRPC      | `:50054`          | [Guide](apps/notifications-service/Readme.md) |
+| API Gateway   | HTTP      | `:3000/vite-ride` | [Guide](apps/api-gateway/README.md)           |
+| Identity      | gRPC      | `:50051`          | [Guide](apps/identity-service/README.md)      |
+| Authorization | gRPC      | `:50052`          | [Guide](apps/authorization-service/README.md) |
+| Tenants       | gRPC      | `:50053`          | [Guide](apps/tenants-service/README.md)       |
+| Notifications | gRPC      | `:50054`          | [Guide](apps/notifications-service/README.md) |
 
 ### Verified service flows
 
@@ -57,19 +57,19 @@ Every retained library has its own technical boundary guide.
 
 | Library                                             | Purpose                                                |
 | --------------------------------------------------- | ------------------------------------------------------ |
-| [Adapters](libs/adapters/Readme.md)                 | Hashing, token, OTP, and logging adapters              |
-| [Application Core](libs/application-core/Readme.md) | Application decorator and guard scaffolding            |
-| [Audit](libs/audit/Readme.md)                       | Audit value objects, factories, and mapping            |
-| [Auth](libs/auth/Readme.md)                         | JWT contracts, token adapter, and strategies           |
-| [Common](libs/common/Readme.md)                     | Errors, filters, guards, validation, and API utilities |
-| [Context](libs/context/Readme.md)                   | HTTP and gRPC request-context propagation              |
-| [Persistence](libs/persistence/Readme.md)           | Mongo connection and repository foundations            |
-| [Proto Schema](libs/proto-schema/Readme.md)         | Internal gRPC contracts                                |
-| [Realtime](libs/realtime/Readme.md)                 | Authenticated Socket.IO and Redis fan-out adapter      |
-| [Redis](libs/redis/Readme.md)                       | Redis connectivity                                     |
-| [Redis Store](libs/redis-store/Readme.md)           | Redis key-value repository bases                       |
-| [Routing](libs/routing/Readme.md)                   | Geocoding and route-metric abstraction                 |
-| [Shared Kernel](libs/shared-kernel/Readme.md)       | Domain primitives, ports, and injection tokens         |
+| [Adapters](libs/adapters/README.md)                 | Hashing, token, OTP, and logging adapters              |
+| [Application Core](libs/application-core/README.md) | Application decorator and guard scaffolding            |
+| [Audit](libs/audit/README.md)                       | Audit value objects, factories, and mapping            |
+| [Auth](libs/auth/README.md)                         | JWT contracts, token adapter, and strategies           |
+| [Common](libs/common/README.md)                     | Errors, filters, guards, validation, and API utilities |
+| [Context](libs/context/README.md)                   | HTTP and gRPC request-context propagation              |
+| [Persistence](libs/persistence/README.md)           | Mongo connection and repository foundations            |
+| [Proto Schema](libs/proto-schema/README.md)         | Internal gRPC contracts                                |
+| [Realtime](libs/realtime/README.md)                 | Authenticated Socket.IO and Redis fan-out adapter      |
+| [Redis](libs/redis/README.md)                       | Redis connectivity                                     |
+| [Redis Store](libs/redis-store/README.md)           | Redis key-value repository bases                       |
+| [Routing](libs/routing/README.md)                   | Geocoding and route-metric abstraction                 |
+| [Shared Kernel](libs/shared-kernel/README.md)       | Domain primitives, ports, and injection tokens         |
 
 Routing and Realtime are reusable libraries; they are not active applications
 in the runnable core flow.
@@ -149,8 +149,8 @@ The default API base is `http://127.0.0.1:3000/vite-ride`.
 | `PUSH_DRIVER`                 | `dry-run`              | Notifications |
 
 JWT secrets and expiration settings are documented in the
-[Identity](apps/identity-service/Readme.md) and
-[Gateway](apps/api-gateway/Readme.md) guides. External notification credentials
+[Identity](apps/identity-service/README.md) and
+[Gateway](apps/api-gateway/README.md) guides. External notification credentials
 are required only when their live drivers are selected.
 
 ## Verification
@@ -189,21 +189,6 @@ focused test suites. External notification providers are not contacted.
 
 These controls establish the verified repository boundary; they do not by
 themselves establish production readiness.
-
-## Git workflow
-
-Implementation work is organized on focused topic branches and integrated with
-explicit `--no-ff` merge commits. The annotated
-`core-services-baseline-2026-07-28` tag preserves the starting point. The
-history includes configuration, contract, service, test, and documentation
-commits that can be reviewed independently.
-
-Useful inspection commands:
-
-```bash
-git log --graph --oneline --decorate --all
-git diff core-services-baseline-2026-07-28..core-services-hardening-2026-07-28
-```
 
 ## Known limitations
 
