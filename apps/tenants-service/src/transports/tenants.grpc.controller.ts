@@ -179,6 +179,7 @@ export class TenantsGrpcController {
       FAILED_PRECONDITION: status.FAILED_PRECONDITION,
       INVALID_ARGUMENT: status.INVALID_ARGUMENT,
       NOT_FOUND: status.NOT_FOUND,
+      UNAVAILABLE: status.UNAVAILABLE,
     } as const;
     throw new RpcException({ code: codes[error.code], message: error.message });
   }

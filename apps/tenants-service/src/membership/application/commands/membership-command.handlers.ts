@@ -6,6 +6,10 @@ import { AuditFactory } from '@app/audit';
 import { TYPES } from '@app/shared-kernel';
 
 import { TenantRepositoryPort } from '../../../tenants/application/ports';
+import {
+  USER_DIRECTORY_PORT,
+  UserDirectoryPort,
+} from '../../../users/application/user-directory.port';
 import { TenantMember } from '../../domain/membership.entity';
 import { TenantMemberRepositoryPort } from '../ports';
 import { AddMemberCommand, RemoveMemberCommand, SuspendMemberCommand } from './membership.commands';
@@ -32,6 +36,8 @@ export class AddMemberHandler implements ICommandHandler<AddMemberCommand> {
     private readonly tenants: TenantRepositoryPort,
     @Inject(TYPES.TenantMemberRepositoryPort)
     private readonly members: TenantMemberRepositoryPort,
+    @Inject(USER_DIRECTORY_PORT)
+    private readonly users: UserDirectoryPort,
   ) {}
 
   async execute(command: AddMemberCommand): Promise<TenantMember> {
@@ -40,6 +46,7 @@ export class AddMemberHandler implements ICommandHandler<AddMemberCommand> {
     if ((await this.tenants.findById(tenantId)).isNone()) {
       throw new ApplicationError('NOT_FOUND', 'Tenant not found');
     }
+    await this.users.assertExists(userId);
     if (await this.members.exists(tenantId, userId, command.role)) {
       throw new ApplicationError('ALREADY_EXISTS', 'Tenant membership already exists');
     }

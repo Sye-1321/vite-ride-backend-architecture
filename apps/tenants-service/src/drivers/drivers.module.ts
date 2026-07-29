@@ -6,6 +6,7 @@ import { TYPES } from '@app/shared-kernel';
 
 import { MembershipModule } from '../membership/membership.module';
 import { TenantModule } from '../tenants/tenants.module';
+import { UsersModule } from '../users/users.module';
 import { DriverCommandHandlers, DriverQueryHandlers } from './application';
 import {
   DriverMapper,
@@ -20,6 +21,7 @@ import { DriverDataModel, DriverSchema } from './infrastructure/persistence/mong
     CqrsModule,
     TenantModule,
     MembershipModule,
+    UsersModule,
     MongooseModule.forFeature(
       [{ name: DriverDataModel.name, schema: DriverSchema }],
       'TenantsConnection',

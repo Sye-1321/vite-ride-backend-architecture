@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { TYPES } from '@app/shared-kernel';
 
 import { TenantModule } from '../tenants/tenants.module';
+import { UsersModule } from '../users/users.module';
 import { MembershipCommandHandlers, MembershipQueryHandlers } from './application';
 import { TenantMemberMapper, TenantMemberMongoRepository } from './infrastructure/persistence';
 import {
@@ -16,6 +17,7 @@ import {
   imports: [
     CqrsModule,
     TenantModule,
+    UsersModule,
     MongooseModule.forFeature(
       [{ name: TenantMemberDataModel.name, schema: TenantMemberSchema }],
       'TenantsConnection',

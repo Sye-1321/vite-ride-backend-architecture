@@ -43,6 +43,7 @@ import { TenantRepositoryPort } from './tenants/application/ports';
 import { TenantQueryHandlers } from './tenants/application/queries';
 import { Tenant } from './tenants/domain/tenant.entity';
 import { TenantStatus } from './tenants/domain/tenant.types';
+import { USER_DIRECTORY_PORT, UserDirectoryPort } from './users/application/user-directory.port';
 
 abstract class RepositoryDouble<Aggregate extends AggregateRoot<object>>
   implements RepositoryPort<Aggregate>
@@ -198,6 +199,12 @@ describe('Tenants CQRS application', () => {
               await drivers.insert(driver);
             },
           }),
+        },
+        {
+          provide: USER_DIRECTORY_PORT,
+          useValue: {
+            assertExists: jest.fn().mockResolvedValue(undefined),
+          } satisfies UserDirectoryPort,
         },
       ],
     }).compile();

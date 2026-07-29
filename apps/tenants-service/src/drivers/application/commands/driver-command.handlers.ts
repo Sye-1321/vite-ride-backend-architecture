@@ -9,6 +9,10 @@ import { TenantMemberRepositoryPort } from '../../../membership/application/port
 import { TenantMember } from '../../../membership/domain/membership.entity';
 import { TenantMemberRole } from '../../../membership/domain/membership.types';
 import { TenantRepositoryPort } from '../../../tenants/application/ports';
+import {
+  USER_DIRECTORY_PORT,
+  UserDirectoryPort,
+} from '../../../users/application/user-directory.port';
 import { Driver } from '../../domain/driver.entity';
 import { DRIVER_REGISTRATION_PORT, DriverRegistrationPort, DriverRepositoryPort } from '../ports';
 import { RegisterDriverCommand } from './driver.commands';
@@ -24,6 +28,8 @@ export class RegisterDriverHandler implements ICommandHandler<RegisterDriverComm
     private readonly drivers: DriverRepositoryPort,
     @Inject(DRIVER_REGISTRATION_PORT)
     private readonly registration: DriverRegistrationPort,
+    @Inject(USER_DIRECTORY_PORT)
+    private readonly users: UserDirectoryPort,
   ) {}
 
   async execute(command: RegisterDriverCommand): Promise<Driver> {
@@ -32,6 +38,7 @@ export class RegisterDriverHandler implements ICommandHandler<RegisterDriverComm
     if ((await this.tenants.findById(tenantId)).isNone()) {
       throw new ApplicationError('NOT_FOUND', 'Tenant not found');
     }
+    await this.users.assertExists(userId);
     if ((await this.drivers.findByUserIdAndTenantId(userId, tenantId)).isSome()) {
       throw new ApplicationError('ALREADY_EXISTS', 'Driver already exists');
     }
