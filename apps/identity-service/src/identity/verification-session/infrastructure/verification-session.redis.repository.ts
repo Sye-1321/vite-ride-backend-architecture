@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { GlobalRedisRepositoryBase } from '@app/redis-store';
 import { VerificationSessionRepositoryPort } from '../application/ports';
 import { VerificationSession } from '../domain/verification-session.entity';
@@ -7,15 +7,10 @@ import { VerificationSessionMapper } from './verification-session.mapper';
 
 @Injectable()
 export class VerificationSessionRedisRepository
-  extends GlobalRedisRepositoryBase<
-    VerificationSession,
-    VerificationSessionKey
-  >
+  extends GlobalRedisRepositoryBase<VerificationSession, VerificationSessionKey>
   implements VerificationSessionRepositoryPort
 {
-  constructor(
-    private readonly mapper: VerificationSessionMapper,
-  ) {
+  constructor(private readonly mapper: VerificationSessionMapper) {
     super();
   }
 

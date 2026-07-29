@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 
 import { UserGrpcClient } from '../client/user.grpc.client';
 
@@ -25,12 +17,8 @@ import {
   SearchUsersQueryDto,
 } from '../dto';
 
-import {
-  AccessAuthGuard,
-  RefreshAuthGuard,
-  GetCurrentUser,
-  GetCurrentUserId,
-} from '@app/common';
+import { AuthorizationGuard, RequirePermission } from '@app/application-core';
+import { AccessAuthGuard, RefreshAuthGuard, GetCurrentUser, GetCurrentUserId } from '@app/common';
 
 import { mapDomainPurposeToProto } from '../mappers/user-verification-purpose.mapper';
 import { mapDomainUserStatusToProto } from '../mappers/user-status.mapper';
@@ -38,9 +26,7 @@ import { UserStatus } from '@app/proto-schema';
 
 @Controller('users')
 export class UserController {
-  constructor(
-    private readonly userGrpc: UserGrpcClient,
-  ) {}
+  constructor(private readonly userGrpc: UserGrpcClient) {}
 
   @Post('login')
   login(@Body() dto: LoginRequestDto) {
@@ -49,10 +35,10 @@ export class UserController {
 
   @UseGuards(RefreshAuthGuard)
   @Post('refresh-token')
-  refreshAccessToken(@GetCurrentUser() user: any) {
+  refreshAccessToken(@GetCurrentUser() user: { userId: string; refreshToken: string }) {
     return this.userGrpc.refreshAccessToken({
       userId: user.userId,
-      refreshToken: user.token,
+      refreshToken: user.refreshToken,
     });
   }
 
@@ -61,7 +47,6 @@ export class UserController {
   logout(@GetCurrentUserId() userId: string) {
     return this.userGrpc.logout({ userId });
   }
-
 
   @Post('register')
   register(@Body() dto: RegisterUserRequestDto) {
@@ -86,13 +71,9 @@ export class UserController {
     return this.userGrpc.requestAccountVerification(dto);
   }
 
-
   @UseGuards(AccessAuthGuard)
   @Post('change-password')
-  changePassword(
-    @GetCurrentUserId() userId: string,
-    @Body() dto: ChangePasswordRequestDto,
-  ) {
+  changePassword(@GetCurrentUserId() userId: string, @Body() dto: ChangePasswordRequestDto) {
     return this.userGrpc.changePassword({
       userId,
       currentPassword: dto.currentPassword,
@@ -109,7 +90,6 @@ export class UserController {
   confirmPasswordReset(@Body() dto: ConfirmPasswordResetRequestDto) {
     return this.userGrpc.confirmPasswordReset(dto);
   }
-
 
   @UseGuards(AccessAuthGuard)
   @Post('request-phone-change')
@@ -130,7 +110,6 @@ export class UserController {
     return this.userGrpc.confirmPhoneNumberChange(dto);
   }
 
-
   @UseGuards(AccessAuthGuard)
   @Get('me')
   getMyProfile(@GetCurrentUserId() userId: string) {
@@ -139,10 +118,7 @@ export class UserController {
 
   @UseGuards(AccessAuthGuard)
   @Post('me')
-  updateMyProfile(
-    @GetCurrentUserId() userId: string,
-    @Body() dto: UpdateMyProfileRequestDto,
-  ) {
+  updateMyProfile(@GetCurrentUserId() userId: string, @Body() dto: UpdateMyProfileRequestDto) {
     return this.userGrpc.updateMyProfile({
       userId,
       firstName: dto.firstName,
@@ -156,8 +132,9 @@ export class UserController {
     return this.userGrpc.deactivateUser({ userId });
   }
 
-
   @Get()
+  @RequirePermission('user', 'read')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   listUsers(@Query() query: ListUsersQueryDto) {
     return this.userGrpc.listUsers({
       pagination: {
@@ -172,6 +149,8 @@ export class UserController {
   }
 
   @Get('search')
+  @RequirePermission('user', 'read')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   searchUsers(@Query() query: SearchUsersQueryDto) {
     return this.userGrpc.searchUsers({
       pagination: {
@@ -184,27 +163,36 @@ export class UserController {
   }
 
   @Get(':userId')
+  @RequirePermission('user', 'read')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   getUserById(@Param('userId') userId: string) {
     return this.userGrpc.getUserById({ userId });
   }
 
   @Post('exists')
+  @RequirePermission('user', 'read')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   checkUserExistsByPhone(@Body() dto: PhoneNumberRequestDto) {
     return this.userGrpc.checkUserExistsByPhone(dto);
   }
 
-
   @Post(':userId/suspend')
+  @RequirePermission('user', 'update')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   suspend(@Param('userId') userId: string) {
     return this.userGrpc.suspendUser({ userId });
   }
 
   @Post(':userId/unsuspend')
+  @RequirePermission('user', 'update')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   unsuspend(@Param('userId') userId: string) {
     return this.userGrpc.unsuspendUser({ userId });
   }
 
   @Post(':userId/delete')
+  @RequirePermission('user', 'delete')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   deleteUser(@Param('userId') userId: string) {
     return this.userGrpc.deleteUser({ userId });
   }

@@ -2,7 +2,6 @@ import { ArgumentNotProvidedException } from '@app/common/exceptions';
 import { ValueObject } from '@app/shared-kernel';
 import { UserVerificationPurpose } from '../../user/application/types';
 
-
 export interface VerificationSessionKeyProps {
   purpose: UserVerificationPurpose;
   verificationToken: string;
@@ -39,8 +38,6 @@ export class VerificationSessionKey extends ValueObject<VerificationSessionKeyPr
   }
 
   static rehydrate(props: VerificationSessionKeyProps): VerificationSessionKey {
-    console.log(props.purpose, "purpose");
-    console.log(props.verificationToken, "verificationToken");
     return new VerificationSessionKey(props);
   }
 }

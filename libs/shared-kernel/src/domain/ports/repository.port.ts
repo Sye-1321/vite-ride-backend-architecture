@@ -27,16 +27,14 @@ export type PaginatedQueryParams = {
   orderBy?: OrderBy;
 };
 
-export interface RepositoryPort<
-  Aggregate extends AggregateRoot<any>
-> {
+export interface RepositoryPort<Aggregate extends AggregateRoot<unknown>> {
   findById(id: string): Promise<Option<Aggregate>>;
-  findOne(query: Record<string, any>): Promise<Option<Aggregate>>;
+  findOne(query: Record<string, unknown>): Promise<Option<Aggregate>>;
   findAll(): Promise<Aggregate[]>;
 
   findAllPaginated(
     params: PaginatedQueryParams,
-    filter?: Record<string, any>,
+    filter?: Record<string, unknown>,
   ): Promise<Paginated<Aggregate>>;
 
   insert(entity: Aggregate | Aggregate[]): Promise<void>;

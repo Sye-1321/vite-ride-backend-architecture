@@ -1,9 +1,8 @@
-import {
-  RouteMetrics,
-} from '../../application/ports/routing.service.port';
+import { RouteMetrics } from '../../application/ports/routing.service.port';
+import { OsrmResponse } from './osrm.client';
 
 export class OsrmMapper {
-  static toRouteMetrics(raw: any): RouteMetrics {
+  static toRouteMetrics(raw: OsrmResponse): RouteMetrics {
     const route = raw.routes[0];
 
     return {

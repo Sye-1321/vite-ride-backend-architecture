@@ -1,55 +1,50 @@
 # Adapters Library
 
-- Shared infrastructure adapter implementations used across the monorepo.
-- Provides concrete implementations for domain ports while keeping the domain layer isolated.
+Reusable infrastructure implementations for shared application ports.
 
----
+## Responsibilities
 
-## Purpose
+- Password hashing with bcrypt.
+- Cryptographically secure numeric OTP generation.
+- Opaque token generation.
+- Structured JSON logging with recursive sensitive-field redaction.
+- Global Nest provider bindings through `AdaptersModule`.
 
-`@app/adapters` centralizes reusable **port implementations** to ensure consistency and avoid duplication across microservices.
+The library contains no service-specific business rules.
 
----
+## Structured logging
 
-## Scope
+`AppLoggerAdapter` implements both the shared `LoggerPort` and Nest's
+`LoggerService`. Entries include an ISO timestamp, level, service, message, and
+optional structured details. Passwords, tokens, credentials, phone numbers,
+recipients, notification bodies, and related nested values are redacted before
+serialization.
 
-Adapters in this library:
-- Implement ports defined in the shared kernel
-- Are stateless, lightweight, and easily replaceable
+Applications can use one logger for Nest bootstrap and application logging:
 
-This library must not contain business logic or domain decisions.
+```ts
+const logger = new AppLoggerAdapter('api-gateway');
+const app = await NestFactory.create(AppModule, { logger });
+```
 
----
-
-## Structure
-
-Organized by implementation responsibility:
-
-- `*-hasher.adapter.ts` – Hashing implementations
-- `*-otp-generator.adapter.ts` – OTP generation strategies
-- `*-token-generator.adapter.ts` – Token generation implementations
-- `*-logger.adapter.ts` – Logging adapters
-
-Each adapter implements **one domain port** and remains domain-agnostic.
-
----
-
-## Guidelines
-
-1. Implement ports from `shared-kernel/domain/ports`.
-2. Do not introduce business logic or validation.
-3. Do not define NestJS modules or provider bindings.
-4. Export all adapters through the root `index.ts`.
-
----
+Application providers should inject `TYPES.LoggerPort` rather than instantiate
+transport-specific loggers.
 
 ## Importing
 
-Always import via the package root:
-
 ```ts
 import {
+  AdaptersModule,
+  AppLoggerAdapter,
   BcryptHasher,
   NumericOtpGenerator,
   RandomTokenGenerator,
 } from '@app/adapters';
+```
+
+## Verification
+
+```bash
+npx jest --config jest.config.js --runInBand \
+  --runTestsByPath libs/adapters/src/app-logger.adapter.spec.ts
+```

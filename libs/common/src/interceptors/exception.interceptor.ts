@@ -12,10 +12,7 @@ import { catchError } from 'rxjs/operators';
 
 import { ApiErrorResponse } from '../api';
 import { TYPES } from '@app/shared-kernel';
-import {
-  RequestContextAccessor,
-  RequestContext,
-} from '@app/context';
+import { RequestContextAccessor, RequestContext } from '@app/context';
 
 @Injectable()
 export class ExceptionInterceptor implements NestInterceptor {
@@ -26,10 +23,7 @@ export class ExceptionInterceptor implements NestInterceptor {
     private readonly requestContextAccessor: RequestContextAccessor,
   ) {}
 
-  intercept(
-    _context: ExecutionContext,
-    next: CallHandler,
-  ): Observable<any> {
+  intercept(_context: ExecutionContext, next: CallHandler): Observable<unknown> {
     return next.handle().pipe(
       catchError((error) => {
         let ctx: RequestContext | undefined;
@@ -41,9 +35,7 @@ export class ExceptionInterceptor implements NestInterceptor {
 
         const correlationId = ctx?.correlationId ?? 'UNKNOWN';
 
-        this.logger.error(
-          `[${correlationId}] ${error?.message ?? 'Unhandled exception'}`,
-        );
+        this.logger.error(`[${correlationId}] ${error?.message ?? 'Unhandled exception'}`);
 
         const isClassValidatorError =
           error?.status === 400 &&

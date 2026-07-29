@@ -1,4 +1,4 @@
-import { Entity, ValueObject } from "../domain";
+import { Entity, ValueObject } from '../domain';
 
 function isEntity(obj: unknown): obj is Entity<unknown> {
   /**
@@ -13,7 +13,7 @@ function isEntity(obj: unknown): obj is Entity<unknown> {
   );
 }
 
-function toPlainObject(item: any): any {
+function toPlainObject(item: unknown): unknown {
   if (item === undefined || item === null) {
     return item;
   }
@@ -23,7 +23,7 @@ function toPlainObject(item: any): any {
   if (isEntity(item)) {
     return item.toObject();
   }
-  
+
   return item;
 }
 
@@ -32,17 +32,21 @@ function toPlainObject(item: any): any {
  * Useful for testing and debugging.
  * @param props
  */
-export function propsToObject(props: any): any {
+export function propsToObject<T>(props: T): T {
   const propsCopy = structuredClone(props);
+  if (typeof propsCopy !== 'object' || propsCopy === null) {
+    return toPlainObject(propsCopy) as T;
+  }
+  const record = propsCopy as Record<string, unknown>;
 
   // eslint-disable-next-line guard-for-in
-  for (const prop in propsCopy) {
-    if (Array.isArray(propsCopy[prop])) {
-      propsCopy[prop] = (propsCopy[prop] as Array<unknown>).map((item) => {
+  for (const prop in record) {
+    if (Array.isArray(record[prop])) {
+      record[prop] = (record[prop] as Array<unknown>).map((item) => {
         return toPlainObject(item);
       });
     }
-    propsCopy[prop] = toPlainObject(propsCopy[prop]);
+    record[prop] = toPlainObject(record[prop]);
   }
 
   return propsCopy;

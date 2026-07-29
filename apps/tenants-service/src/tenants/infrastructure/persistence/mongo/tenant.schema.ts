@@ -8,8 +8,11 @@ export type TenantDocument = TenantDataModel & Document;
 
 @Schema({ versionKey: false, timestamps: true })
 export class TenantDataModel extends MongoDocument {
-  @Prop({ required: true, unique: true, index: true })
+  @Prop({ required: true })
   name: string;
+
+  @Prop({ required: true, unique: true, index: true })
+  normalizedName: string;
 
   @Prop({ type: String, enum: Object.values(TenantStatus), required: true })
   status: TenantStatus;

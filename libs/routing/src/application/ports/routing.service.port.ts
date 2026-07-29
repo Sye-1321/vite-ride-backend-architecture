@@ -23,8 +23,5 @@ export interface RoutingServicePort {
 
   autocomplete(input: string): Promise<string[]>;
 
-  calculateRoute(
-    origin: Coordinates,
-    destination: Coordinates,
-  ): Promise<RouteMetrics>;
+  calculateRoute(origin: Coordinates, destination: Coordinates): Promise<RouteMetrics>;
 }

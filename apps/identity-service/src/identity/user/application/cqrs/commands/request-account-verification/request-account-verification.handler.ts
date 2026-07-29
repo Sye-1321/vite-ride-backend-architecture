@@ -4,8 +4,7 @@ import { Err, Ok, Result } from 'oxide.ts';
 
 import { TYPES } from '@app/shared-kernel';
 import { UserRepositoryPort } from '../../../ports';
-import { IVerificationSessionService } from
-  'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
+import { IVerificationSessionService } from 'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
 
 import { RequestAccountVerificationCommand } from './request-account-verification.command';
 import { NotFoundException } from '@app/common';
@@ -33,17 +32,10 @@ export class RequestAccountVerificationHandler
 
   async execute(
     command: RequestAccountVerificationCommand,
-  ): Promise<
-    Result<
-      RequestAccountVerificationResult,
-      | NotFoundException
-      | Error
-    >
-  > {
+  ): Promise<Result<RequestAccountVerificationResult, NotFoundException | Error>> {
     const { phoneNumber } = command;
 
-    const userResult =
-      await this.userRepository.findByPhoneNumber(phoneNumber);
+    const userResult = await this.userRepository.findByPhoneNumber(phoneNumber);
 
     if (userResult.isNone()) {
       return Err(new NotFoundException('User not found'));
@@ -61,12 +53,11 @@ export class RequestAccountVerificationHandler
       phoneNumber: user.phoneNumber,
     };
 
-    const sessionResult =
-      await this.verificationSessionService.requestSession(
-        target,
-        UserVerificationPurpose.ACCOUNT_VERIFICATION,
-        { userId: user.id },
-      );
+    const sessionResult = await this.verificationSessionService.requestSession(
+      target,
+      UserVerificationPurpose.ACCOUNT_VERIFICATION,
+      { userId: user.id },
+    );
 
     if (sessionResult.isErr()) {
       return Err(sessionResult.unwrapErr());

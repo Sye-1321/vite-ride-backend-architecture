@@ -1,9 +1,7 @@
 import { ResponseBase } from './response.base';
 import { Audit } from '@app/audit';
 
-export function mapAuditToResponse(
-  audit: Audit,
-): ResponseBase {
+export function mapAuditToResponse(audit: Audit): ResponseBase {
   const props = audit.unpack();
 
   return {

@@ -1,11 +1,6 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { from } from 'rxjs';
-import { join } from 'path';
-import { promisify } from 'util';
-
-import * as grpc from '@grpc/grpc-js';
-import { loadPackageDefinition } from '@grpc/grpc-js';
-import { loadSync } from '@grpc/proto-loader';
 
 import {
   LoginRequest,
@@ -40,12 +35,17 @@ import {
   UnsuspendUserRequest,
   DeleteUserRequest,
   Empty,
+  IDENTITY_PACKAGE_NAME,
+  USER_SERVICE_NAME,
 } from '@app/proto-schema';
 
 import { GrpcClientContextInterceptor } from '@app/context';
 
+import { GatewayConfig } from '../../config';
+import { createGrpcUnaryClient, GrpcClientLifecycle } from '../../grpc/grpc-unary-client.factory';
+
 @Injectable()
-export class UserGrpcClient implements OnModuleInit {
+export class UserGrpcClient implements OnModuleInit, OnApplicationShutdown {
   private svc!: {
     login: (d: LoginRequest) => Promise<LoginResponse>;
     refreshAccessToken: (d: RefreshAccessTokenRequest) => Promise<RefreshAccessTokenResponse>;
@@ -53,103 +53,87 @@ export class UserGrpcClient implements OnModuleInit {
     registerUser: (d: RegisterUserRequest) => Promise<RegisterUserResponse>;
     verifyUser: (d: VerifyUserRequest) => Promise<Empty>;
     requestAccountVerification: (
-      d: RequestAccountVerificationRequest
+      d: RequestAccountVerificationRequest,
     ) => Promise<RequestAccountVerificationResponse>;
     resendVerification: (d: ResendVerificationRequest) => Promise<RegisterUserResponse>;
     changePassword: (d: ChangePasswordRequest) => Promise<Empty>;
     requestPasswordReset: (d: RequestPasswordResetRequest) => Promise<RequestPasswordResetResponse>;
     confirmPasswordReset: (d: ConfirmPasswordResetRequest) => Promise<Empty>;
     requestPhoneNumberChange: (
-      d: RequestPhoneNumberChangeRequest
+      d: RequestPhoneNumberChangeRequest,
     ) => Promise<RequestPhoneNumberChangeResponse>;
     confirmPhoneNumberChange: (d: ConfirmPhoneNumberChangeRequest) => Promise<Empty>;
     updateMyProfile: (d: UpdateMyProfileRequest) => Promise<Empty>;
-    deactivateUser: (d: DeactivateMyAccountRequest) => Promise<Empty>;
+    deactivateMyAccount: (d: DeactivateMyAccountRequest) => Promise<Empty>;
     getMyProfile: (d: GetMyProfileRequest) => Promise<UserResponse>;
     getUserById: (d: GetUserByIdRequest) => Promise<UserResponse>;
     listUsers: (d: ListUsersRequest) => Promise<PaginatedUsersResponse>;
     searchUsers: (d: SearchUsersRequest) => Promise<PaginatedUsersResponse>;
     checkUserExistsByPhone: (
-      d: CheckUserExistsByPhoneRequest
+      d: CheckUserExistsByPhoneRequest,
     ) => Promise<CheckUserExistsByPhoneResponse>;
     suspendUser: (d: SuspendUserRequest) => Promise<Empty>;
     unsuspendUser: (d: UnsuspendUserRequest) => Promise<Empty>;
     deleteUser: (d: DeleteUserRequest) => Promise<Empty>;
-  };
+  } & GrpcClientLifecycle;
 
   constructor(
     private readonly grpcContextInterceptor: GrpcClientContextInterceptor,
+    private readonly configService: ConfigService,
   ) {}
 
   onModuleInit() {
-    const protoPath = join(
-      process.cwd(),
-      'libs/proto-schema/proto/identity.proto',
-    );
+    const config = this.configService.get<GatewayConfig>('gateway');
+    if (!config) {
+      throw new Error('Gateway configuration is unavailable');
+    }
 
-    const pkgDef = loadSync(protoPath, {
-      keepCase: true,
-      longs: String,
-      enums: String,
-      defaults: true,
-      oneofs: true,
+    this.svc = createGrpcUnaryClient<typeof this.svc>({
+      packageName: IDENTITY_PACKAGE_NAME,
+      serviceName: USER_SERVICE_NAME,
+      protoFile: 'identity.proto',
+      url: config.IDENTITY_GRPC_URL,
+      methods: [
+        'login',
+        'refreshAccessToken',
+        'logout',
+        'registerUser',
+        'verifyUser',
+        'requestAccountVerification',
+        'resendVerification',
+        'changePassword',
+        'requestPasswordReset',
+        'confirmPasswordReset',
+        'requestPhoneNumberChange',
+        'confirmPhoneNumberChange',
+        'updateMyProfile',
+        'deactivateMyAccount',
+        'getMyProfile',
+        'getUserById',
+        'listUsers',
+        'searchUsers',
+        'checkUserExistsByPhone',
+        'suspendUser',
+        'unsuspendUser',
+        'deleteUser',
+      ],
+      contextInterceptor: this.grpcContextInterceptor,
     });
-
-    const grpcPkg: any = loadPackageDefinition(pkgDef);
-
-    const client = new grpcPkg.identity.UserService(
-      'localhost:50051',
-      grpc.credentials.createInsecure(),
-      {
-        interceptors: [this.grpcContextInterceptor.interceptor()],
-      },
-    );
-
-    this.svc = {
-      login: promisify(client.login.bind(client)),
-      refreshAccessToken: promisify(client.refreshAccessToken.bind(client)),
-      logout: promisify(client.logout.bind(client)),
-
-      registerUser: promisify(client.registerUser.bind(client)),
-      verifyUser: promisify(client.verifyUser.bind(client)),
-      requestAccountVerification: promisify(
-        client.requestAccountVerification.bind(client),
-      ),
-      resendVerification: promisify(client.resendVerification.bind(client)),
-
-      changePassword: promisify(client.changePassword.bind(client)),
-      requestPasswordReset: promisify(client.requestPasswordReset.bind(client)),
-      confirmPasswordReset: promisify(client.confirmPasswordReset.bind(client)),
-
-      requestPhoneNumberChange: promisify(
-        client.requestPhoneNumberChange.bind(client),
-      ),
-      confirmPhoneNumberChange: promisify(
-        client.confirmPhoneNumberChange.bind(client),
-      ),
-
-      updateMyProfile: promisify(client.updateMyProfile.bind(client)),
-      deactivateUser: promisify(client.deactivateMyAccount.bind(client)),
-
-      getMyProfile: promisify(client.getMyProfile.bind(client)),
-      getUserById: promisify(client.getUserById.bind(client)),
-      listUsers: promisify(client.listUsers.bind(client)),
-      searchUsers: promisify(client.searchUsers.bind(client)),
-      checkUserExistsByPhone: promisify(
-        client.checkUserExistsByPhone.bind(client),
-      ),
-
-      suspendUser: promisify(client.suspendUser.bind(client)),
-      unsuspendUser: promisify(client.unsuspendUser.bind(client)),
-      deleteUser: promisify(client.deleteUser.bind(client)),
-    };
   }
 
-  login(d: LoginRequest) { return from(this.svc.login(d)); }
+  onApplicationShutdown(): void {
+    this.svc?.close();
+  }
+
+  login(d: LoginRequest) {
+    return from(this.svc.login(d));
+  }
   refreshAccessToken(d: RefreshAccessTokenRequest) {
     return from(this.svc.refreshAccessToken(d));
   }
-  logout(d: LogoutRequest) { return from(this.svc.logout(d)); }
+  logout(d: LogoutRequest) {
+    return from(this.svc.logout(d));
+  }
 
   registerUser(d: RegisterUserRequest) {
     return from(this.svc.registerUser(d));
@@ -185,7 +169,7 @@ export class UserGrpcClient implements OnModuleInit {
     return from(this.svc.updateMyProfile(d));
   }
   deactivateUser(d: DeactivateMyAccountRequest) {
-    return from(this.svc.deactivateUser(d));
+    return from(this.svc.deactivateMyAccount(d));
   }
 
   getMyProfile(d: GetMyProfileRequest) {

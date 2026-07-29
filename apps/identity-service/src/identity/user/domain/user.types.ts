@@ -1,5 +1,4 @@
-import { Audit, IAudit } from "@app/audit";
-
+import { Audit } from '@app/audit';
 
 export enum UserStatus {
   PENDING = 'PENDING',
@@ -8,8 +7,7 @@ export enum UserStatus {
   INACTIVE = 'INACTIVE',
 }
 
-
-export interface UserProps{
+export interface UserProps {
   firstName: string;
   lastName: string;
   phoneNumber: string;

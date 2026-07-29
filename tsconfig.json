@@ -20,6 +20,12 @@
       "@app/adapters/*": [
         "libs/adapters/src/*"
       ],
+      "@app/auth": [
+        "libs/auth/index.ts"
+      ],
+      "@app/auth/*": [
+        "libs/auth/*"
+      ],
       "@app/audit": [
         "libs/audit/src/index.ts"
       ],

@@ -1,28 +1,26 @@
-import { Injectable } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
-import { SmsPort } from '../sms.port';
+import { randomUUID } from 'crypto';
 import { firstValueFrom } from 'rxjs';
-import { ConfigService } from '@nestjs/config';
-import { AfroMessageConfig } from './config';
 
-@Injectable()
+import { ApplicationError } from '@app/application-core';
+import { LoggerPort } from '@app/shared-kernel';
+
+import { NotificationsConfig } from '../../config';
+import { DeliveryResult } from '../../delivery.types';
+import { SmsPort } from '../sms.port';
+
 export class AfroMessageAdapter implements SmsPort {
-  private readonly afroConfig: AfroMessageConfig;
-  private readonly baseUrl = 'https://api.afromessage.com/api/send';
-
   constructor(
     private readonly http: HttpService,
-    private readonly configService: ConfigService,
-  ) {
-    this.afroConfig = this.configService.get<AfroMessageConfig>('afromessage', {
-      infer: true,
-    });
-  }
+    private readonly config: NotificationsConfig,
+    private readonly logger: LoggerPort,
+  ) {}
 
   async sendSms(params: {
     to: string;
     message: string;
-  }): Promise<void> {
+    correlationId?: string;
+  }): Promise<DeliveryResult> {
     const payload = {
       to: params.to,
       message: params.message,
@@ -30,18 +28,23 @@ export class AfroMessageAdapter implements SmsPort {
 
     try {
       await firstValueFrom(
-        this.http.post(this.baseUrl, payload, {
+        this.http.post(this.config.AFROMESSAGE_BASE_URL, payload, {
           headers: {
-            Authorization: `Bearer ${this.afroConfig.AFROMESSAGE_API_TOKEN}`,
+            Authorization: `Bearer ${this.config.AFROMESSAGE_API_TOKEN}`,
+            ...(params.correlationId
+              ? {
+                  'X-Correlation-Id': params.correlationId,
+                }
+              : {}),
           },
+          maxRedirects: 0,
+          timeout: this.config.NOTIFICATION_PROVIDER_TIMEOUT_MS,
         }),
       );
-    } catch (error: any) {
-      throw new Error(
-        `AfroMessage API Error: ${error.response?.status} - ${
-          error.response?.data || error.message
-        }`,
-      );
+      return { deliveryId: randomUUID(), outcome: 'accepted' };
+    } catch (error) {
+      this.logger.error('SMS provider request failed', error, AfroMessageAdapter.name);
+      throw new ApplicationError('UNAVAILABLE', 'SMS provider is unavailable');
     }
   }
 }

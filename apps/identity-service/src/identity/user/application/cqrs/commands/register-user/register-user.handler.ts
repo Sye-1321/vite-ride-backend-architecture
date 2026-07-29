@@ -11,9 +11,7 @@ import { PhoneNumberAlreadyInUseError } from '../../../errors';
 import { User } from '../../../../domain/user.entity';
 import { UserProps } from '../../../../domain/user.types';
 
-import {
-  IVerificationSessionService,
-} from 'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
+import { IVerificationSessionService } from 'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
 
 import {
   VerificationChannel,
@@ -25,14 +23,10 @@ import { UserVerificationPurpose } from '../../../types';
 import { RequestContextAccessor } from '@app/context';
 import { ConflictException } from '@app/common';
 
-type RegisterUserErrors =
-  | PhoneNumberAlreadyInUseError
-  | Error;
+type RegisterUserErrors = PhoneNumberAlreadyInUseError | Error;
 
 @CommandHandler(RegisterUserCommand)
-export class RegisterUserHandler
-  implements ICommandHandler<RegisterUserCommand>
-{
+export class RegisterUserHandler implements ICommandHandler<RegisterUserCommand> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
@@ -82,12 +76,11 @@ export class RegisterUserHandler
       phoneNumber: user.phoneNumber,
     };
 
-    const sessionResult =
-      await this.verificationSessionService.requestSession(
-        target,
-        UserVerificationPurpose.ACCOUNT_VERIFICATION,
-        { userId: user.id },
-      );
+    const sessionResult = await this.verificationSessionService.requestSession(
+      target,
+      UserVerificationPurpose.ACCOUNT_VERIFICATION,
+      { userId: user.id },
+    );
 
     if (sessionResult.isErr()) {
       return Err(sessionResult.unwrapErr());

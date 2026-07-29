@@ -1,14 +1,10 @@
-import { mapAuditToResponse } from "@app/common";
-import { User } from "../domain/user.entity";
-import { UserResponse, UserResponseDto, UserSignedInResponse } from "./dto/user.response.dto";
-import { AuthTokens } from "./types";
-
+import { mapAuditToResponse } from '@app/common';
+import { User } from '../domain/user.entity';
+import { UserResponse, UserResponseDto, UserSignedInResponse } from './dto/user.response.dto';
+import { AuthTokens } from '@app/auth';
 
 export class UserParser {
-  static createUserResponse(
-    user: User,
-    tokens?: AuthTokens,
-  ): UserResponseDto {
+  static createUserResponse(user: User, tokens?: AuthTokens): UserResponseDto {
     const copy = user.getProps();
 
     const baseResponse: UserResponse = {
@@ -27,9 +23,7 @@ export class UserParser {
     return baseResponse;
   }
 
-  static usersResponse(
-  users: readonly User[],
-): UserResponseDto[] {
-  return users.map((user) => this.createUserResponse(user));
-}
+  static usersResponse(users: readonly User[]): UserResponseDto[] {
+    return users.map((user) => this.createUserResponse(user));
+  }
 }

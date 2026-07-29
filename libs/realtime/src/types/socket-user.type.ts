@@ -1,4 +1,4 @@
 export type SocketUser = {
-  userId: string;
-  phoneNumber: string;
+  readonly userId: string;
+  readonly phoneNumber: string;
 };

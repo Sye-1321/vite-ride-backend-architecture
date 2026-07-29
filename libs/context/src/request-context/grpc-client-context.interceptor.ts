@@ -4,9 +4,7 @@ import { ClsRequestContextAccessor } from './cls-request-context.accessor';
 
 @Injectable()
 export class GrpcClientContextInterceptor {
-  constructor(
-    private readonly ctx: ClsRequestContextAccessor,
-  ) {}
+  constructor(private readonly ctx: ClsRequestContextAccessor) {}
 
   interceptor(): grpc.Interceptor {
     return (options, nextCall) =>
@@ -14,10 +12,7 @@ export class GrpcClientContextInterceptor {
         start: (metadata, listener, next) => {
           const requestContext = this.ctx.get();
 
-          metadata.set(
-            'x-correlation-id',
-            requestContext.correlationId,
-          );
+          metadata.set('x-correlation-id', requestContext.correlationId);
 
           if (requestContext.userId) {
             metadata.set('x-user-id', requestContext.userId);

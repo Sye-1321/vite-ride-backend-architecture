@@ -3,7 +3,6 @@ import { Coordinates, RouteMetrics, RoutingServicePort } from '../application/po
 import { NominatimClient, NominatimMapper } from './nominatim';
 import { OsrmClient, OsrmMapper } from './osrm';
 
-
 @Injectable()
 export class RoutingService implements RoutingServicePort {
   private readonly nominatim = new NominatimClient();
@@ -22,10 +21,7 @@ export class RoutingService implements RoutingServicePort {
     return NominatimMapper.toSuggestions(results);
   }
 
-  async calculateRoute(
-    origin: Coordinates,
-    destination: Coordinates,
-  ): Promise<RouteMetrics> {
+  async calculateRoute(origin: Coordinates, destination: Coordinates): Promise<RouteMetrics> {
     const raw = await this.osrm.route(origin, destination);
     if (raw.code !== 'Ok') {
       throw new Error('Route calculation failed');

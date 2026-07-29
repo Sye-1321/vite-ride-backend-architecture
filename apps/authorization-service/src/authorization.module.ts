@@ -1,38 +1,39 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 
-import { AuthorizationQueryService } from './application/services/authorization-query.service';
-import { PolicyCommandService } from './application/services/policy-command.service';
-import { RoleAssignmentService } from './application/services/role-assignment.service';
-
-import { CasbinModule } from './engines/casbin/casbin.module';
-import { CasbinAuthorizationAdapter } from './engines/casbin/casbin-authorization.adapter';
-
+import { LoggingModule } from '@app/adapters';
 import { TYPES } from '@app/shared-kernel';
 
+import { AuthorizationQueryService } from './application/services/authorization-query.service';
+import { RoleAssignmentService } from './application/services/role-assignment.service';
+import authorizationConfig from './config/authorization.config';
+import { CasbinAuthorizationAdapter } from './engines/casbin/casbin-authorization.adapter';
+import { CasbinModule } from './engines/casbin/casbin.module';
+import { AuthorizationGrpcController } from './transports/grpc';
+
 @Module({
-  imports: [CasbinModule],
+  imports: [
+    LoggingModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [authorizationConfig],
+    }),
+    CasbinModule,
+  ],
+  controllers: [AuthorizationGrpcController],
   providers: [
     AuthorizationQueryService,
-    PolicyCommandService,
     RoleAssignmentService,
-
+    CasbinAuthorizationAdapter,
     {
       provide: TYPES.AuthorizationQueryPort,
-      useClass: CasbinAuthorizationAdapter,
-    },
-    {
-      provide: TYPES.PolicyCommandPort,
-      useClass: CasbinAuthorizationAdapter,
+      useExisting: CasbinAuthorizationAdapter,
     },
     {
       provide: TYPES.RoleAssignmentPort,
-      useClass: CasbinAuthorizationAdapter,
+      useExisting: CasbinAuthorizationAdapter,
     },
   ],
-  exports: [
-    AuthorizationQueryService,
-    PolicyCommandService,
-    RoleAssignmentService,
-  ],
+  exports: [AuthorizationQueryService, RoleAssignmentService],
 })
 export class AuthorizationModule {}

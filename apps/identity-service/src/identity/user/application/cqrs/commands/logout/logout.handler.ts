@@ -11,9 +11,7 @@ import { AuditFactory } from '@app/audit';
 import { RequestContextAccessor } from '@app/context';
 
 @CommandHandler(LogoutCommand)
-export class LogoutHandler
-  implements ICommandHandler<LogoutCommand>
-{
+export class LogoutHandler implements ICommandHandler<LogoutCommand> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
@@ -22,9 +20,7 @@ export class LogoutHandler
     private readonly requestContext: RequestContextAccessor,
   ) {}
 
-  async execute(
-    command: LogoutCommand,
-  ): Promise<Result<void, NotFoundException>> {
+  async execute(command: LogoutCommand): Promise<Result<void, NotFoundException>> {
     const foundUser = await this.userRepository.findById(command.userId);
 
     if (foundUser.isNone()) {
@@ -36,10 +32,7 @@ export class LogoutHandler
     user.invalidateRefreshToken();
 
     const ctx = this.requestContext.get();
-    const audit = AuditFactory.createForUpdate(
-      ctx.phoneNumber,
-      user.audit,
-    );
+    const audit = AuditFactory.createForUpdate(ctx.phoneNumber, user.audit);
 
     user.updateAudit(audit);
 

@@ -8,11 +8,7 @@ import jwtConfig from './config/jwt.config';
 import { PassportModule } from '@nestjs/passport';
 
 @Module({
-  imports: [
-    PassportModule, 
-    JwtModule.register({}),
-    ConfigModule.forFeature(jwtConfig),
-  ],
+  imports: [PassportModule, JwtModule.register({}), ConfigModule.forFeature(jwtConfig)],
   providers: [
     AccessTokenStrategy,
     RefreshTokenStrategy,
@@ -26,6 +22,7 @@ import { PassportModule } from '@nestjs/passport';
     AccessTokenStrategy,
     RefreshTokenStrategy,
     PassportModule,
+    JwtModule,
   ],
 })
 export class JwtAuthModule {}

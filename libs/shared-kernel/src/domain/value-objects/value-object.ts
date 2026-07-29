@@ -1,5 +1,4 @@
-import { propsToObject } from "@app/shared-kernel/utils";
-
+import { propsToObject } from '@app/shared-kernel/utils';
 
 /**
  * Domain Primitive is an object that contains only a single value
@@ -45,16 +44,16 @@ export abstract class ValueObject<T> {
       return this.props.value;
     }
     const propsCopy = propsToObject(this.props);
-    return Object.freeze(propsCopy!);
+    return Object.freeze(propsCopy) as T;
   }
 
   private checkIfEmpty(props: ValueObjectProps<T>): void {
-    // TODO
+    if (props === null || props === undefined) {
+      throw new Error('Value object properties are required');
+    }
   }
 
-  private isDomainPrimitive(
-    obj: unknown,
-  ): obj is DomainPrimitive<T & (Primitives | Date)> {
+  private isDomainPrimitive(obj: unknown): obj is DomainPrimitive<T & (Primitives | Date)> {
     if (Object.prototype.hasOwnProperty.call(obj, 'value')) {
       return true;
     }

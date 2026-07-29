@@ -1,10 +1,5 @@
 import { ExceptionBase } from './exception.base';
-import {
-  INTERNAL_SERVER_ERROR,
-  NOT_FOUND,
-  CONFLICT,
-  ARGUMENT_INVALID,
-} from './exception.codes';
+import { INTERNAL_SERVER_ERROR } from './exception.codes';
 
 import {
   NotFoundException,
@@ -17,9 +12,7 @@ import {
  * Maps domain and application errors into canonical ExceptionBase instances.
  * This function must remain transport-agnostic.
  */
-export function mapDomainErrorToException(
-  error: unknown,
-): ExceptionBase {
+export function mapDomainErrorToException(error: unknown): ExceptionBase {
   if (error instanceof ExceptionBase) {
     return error;
   }
@@ -42,9 +35,7 @@ export function mapDomainErrorToException(
         return new NotFoundException(error.message);
 
       default:
-        return new InternalServerErrorException(
-          error.message ?? INTERNAL_SERVER_ERROR,
-        );
+        return new InternalServerErrorException(error.message ?? INTERNAL_SERVER_ERROR);
     }
   }
 

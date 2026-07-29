@@ -5,17 +5,13 @@ import { TenantKeyValueStorePort, ValueObject } from '@app/shared-kernel';
 import { RequestContextAccessor } from '@app/context';
 import { TYPES } from '@app/shared-kernel';
 
-export abstract class TenantRedisRepositoryBase<
-  Value,
-  Key extends ValueObject<any>,
-> implements TenantKeyValueStorePort<Value, Key> {
-
+export abstract class TenantRedisRepositoryBase<Value, Key extends ValueObject<unknown>>
+  implements TenantKeyValueStorePort<Value, Key>
+{
   @Inject(TYPES.RedisClientPort)
   protected readonly redisClient: Redis;
 
-  protected constructor(
-    protected readonly context: RequestContextAccessor,
-  ) {}
+  protected constructor(protected readonly context: RequestContextAccessor) {}
 
   protected abstract buildNamespace(): string;
 
@@ -27,16 +23,10 @@ export abstract class TenantRedisRepositoryBase<
       throw new Error('Tenant context is missing or invalid');
     }
 
-    return `${this.buildNamespace()}:${tenantId}:${JSON.stringify(
-      key.unpack(),
-    )}`;
+    return `${this.buildNamespace()}:${tenantId}:${JSON.stringify(key.unpack())}`;
   }
 
-  async insert(
-    value: Value,
-    key: Key,
-    ttlSeconds?: number,
-  ): Promise<void> {
+  async insert(value: Value, key: Key, ttlSeconds?: number): Promise<void> {
     const redisKey = this.buildKey(key);
     const payload = JSON.stringify(value);
 

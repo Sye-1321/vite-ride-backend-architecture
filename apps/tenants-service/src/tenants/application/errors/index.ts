@@ -1,1 +1,0 @@
-export * from './tenant-name-already-exists.error';

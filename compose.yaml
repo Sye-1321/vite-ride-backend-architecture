@@ -1,0 +1,176 @@
+x-service-defaults: &service-defaults
+  restart: unless-stopped
+  init: true
+  networks:
+    - core
+
+x-service-environment: &service-environment
+  NODE_ENV: production
+  REDIS_URL: redis://redis:6379
+  JWT_ACCESS_TOKEN_SECRET: ${JWT_ACCESS_TOKEN_SECRET:?JWT_ACCESS_TOKEN_SECRET is required}
+  JWT_ACCESS_TOKEN_EXPIRATION_TIME: ${JWT_ACCESS_TOKEN_EXPIRATION_TIME:-15m}
+  JWT_REFRESH_TOKEN_SECRET: ${JWT_REFRESH_TOKEN_SECRET:?JWT_REFRESH_TOKEN_SECRET is required}
+  JWT_REFRESH_TOKEN_EXPIRATION_TIME: ${JWT_REFRESH_TOKEN_EXPIRATION_TIME:-7d}
+
+services:
+  mongodb:
+    image: mongo:7
+    restart: unless-stopped
+    command: ['mongod', '--replSet', 'rs0', '--bind_ip_all']
+    networks:
+      - core
+    ports:
+      - '127.0.0.1:27017:27017'
+    volumes:
+      - vite-ride-mongodb:/data/db
+    healthcheck:
+      test: ['CMD', 'mongosh', '--quiet', '--eval', 'db.runCommand({ ping: 1 }).ok']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  mongo-init:
+    image: mongo:7
+    restart: 'no'
+    networks:
+      - core
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    entrypoint:
+      - bash
+      - -ec
+      - |
+        mongosh --host mongodb:27017 --quiet --eval '
+          try {
+            rs.status()
+          } catch (error) {
+            rs.initiate({
+              _id: "rs0",
+              members: [{ _id: 0, host: "mongodb:27017" }]
+            })
+          }
+        '
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ['redis-server', '--appendonly', 'yes']
+    networks:
+      - core
+    ports:
+      - '127.0.0.1:6379:6379'
+    volumes:
+      - vite-ride-redis:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  identity:
+    <<: *service-defaults
+    build:
+      context: .
+      args:
+        BUILD_TARGET: identity
+        APP_PATH: identity-service
+    environment:
+      <<: *service-environment
+      IDENTITY_GRPC_BIND_URL: 0.0.0.0:50051
+      NOTIFICATIONS_GRPC_URL: notifications:50054
+      DATABASE_URL_IDENTITY: mongodb://mongodb:27017/vite_ride_identity?replicaSet=rs0
+    depends_on:
+      mongo-init:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+      notifications:
+        condition: service_started
+
+  authorization:
+    <<: *service-defaults
+    build:
+      context: .
+      args:
+        BUILD_TARGET: authorization
+        APP_PATH: authorization-service
+    environment:
+      <<: *service-environment
+      AUTHORIZATION_GRPC_BIND_URL: 0.0.0.0:50052
+      DATABASE_URL_AUTHZ: mongodb://mongodb:27017/vite_ride_authz?replicaSet=rs0
+      DATABASE_NAME_AUTHZ: vite_ride_authz
+    depends_on:
+      mongo-init:
+        condition: service_completed_successfully
+
+  tenants:
+    <<: *service-defaults
+    build:
+      context: .
+      args:
+        BUILD_TARGET: tenants
+        APP_PATH: tenants-service
+    environment:
+      <<: *service-environment
+      TENANTS_GRPC_BIND_URL: 0.0.0.0:50053
+      IDENTITY_GRPC_URL: identity:50051
+      AUTHORIZATION_GRPC_URL: authorization:50052
+      DATABASE_URL_TENANTS: mongodb://mongodb:27017/vite_ride_tenants?replicaSet=rs0
+    depends_on:
+      mongo-init:
+        condition: service_completed_successfully
+      identity:
+        condition: service_started
+      authorization:
+        condition: service_started
+
+  notifications:
+    <<: *service-defaults
+    build:
+      context: .
+      args:
+        BUILD_TARGET: notifications
+        APP_PATH: notifications-service
+    environment:
+      <<: *service-environment
+      NOTIFICATIONS_GRPC_BIND_URL: 0.0.0.0:50054
+      SMS_DRIVER: ${SMS_DRIVER:-dry-run}
+      PUSH_DRIVER: ${PUSH_DRIVER:-dry-run}
+      NOTIFICATION_PROVIDER_TIMEOUT_MS: ${NOTIFICATION_PROVIDER_TIMEOUT_MS:-5000}
+
+  api-gateway:
+    <<: *service-defaults
+    build:
+      context: .
+      args:
+        BUILD_TARGET: api-gateway
+        APP_PATH: api-gateway
+    environment:
+      <<: *service-environment
+      GATEWAY_PORT: 3000
+      GATEWAY_PREFIX: ${GATEWAY_PREFIX:-vite-ride}
+      GATEWAY_ALLOWED_ORIGINS: ${GATEWAY_ALLOWED_ORIGINS:-http://localhost:5173}
+      GATEWAY_SWAGGER_ENABLED: ${GATEWAY_SWAGGER_ENABLED:-true}
+      IDENTITY_GRPC_URL: identity:50051
+      AUTHORIZATION_GRPC_URL: authorization:50052
+      TENANTS_GRPC_URL: tenants:50053
+    depends_on:
+      redis:
+        condition: service_healthy
+      identity:
+        condition: service_started
+      authorization:
+        condition: service_started
+      tenants:
+        condition: service_started
+    ports:
+      - '${GATEWAY_PORT:-3000}:3000'
+
+networks:
+  core:
+    driver: bridge
+
+volumes:
+  vite-ride-mongodb:
+  vite-ride-redis:

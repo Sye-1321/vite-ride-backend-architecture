@@ -10,13 +10,10 @@ import { NotFoundException } from '@app/common';
 import { AuditFactory } from '@app/audit';
 import { RequestContextAccessor } from '@app/context';
 
-type UpdateMyProfileErrors =
-  | NotFoundException;
+type UpdateMyProfileErrors = NotFoundException;
 
 @CommandHandler(UpdateMyProfileCommand)
-export class UpdateMyProfileHandler
-  implements ICommandHandler<UpdateMyProfileCommand>
-{
+export class UpdateMyProfileHandler implements ICommandHandler<UpdateMyProfileCommand> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
@@ -25,9 +22,7 @@ export class UpdateMyProfileHandler
     private readonly requestContext: RequestContextAccessor,
   ) {}
 
-  async execute(
-    command: UpdateMyProfileCommand,
-  ): Promise<Result<void, UpdateMyProfileErrors>> {
+  async execute(command: UpdateMyProfileCommand): Promise<Result<void, UpdateMyProfileErrors>> {
     const { userId, firstName, lastName } = command;
 
     const foundUser = await this.userRepository.findById(userId);
@@ -40,10 +35,7 @@ export class UpdateMyProfileHandler
     user.updateProfile(firstName, lastName);
 
     const ctx = this.requestContext.get();
-    const audit = AuditFactory.createForUpdate(
-      ctx.phoneNumber,
-      user.audit,
-    );
+    const audit = AuditFactory.createForUpdate(ctx.phoneNumber, user.audit);
 
     user.updateAudit(audit);
 

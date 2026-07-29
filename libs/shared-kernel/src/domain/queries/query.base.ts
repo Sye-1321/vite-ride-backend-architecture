@@ -1,4 +1,4 @@
-import { OrderBy, PaginatedQueryParams } from "../ports";
+import { OrderBy, PaginatedQueryParams } from '../ports';
 
 export abstract class QueryBase {}
 
@@ -17,8 +17,5 @@ export abstract class PaginatedQueryBase extends QueryBase {
   }
 }
 
-export type PaginatedParams<T> = Omit<
-  T,
-  'limit' | 'offset' | 'orderBy' | 'page'
-> &
+export type PaginatedParams<T> = Omit<T, 'limit' | 'offset' | 'orderBy' | 'page'> &
   Partial<Omit<PaginatedQueryParams, 'offset'>>;

@@ -1,8 +1,7 @@
 import { ExceptionBase } from '@app/common/exceptions';
 
 export class UserNotFoundInvariantViolationError extends ExceptionBase {
-  static readonly message =
-    'Invariant violation: expected user was not found.';
+  static readonly message = 'Invariant violation: expected user was not found.';
 
   public readonly code = 'INVARIANT.USER.NOT_FOUND';
 

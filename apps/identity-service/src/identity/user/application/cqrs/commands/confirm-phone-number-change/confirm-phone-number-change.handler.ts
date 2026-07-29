@@ -6,27 +6,21 @@ import { ConfirmPhoneNumberChangeCommand } from './confirm-phone-number-change.c
 import { TYPES } from '@app/shared-kernel';
 
 import { UserRepositoryPort } from '../../../ports';
-import { IVerificationSessionService } from
-  'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
+import { IVerificationSessionService } from 'apps/identity-service/src/identity/verification-session/application/services/verification-session.service.interface';
 
 import { UserVerificationPurpose } from '../../../types';
 
 import {
   InvalidOtpError,
   VerificationSessionNotFoundError,
-} from
-  'apps/identity-service/src/identity/verification-session/application/errors';
+} from 'apps/identity-service/src/identity/verification-session/application/errors';
 
 import {
   VerificationSessionExpiredError,
   VerificationSessionUsedError,
-} from
-  'apps/identity-service/src/identity/verification-session/domain/verification-session.error';
+} from 'apps/identity-service/src/identity/verification-session/domain/verification-session.error';
 
-import {
-  PhoneNumberAlreadyInUseError,
-  UserNotFoundInvariantViolationError,
-} from '../../../errors';
+import { PhoneNumberAlreadyInUseError, UserNotFoundInvariantViolationError } from '../../../errors';
 
 import { PhoneNumberUnchangedError } from '../../../../domain/user.errors';
 
@@ -62,12 +56,11 @@ export class ConfirmPhoneNumberChangeHandler
   ): Promise<Result<void, ConfirmPhoneNumberChangeErrors>> {
     const { otp, verificationToken } = command;
 
-    const sessionResult =
-      await this.verificationSessionService.verifySession(
-        verificationToken,
-        UserVerificationPurpose.PHONE_NUMBER_CHANGE,
-        otp,
-      );
+    const sessionResult = await this.verificationSessionService.verifySession(
+      verificationToken,
+      UserVerificationPurpose.PHONE_NUMBER_CHANGE,
+      otp,
+    );
 
     if (sessionResult.isErr()) {
       return Err(sessionResult.unwrapErr());
@@ -86,25 +79,20 @@ export class ConfirmPhoneNumberChangeHandler
 
     const user = foundUser.unwrap();
 
-    const checkResult =
-      user.checkPhoneNumberChangePossible(newPhoneNumber);
+    const checkResult = user.checkPhoneNumberChangePossible(newPhoneNumber);
 
     if (checkResult.isErr()) {
       return Err(checkResult.unwrapErr());
     }
 
-    const existingUser =
-      await this.userRepository.findByPhoneNumber(newPhoneNumber);
+    const existingUser = await this.userRepository.findByPhoneNumber(newPhoneNumber);
 
     if (existingUser.isSome()) {
       return Err(new PhoneNumberAlreadyInUseError());
     }
 
     const ctx = this.requestContext.get();
-    const audit = AuditFactory.createForUpdate(
-      ctx.phoneNumber,
-      user.audit,
-    );
+    const audit = AuditFactory.createForUpdate(ctx.phoneNumber, user.audit);
 
     user.finalizePhoneNumberChange(newPhoneNumber);
     user.updateAudit(audit);

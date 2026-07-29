@@ -3,9 +3,8 @@ import { AggregateRoot, AggregateID } from '@app/shared-kernel';
 import { Err, Ok, Result } from 'oxide.ts';
 
 import { TenantProps, TenantStatus } from './tenant.types';
-import {
-  TenantSuspendedError,
-} from './tenant.errors';
+import { TenantSuspendedError } from './tenant.errors';
+import { normalizeTenantName } from './tenant-name';
 
 export class Tenant extends AggregateRoot<TenantProps> {
   protected readonly _id: AggregateID;
@@ -15,6 +14,7 @@ export class Tenant extends AggregateRoot<TenantProps> {
       id: randomUUID(),
       props: {
         ...props,
+        name: props.name.trim(),
         status: TenantStatus.ACTIVE,
       },
     });
@@ -37,23 +37,24 @@ export class Tenant extends AggregateRoot<TenantProps> {
 
   public activate(): Result<void, TenantSuspendedError> {
     if (this.props.status === TenantStatus.SUSPENDED) {
-        return Err(new TenantSuspendedError());
+      return Err(new TenantSuspendedError());
     }
 
     this.props.status = TenantStatus.ACTIVE;
     return Ok(undefined);
-    }
+  }
 
   get name(): string {
     return this.props.name;
   }
 
   public updateName(name: string): void {
-    this.props.name = name;
+    this.props.name = name.trim();
   }
 
   public validate(): void {
-    if (!this.props.name) {
+    const normalizedName = normalizeTenantName(this.props.name);
+    if (!normalizedName || normalizedName.length > 120) {
       throw new Error('Tenant name is required');
     }
   }

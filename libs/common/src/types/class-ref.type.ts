@@ -1,3 +1,3 @@
-export interface ClassRef<T = any> {
-  new (...args: any[]): T;
+export interface ClassRef<T = unknown> {
+  new (...args: never[]): T;
 }

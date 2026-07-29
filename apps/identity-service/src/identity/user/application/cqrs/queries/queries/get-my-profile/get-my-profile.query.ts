@@ -1,4 +1,4 @@
-import { QueryBase } from "@app/shared-kernel";
+import { QueryBase } from '@app/shared-kernel';
 
 export class GetMyProfileQuery extends QueryBase {
   readonly userId: string;

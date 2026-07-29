@@ -3,11 +3,9 @@ import { Inject } from '@nestjs/common';
 import { Err, Ok, Result } from 'oxide.ts';
 
 import { LoginCommand } from './login.command';
-import { AuthTokenProviderPort, UserRepositoryPort } from '../../../ports';
-import {
-  UserSuspendedError,
-  UserNotVerifiedError,
-} from '../../../../domain/user.errors';
+import { UserRepositoryPort } from '../../../ports';
+import { AuthTokenProviderPort } from '@app/auth';
+import { UserSuspendedError, UserNotVerifiedError } from '../../../../domain/user.errors';
 import { UserParser } from '../../../user.parser';
 import { UserResponseDto } from '../../../dto/user.response.dto';
 import { HasherPort, TYPES } from '@app/shared-kernel';
@@ -16,8 +14,7 @@ import { InvalidCredentialsError } from '../../../errors';
 import { AuditFactory } from '@app/audit';
 import { RequestContextAccessor } from '@app/context';
 
-const FAKE_HASH =
-  '$2b$10$CjwKJ8FakeHashJustForTimingAAAAAAAAAAAAAAAAAAAAAAAAAA';
+const FAKE_HASH = '$2b$10$CjwKJ8FakeHashJustForTimingAAAAAAAAAAAAAAAAAAAAAAAAAA';
 
 @CommandHandler(LoginCommand)
 export class LoginHandler implements ICommandHandler<LoginCommand> {
@@ -38,12 +35,7 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
   async execute(
     command: LoginCommand,
   ): Promise<
-    Result<
-      UserResponseDto,
-      | InvalidCredentialsError
-      | UserSuspendedError
-      | UserNotVerifiedError
-    >
+    Result<UserResponseDto, InvalidCredentialsError | UserSuspendedError | UserNotVerifiedError>
   > {
     const { phoneNumber, password } = command;
 
@@ -64,19 +56,15 @@ export class LoginHandler implements ICommandHandler<LoginCommand> {
 
     user.reactivate();
 
-    const { accessToken, refreshToken } =
-      await this.authTokenProvider.generateAuthTokens({
-        userId: user.id,
-        phoneNumber: user.phoneNumber,
-      });
+    const { accessToken, refreshToken } = await this.authTokenProvider.generateAuthTokens({
+      userId: user.id,
+      phoneNumber: user.phoneNumber,
+    });
 
     user.updateRefreshToken(await this.hasher.hash(refreshToken));
 
     const ctx = this.requestContext.get();
-    const audit = AuditFactory.createForUpdate(
-      ctx.phoneNumber,
-      user.audit,
-    );
+    const audit = AuditFactory.createForUpdate(ctx.phoneNumber, user.audit);
 
     user.updateAudit(audit);
 

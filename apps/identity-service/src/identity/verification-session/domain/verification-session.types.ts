@@ -1,4 +1,4 @@
-import { VerificationSessionKey } from "./verification-session-key.vo";
+import { VerificationSessionKey } from './verification-session-key.vo';
 
 // EXTEND
 export enum VerificationChannel {
@@ -7,8 +7,8 @@ export enum VerificationChannel {
 }
 
 export interface SmsTarget {
-  channel: VerificationChannel.SMS;              
-  phoneNumber: string;        
+  channel: VerificationChannel.SMS;
+  phoneNumber: string;
 }
 
 export type VerificationTarget = SmsTarget;
@@ -17,14 +17,14 @@ export interface CreateVerificationSessionProps {
   key: VerificationSessionKey;
   target: VerificationTarget;
   otpHash: string;
-  subjectMeta: Record<string, any>;
+  subjectMeta: Record<string, unknown>;
 }
 
 export interface VerificationSessionProps {
   id?: string;
   key: VerificationSessionKey;
   target: VerificationTarget;
-  subjectMeta: Record<string, any>;
+  subjectMeta: Record<string, unknown>;
   otpHash: string;
   createdAt: Date;
   expiresAt: Date;

@@ -1,45 +1,73 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
+  Inject,
   Injectable,
+  ServiceUnavailableException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-// import { RequiredPermission } from '../decorators';
 
+import { REQUIRED_PERMISSION, RequiredPermission } from '../decorators';
+import {
+  AUTHORIZATION_DECISION_PORT,
+  AuthorizationDecisionPort,
+} from '../ports/authorization-decision.port';
 
+interface AuthorizationRequest {
+  user?: { userId?: string };
+  params?: Record<string, string | undefined>;
+  headers?: Record<string, string | string[] | undefined>;
+}
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    // private readonly authzClient: AuthorizationClient,
+    @Inject(AUTHORIZATION_DECISION_PORT)
+    private readonly authorization: AuthorizationDecisionPort,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // const req = context.switchToHttp().getRequest();
+    const permission = this.reflector.getAllAndOverride<RequiredPermission>(REQUIRED_PERMISSION, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+    if (!permission) {
+      return true;
+    }
 
-    // const permission = this.reflector.get<RequiredPermission>(
-    //   PERMISSION_KEY,
-    //   context.getHandler(),
-    // );
+    const request = context.switchToHttp().getRequest<AuthorizationRequest>();
+    const userId = request.user?.userId;
+    if (!userId) {
+      throw new UnauthorizedException('Authenticated authorization context is required');
+    }
 
-    // if (!permission) return true;
+    const domain =
+      request.params?.tenantId || this.headerValue(request.headers?.['x-tenant-id']) || '*';
 
-    // const user = req.user;
-    // if (!user) return false;
+    try {
+      const decision = await this.authorization.authorize({
+        userId,
+        domain,
+        resource: permission.resource,
+        action: permission.action,
+      });
 
-    // const domain =
-    //   req.headers['x-tenant-id'] ??
-    //   user.tenantId ??
-    //   '*';
+      if (!decision.allowed) {
+        throw new ForbiddenException('Insufficient permission');
+      }
+      return true;
+    } catch (error) {
+      if (error instanceof ForbiddenException) {
+        throw error;
+      }
+      throw new ServiceUnavailableException('Authorization service is unavailable');
+    }
+  }
 
-    // const decision = await this.authzClient.canAccess({
-    //   sub: user.id,
-    //   obj: permission.resource,
-    //   act: permission.action,
-    //   domain,
-    // });
-    const decision = {'allowed': true}
-    return decision.allowed;
+  private headerValue(value: string | string[] | undefined): string {
+    return Array.isArray(value) ? value[0] || '' : value || '';
   }
 }

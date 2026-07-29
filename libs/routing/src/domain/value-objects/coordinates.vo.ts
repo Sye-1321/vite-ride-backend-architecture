@@ -11,15 +11,11 @@ export class CoordinatesVO extends ValueObject<CoordinatesProps> {
     const { lat, lng } = props;
 
     if (lat < -90 || lat > 90) {
-      throw new ArgumentOutOfRangeException(
-        'Latitude must be between -90 and 90',
-      );
+      throw new ArgumentOutOfRangeException('Latitude must be between -90 and 90');
     }
 
     if (lng < -180 || lng > 180) {
-      throw new ArgumentOutOfRangeException(
-        'Longitude must be between -180 and 180',
-      );
+      throw new ArgumentOutOfRangeException('Longitude must be between -180 and 180');
     }
   }
 

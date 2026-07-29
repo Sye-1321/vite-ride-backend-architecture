@@ -5,18 +5,16 @@ import { Option, Some, None } from 'oxide.ts';
 
 import { MongoRepositoryBase } from '@app/persistence/mongodb/mongo-repository.base';
 import { Tenant } from '../../../domain/tenant.entity';
+import { normalizeTenantName } from '../../../domain/tenant-name';
 import { TenantDataModel } from './tenant.schema';
 import { TenantMapper } from './tenant.mapper';
 
 @Injectable()
-export class TenantRepository extends MongoRepositoryBase<
-  Tenant,
-  TenantDataModel
-> {
+export class TenantRepository extends MongoRepositoryBase<Tenant, TenantDataModel> {
   constructor(
-    @InjectModel(TenantDataModel.name)
+    @InjectModel(TenantDataModel.name, 'TenantsConnection')
     model: Model<TenantDataModel>,
-    @InjectConnection()
+    @InjectConnection('TenantsConnection')
     connection: Connection,
     mapper: TenantMapper,
   ) {
@@ -25,12 +23,10 @@ export class TenantRepository extends MongoRepositoryBase<
 
   async findByName(name: string): Promise<Option<Tenant>> {
     const doc = await this.model
-      .findOne({ name })
+      .findOne({ normalizedName: normalizeTenantName(name) })
       .lean()
       .exec();
 
-    return doc
-      ? Some(this.mapper.toDomain(doc))
-      : None;
+    return doc ? Some(this.mapper.toDomain(doc)) : None;
   }
 }

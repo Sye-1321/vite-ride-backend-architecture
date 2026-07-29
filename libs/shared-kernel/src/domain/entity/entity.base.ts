@@ -1,4 +1,4 @@
-import { propsToObject } from "@app/shared-kernel/utils";
+import { propsToObject } from '@app/shared-kernel/utils';
 
 export type AggregateID = string;
 
@@ -12,10 +12,7 @@ export interface CreateEntityProps<T> {
 }
 
 export abstract class Entity<EntityProps> {
-  constructor({
-    id,
-    props,
-  }: CreateEntityProps<EntityProps>) {
+  constructor({ id, props }: CreateEntityProps<EntityProps>) {
     this.setId(id);
     this.validateProps(props);
     this.props = props;
@@ -100,6 +97,8 @@ export abstract class Entity<EntityProps> {
   public abstract validate(): void;
 
   private validateProps(props: EntityProps): void {
-    // TODO
-}
+    if (props === null || props === undefined) {
+      throw new Error('Entity properties are required');
+    }
+  }
 }

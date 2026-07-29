@@ -9,22 +9,30 @@ import {
 } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
+import { Response } from 'express';
 
 @Catch()
 export class GatewayExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GatewayExceptionFilter.name);
 
-  catch(exception: any, host: ArgumentsHost): void {
+  catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
-    const response = ctx.getResponse();
+    const response = ctx.getResponse<Response>();
 
     if (exception instanceof BadRequestException) {
-      const res = exception.getResponse() as any;
+      const result = exception.getResponse();
+      const messages =
+        typeof result === 'object' &&
+        result !== null &&
+        'message' in result &&
+        Array.isArray(result.message)
+          ? result.message
+          : [];
 
       response.status(HttpStatus.BAD_REQUEST).json({
         statusCode: HttpStatus.BAD_REQUEST,
         message: 'Validation error',
-        errors: res?.message ?? [],
+        errors: messages,
       });
       return;
     }
@@ -33,46 +41,68 @@ export class GatewayExceptionFilter implements ExceptionFilter {
       const httpStatus = exception.getStatus();
       const body = exception.getResponse();
 
-      response.status(httpStatus).json(
-        typeof body === 'string'
-          ? { statusCode: httpStatus, message: body }
-          : body,
-      );
+      response
+        .status(httpStatus)
+        .json(typeof body === 'string' ? { statusCode: httpStatus, message: body } : body);
       return;
     }
 
-    if (typeof exception?.code === 'number') {
+    if (this.hasNumericCode(exception)) {
       const httpStatus = this.mapGrpcStatusToHttp(exception.code);
 
       response.status(httpStatus).json({
         statusCode: httpStatus,
-        message: exception.details ?? exception.message ?? 'Request failed',
+        message: this.errorMessage(exception),
       });
       return;
     }
 
     if (exception instanceof RpcException) {
-      const err = exception.getError() as any;
-      const grpcCode: status = err?.code ?? status.INTERNAL;
+      const raw = exception.getError();
+      const error =
+        typeof raw === 'object' && raw !== null
+          ? (raw as Record<string, unknown>)
+          : { message: String(raw) };
+      const grpcCode = typeof error.code === 'number' ? error.code : status.INTERNAL;
       const httpStatus = this.mapGrpcStatusToHttp(grpcCode);
 
       response.status(httpStatus).json({
         statusCode: httpStatus,
-        message: err?.message ?? 'Request failed',
-        details: err?.details,
+        message: typeof error.message === 'string' ? error.message : 'Request failed',
+        details: error.details,
       });
       return;
     }
 
     this.logger.error(
-      exception?.message ?? 'Unhandled exception',
-      exception?.stack,
+      exception instanceof Error ? exception.message : 'Unhandled exception',
+      exception instanceof Error ? exception.stack : undefined,
     );
 
     response.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
       message: 'Internal server error',
     });
+  }
+
+  private hasNumericCode(error: unknown): error is {
+    code: status;
+    details?: unknown;
+    message?: unknown;
+  } {
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      typeof error.code === 'number'
+    );
+  }
+
+  private errorMessage(error: { details?: unknown; message?: unknown }): string {
+    if (typeof error.details === 'string') {
+      return error.details;
+    }
+    return typeof error.message === 'string' ? error.message : 'Request failed';
   }
 
   private mapGrpcStatusToHttp(code: status): HttpStatus {

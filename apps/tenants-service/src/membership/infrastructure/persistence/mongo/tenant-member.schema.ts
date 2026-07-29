@@ -2,10 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { MongoDocument } from '@app/persistence';
 
-import {
-  TenantMemberRole,
-  TenantMemberStatus,
-} from '../../../domain/membership.types';
+import { TenantMemberRole, TenantMemberStatus } from '../../../domain/membership.types';
 
 export type TenantMemberDocument = TenantMemberDataModel & Document;
 
@@ -24,9 +21,9 @@ export class TenantMemberDataModel extends MongoDocument {
   status: TenantMemberStatus;
 }
 
-export const TenantMemberSchema =
-  SchemaFactory.createForClass(TenantMemberDataModel);
+export const TenantMemberSchema = SchemaFactory.createForClass(TenantMemberDataModel);
 TenantMemberSchema.index(
-  { tenantId: 1, userId: 1, role: 1 },
-  { unique: true },
+  { tenantId: 1, userId: 1 },
+  { unique: true, partialFilterExpression: { isDeleted: false } },
 );
+TenantMemberSchema.index({ userId: 1, status: 1, tenantId: 1 });

@@ -62,9 +62,7 @@ import { ListUsersQuery } from './application/cqrs/queries/queries/list-users/li
 import { SearchUsersQuery } from './application/cqrs/queries/queries/search-users/search-users.query';
 import { CheckUserExistsByPhoneQuery } from './application/cqrs/queries/queries/check-user-exists-by-phone/check-user-exists-by-phone.query';
 
-import {
-  mapProtoUserStatusToDomain,
-} from 'apps/api-gateway/src/identity/mappers';
+import { mapProtoPurposeToDomain, mapProtoUserStatusToDomain } from './infrastructure/mappers';
 
 function unwrapResult<T>(result: Result<T, Error>): T {
   if (result.isErr()) {
@@ -82,48 +80,30 @@ export class UserGrpcController {
 
   @GrpcMethod('UserService', 'Login')
   async login(request: LoginRequest): Promise<LoginResponse> {
-    return unwrapResult(
-      await this.commandBus.execute(new LoginCommand(request)),
-    );
+    return unwrapResult(await this.commandBus.execute(new LoginCommand(request)));
   }
 
   @GrpcMethod('UserService', 'RefreshAccessToken')
   async refreshAccessToken(
     request: RefreshAccessTokenRequest,
   ): Promise<RefreshAccessTokenResponse> {
-    return unwrapResult(
-      await this.commandBus.execute(
-        new RefreshAccessTokenCommand(request),
-      ),
-    );
+    return unwrapResult(await this.commandBus.execute(new RefreshAccessTokenCommand(request)));
   }
 
   @GrpcMethod('UserService', 'Logout')
   async logout(request: LogoutRequest): Promise<Empty> {
-    unwrapResult(
-      await this.commandBus.execute(new LogoutCommand(request)),
-    );
+    unwrapResult(await this.commandBus.execute(new LogoutCommand(request)));
     return {};
   }
 
   @GrpcMethod('UserService', 'RegisterUser')
-  async registerUser(
-    request: RegisterUserRequest,
-  ): Promise<RegisterUserResponse> {
-    return unwrapResult(
-      await this.commandBus.execute(
-        new RegisterUserCommand(request),
-      ),
-    );
+  async registerUser(request: RegisterUserRequest): Promise<RegisterUserResponse> {
+    return unwrapResult(await this.commandBus.execute(new RegisterUserCommand(request)));
   }
 
   @GrpcMethod('UserService', 'VerifyUser')
   async verifyUser(request: VerifyUserRequest): Promise<Empty> {
-    unwrapResult(
-      await this.commandBus.execute(
-        new VerifyUserCommand(request),
-      ),
-    );
+    unwrapResult(await this.commandBus.execute(new VerifyUserCommand(request)));
     return {};
   }
 
@@ -132,33 +112,25 @@ export class UserGrpcController {
     request: RequestAccountVerificationRequest,
   ): Promise<RequestAccountVerificationResponse> {
     return unwrapResult(
+      await this.commandBus.execute(new RequestAccountVerificationCommand(request)),
+    );
+  }
+
+  @GrpcMethod('UserService', 'ResendVerification')
+  async resendVerification(request: ResendVerificationRequest): Promise<RegisterUserResponse> {
+    return unwrapResult(
       await this.commandBus.execute(
-        new RequestAccountVerificationCommand(request),
+        new ResendVerificationCommand({
+          verificationToken: request.verificationToken,
+          purpose: mapProtoPurposeToDomain(request.purpose),
+        }),
       ),
     );
   }
 
-  // @GrpcMethod('UserService', 'ResendVerification')
-  // async resendVerification(
-  //   request: ResendVerificationRequest,
-  // ): Promise<RegisterUserResponse> {
-  //   return unwrapResult(
-  //     await this.commandBus.execute(
-  //       new ResendVerificationCommand({
-  //         verificationToken: request.verificationToken,
-  //         purpose: mapProtoPurposeToDomain(request.purpose),
-  //       }),
-  //     ),
-  //   );
-  // }
-
   @GrpcMethod('UserService', 'ChangePassword')
   async changePassword(request: ChangePasswordRequest): Promise<Empty> {
-    unwrapResult(
-      await this.commandBus.execute(
-        new ChangePasswordCommand(request),
-      ),
-    );
+    unwrapResult(await this.commandBus.execute(new ChangePasswordCommand(request)));
     return {};
   }
 
@@ -166,22 +138,12 @@ export class UserGrpcController {
   async requestPasswordReset(
     request: RequestPasswordResetRequest,
   ): Promise<RequestPasswordResetResponse> {
-    return unwrapResult(
-      await this.commandBus.execute(
-        new RequestPasswordResetCommand(request),
-      ),
-    );
+    return unwrapResult(await this.commandBus.execute(new RequestPasswordResetCommand(request)));
   }
 
   @GrpcMethod('UserService', 'ConfirmPasswordReset')
-  async confirmPasswordReset(
-    request: ConfirmPasswordResetRequest,
-  ): Promise<Empty> {
-    unwrapResult(
-      await this.commandBus.execute(
-        new ConfirmPasswordResetCommand(request),
-      ),
-    );
+  async confirmPasswordReset(request: ConfirmPasswordResetRequest): Promise<Empty> {
+    unwrapResult(await this.commandBus.execute(new ConfirmPasswordResetCommand(request)));
     return {};
   }
 
@@ -190,74 +152,40 @@ export class UserGrpcController {
     request: RequestPhoneNumberChangeRequest,
   ): Promise<RequestPhoneNumberChangeResponse> {
     return unwrapResult(
-      await this.commandBus.execute(
-        new RequestPhoneNumberChangeCommand(request),
-      ),
+      await this.commandBus.execute(new RequestPhoneNumberChangeCommand(request)),
     );
   }
 
   @GrpcMethod('UserService', 'ConfirmPhoneNumberChange')
-  async confirmPhoneNumberChange(
-    request: ConfirmPhoneNumberChangeRequest,
-  ): Promise<Empty> {
-    unwrapResult(
-      await this.commandBus.execute(
-        new ConfirmPhoneNumberChangeCommand(request),
-      ),
-    );
+  async confirmPhoneNumberChange(request: ConfirmPhoneNumberChangeRequest): Promise<Empty> {
+    unwrapResult(await this.commandBus.execute(new ConfirmPhoneNumberChangeCommand(request)));
     return {};
   }
 
   @GrpcMethod('UserService', 'UpdateMyProfile')
-  async updateMyProfile(
-    request: UpdateMyProfileRequest,
-  ): Promise<Empty> {
-    unwrapResult(
-      await this.commandBus.execute(
-        new UpdateMyProfileCommand(request),
-      ),
-    );
+  async updateMyProfile(request: UpdateMyProfileRequest): Promise<Empty> {
+    unwrapResult(await this.commandBus.execute(new UpdateMyProfileCommand(request)));
     return {};
   }
 
   @GrpcMethod('UserService', 'DeactivateMyAccount')
-  async deactivateMyAccount(
-    request: DeactivateMyAccountRequest,
-  ): Promise<Empty> {
-    unwrapResult(
-      await this.commandBus.execute(
-        new DeactivateUserCommand(request),
-      ),
-    );
+  async deactivateMyAccount(request: DeactivateMyAccountRequest): Promise<Empty> {
+    unwrapResult(await this.commandBus.execute(new DeactivateUserCommand(request)));
     return {};
   }
 
   @GrpcMethod('UserService', 'GetMyProfile')
-  async getMyProfile(
-    request: GetMyProfileRequest,
-  ): Promise<UserResponse> {
-    return unwrapResult(
-      await this.queryBus.execute(
-        new GetMyProfileQuery(request.userId),
-      ),
-    );
+  async getMyProfile(request: GetMyProfileRequest): Promise<UserResponse> {
+    return unwrapResult(await this.queryBus.execute(new GetMyProfileQuery(request.userId)));
   }
 
   @GrpcMethod('UserService', 'GetUserById')
-  async getUserById(
-    request: GetUserByIdRequest,
-  ): Promise<UserResponse> {
-    return unwrapResult(
-      await this.queryBus.execute(
-        new GetUserByIdQuery(request.userId),
-      ),
-    );
+  async getUserById(request: GetUserByIdRequest): Promise<UserResponse> {
+    return unwrapResult(await this.queryBus.execute(new GetUserByIdQuery(request.userId)));
   }
 
   @GrpcMethod('UserService', 'ListUsers')
-  async listUsers(
-    request: ListUsersRequest,
-  ): Promise<PaginatedUsersResponse> {
+  async listUsers(request: ListUsersRequest): Promise<PaginatedUsersResponse> {
     return unwrapResult(
       await this.queryBus.execute(
         new ListUsersQuery({
@@ -271,9 +199,7 @@ export class UserGrpcController {
   }
 
   @GrpcMethod('UserService', 'SearchUsers')
-  async searchUsers(
-    request: SearchUsersRequest,
-  ): Promise<PaginatedUsersResponse> {
+  async searchUsers(request: SearchUsersRequest): Promise<PaginatedUsersResponse> {
     return unwrapResult(
       await this.queryBus.execute(
         new SearchUsersQuery({
@@ -291,41 +217,25 @@ export class UserGrpcController {
     request: CheckUserExistsByPhoneRequest,
   ): Promise<CheckUserExistsByPhoneResponse> {
     return unwrapResult(
-      await this.queryBus.execute(
-        new CheckUserExistsByPhoneQuery(request.phoneNumber),
-      ),
+      await this.queryBus.execute(new CheckUserExistsByPhoneQuery(request.phoneNumber)),
     );
   }
 
   @GrpcMethod('UserService', 'SuspendUser')
   async suspendUser(request: SuspendUserRequest): Promise<Empty> {
-    unwrapResult(
-      await this.commandBus.execute(
-        new SuspendUserCommand(request),
-      ),
-    );
+    unwrapResult(await this.commandBus.execute(new SuspendUserCommand(request)));
     return {};
   }
 
   @GrpcMethod('UserService', 'UnsuspendUser')
-  async unsuspendUser(
-    request: UnsuspendUserRequest,
-  ): Promise<Empty> {
-    unwrapResult(
-      await this.commandBus.execute(
-        new UnsuspendUserCommand(request.userId),
-      ),
-    );
+  async unsuspendUser(request: UnsuspendUserRequest): Promise<Empty> {
+    unwrapResult(await this.commandBus.execute(new UnsuspendUserCommand(request.userId)));
     return {};
   }
 
   @GrpcMethod('UserService', 'DeleteUser')
   async deleteUser(request: DeleteUserRequest): Promise<Empty> {
-    unwrapResult(
-      await this.commandBus.execute(
-        new DeleteUserCommand(request.userId),
-      ),
-    );
+    unwrapResult(await this.commandBus.execute(new DeleteUserCommand(request.userId)));
     return {};
   }
 }

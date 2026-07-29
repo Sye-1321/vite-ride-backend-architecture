@@ -9,18 +9,14 @@ import { UserResponseDto } from '../../../../dto/user.response.dto';
 import { UserParser } from '../../../../user.parser';
 
 @QueryHandler(ListUsersQuery)
-export class ListUsersHandler
-  implements IQueryHandler<ListUsersQuery>
-{
+export class ListUsersHandler implements IQueryHandler<ListUsersQuery> {
   constructor(
     @Inject(TYPES.UserRepositoryPort)
     private readonly userRepository: UserRepositoryPort,
   ) {}
 
-  async execute(
-    query: ListUsersQuery,
-  ): Promise<Result<Paginated<UserResponseDto>, never>> {
-    const filter: Record<string, any> = {};
+  async execute(query: ListUsersQuery): Promise<Result<Paginated<UserResponseDto>, never>> {
+    const filter: Record<string, unknown> = {};
 
     if (query.status !== undefined) {
       filter.status = query.status;

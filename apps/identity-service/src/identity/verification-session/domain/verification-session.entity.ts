@@ -41,10 +41,7 @@ export class VerificationSession extends AggregateRoot<VerificationSessionProps>
     });
   }
 
-  public consume(): Result<
-    void,
-    VerificationSessionExpiredError | VerificationSessionUsedError
-  > {
+  public consume(): Result<void, VerificationSessionExpiredError | VerificationSessionUsedError> {
     if (this.isExpired()) {
       return Err(new VerificationSessionExpiredError());
     }
@@ -65,7 +62,7 @@ export class VerificationSession extends AggregateRoot<VerificationSessionProps>
     return this.props.consumedAt !== null;
   }
 
-  get subjectMeta(): Record<string, any> {
+  get subjectMeta(): Record<string, unknown> {
     return this.props.subjectMeta;
   }
 

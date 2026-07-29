@@ -6,12 +6,11 @@ import { AuditMapper } from '@app/audit';
 
 @Injectable()
 export class UserMapper implements MongoMapper<User, UserDataModel> {
-
   toPersistence(entity: User): UserDataModel {
     const props = entity.getProps();
 
     return {
-       ...AuditMapper.toPersistence(props.audit),
+      ...AuditMapper.toPersistence(props.audit),
       _id: entity.id,
       phoneNumber: props.phoneNumber,
       firstName: props.firstName,
@@ -23,17 +22,17 @@ export class UserMapper implements MongoMapper<User, UserDataModel> {
   }
 
   toDomain(doc: UserDataModel): User {
-  return User.rehydrate(
-    {
-      phoneNumber: doc.phoneNumber,
-      firstName: doc.firstName,
-      lastName: doc.lastName,
-      passwordHash: doc.passwordHash,
-      status: doc.status,
-      refreshTokenHash: doc.refreshTokenHash,
-      audit: AuditMapper.toDomain(doc),
-    },
-    doc._id!,
-  );
-}
+    return User.rehydrate(
+      {
+        phoneNumber: doc.phoneNumber,
+        firstName: doc.firstName,
+        lastName: doc.lastName,
+        passwordHash: doc.passwordHash,
+        status: doc.status,
+        refreshTokenHash: doc.refreshTokenHash,
+        audit: AuditMapper.toDomain(doc),
+      },
+      doc._id!,
+    );
+  }
 }
