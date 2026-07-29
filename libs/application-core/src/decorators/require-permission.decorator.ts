@@ -1,14 +1,14 @@
 import { SetMetadata } from '@nestjs/common';
 
-export const PERMISSION_KEY = 'permission';
-
-export type PermissionAction = 'create' | 'read' | 'update' | 'delete';
+export const REQUIRED_PERMISSION = 'application-core:required-permission';
 
 export interface RequiredPermission {
   resource: string;
-  action: PermissionAction;
+  action: string;
 }
 
-export function RequirePermission(resource: string, action: PermissionAction): MethodDecorator {
-  return SetMetadata(PERMISSION_KEY, { resource, action });
-}
+export const RequirePermission = (resource: string, action: string): MethodDecorator =>
+  SetMetadata(REQUIRED_PERMISSION, {
+    resource,
+    action,
+  } satisfies RequiredPermission);

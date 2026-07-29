@@ -1,30 +1,39 @@
 # Application Core Library
 
-Reusable application-layer decorators and guard scaffolding.
+Reusable permission metadata and fail-closed HTTP authorization.
 
 ## Purpose
 
 `@app/application-core` holds framework-facing application primitives that do
-not belong to one service domain. The current contents define permission
-metadata and an authorization-guard scaffold.
+not belong to one service domain. It defines permission metadata, a decision
+port, and a reusable HTTP guard.
 
 ## Boundaries
 
 - May depend on Nest application abstractions.
 - Must not contain service entities, persistence models, or provider secrets.
-- A service must connect authorization decisions to its own transport client.
-- The API Gateway currently owns the active gRPC-backed permission guard.
-
-The guard in this package is not registered by the supported applications. Do
-not use it as an authorization boundary until it is connected to a real
-decision port and covered by denial tests.
+- A consuming application must bind `AUTHORIZATION_DECISION_PORT` to its
+  authorization adapter.
+- The guard denies missing authentication, explicit denial, and decision-port
+  failure.
+- The library does not know about gRPC, Casbin, or an application-specific
+  client.
 
 ## Structure
 
 - `decorators/` defines permission metadata.
-- `guard/` contains the reusable guard scaffold.
+- `guard/` contains the fail-closed HTTP guard.
+- `ports/` defines the transport-independent decision contract.
 
 ## Importing
 
-Export additions from `src/index.ts` before importing them through
-`@app/application-core`.
+```ts
+import {
+  AUTHORIZATION_DECISION_PORT,
+  AuthorizationGuard,
+  RequirePermission,
+} from '@app/application-core';
+```
+
+Bind the port to a concrete adapter in the consuming Nest module and register
+`AuthorizationGuard` as a provider.

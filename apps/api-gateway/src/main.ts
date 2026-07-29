@@ -1,14 +1,17 @@
-import { Logger } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+
+import { AppLoggerAdapter } from '@app/adapters';
 import { GatewayExceptionFilter } from '@app/common';
 
 import { gatewayConfigSchema } from './config';
 
+const logger = new AppLoggerAdapter('api-gateway');
+
 async function bootstrap() {
   const config = gatewayConfigSchema.parse(process.env);
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { logger });
 
   app.setGlobalPrefix(config.GATEWAY_PREFIX);
 
@@ -23,7 +26,10 @@ async function bootstrap() {
   app.useGlobalFilters(new GatewayExceptionFilter());
 
   await app.listen(config.GATEWAY_PORT);
-  Logger.log(`API Gateway listening on port ${config.GATEWAY_PORT}`, 'Bootstrap');
+  logger.log('service started', { port: config.GATEWAY_PORT }, 'Bootstrap');
 }
 
-bootstrap();
+void bootstrap().catch((error: unknown) => {
+  logger.fatal('service startup failed', error, 'Bootstrap');
+  process.exitCode = 1;
+});

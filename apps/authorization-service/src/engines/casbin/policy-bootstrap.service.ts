@@ -1,17 +1,17 @@
-import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import type { Enforcer } from 'casbin';
 
-import { TYPES } from '@app/shared-kernel';
+import { LoggerPort, TYPES } from '@app/shared-kernel';
 
 import { defineStaticPolicies } from '../../application/interfaces';
 
 @Injectable()
 export class PolicyBootstrapService implements OnModuleInit {
-  private readonly logger = new Logger(PolicyBootstrapService.name);
-
   constructor(
     @Inject(TYPES.AuthzEnforcerPort)
     private readonly enforcer: Enforcer,
+    @Inject(TYPES.LoggerPort)
+    private readonly logger: LoggerPort,
   ) {}
 
   async onModuleInit(): Promise<void> {
@@ -24,7 +24,11 @@ export class PolicyBootstrapService implements OnModuleInit {
 
           if (!exists) {
             await this.enforcer.addPolicy(role, policy.resource, action);
-            this.logger.log(`Policy added: ${role} -> ${policy.resource}:${action}`);
+            this.logger.log(
+              'authorization policy added',
+              { role, resource: policy.resource, action },
+              PolicyBootstrapService.name,
+            );
           }
         }
       }

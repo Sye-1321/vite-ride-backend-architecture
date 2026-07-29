@@ -13,7 +13,14 @@ describe('authorization policy flow', () => {
     const enforcer = await newEnforcer(
       join(process.cwd(), 'apps/authorization-service/src/engines/casbin/rbac_model.conf'),
     );
-    await new PolicyBootstrapService(enforcer).onModuleInit();
+    await new PolicyBootstrapService(enforcer, {
+      log: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn(),
+      verbose: jest.fn(),
+      fatal: jest.fn(),
+    }).onModuleInit();
 
     const adapter = new CasbinAuthorizationAdapter(enforcer);
     const queryService = new AuthorizationQueryService(adapter);

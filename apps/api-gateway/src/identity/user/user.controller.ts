@@ -17,13 +17,12 @@ import {
   SearchUsersQueryDto,
 } from '../dto';
 
+import { AuthorizationGuard, RequirePermission } from '@app/application-core';
 import { AccessAuthGuard, RefreshAuthGuard, GetCurrentUser, GetCurrentUserId } from '@app/common';
 
 import { mapDomainPurposeToProto } from '../mappers/user-verification-purpose.mapper';
 import { mapDomainUserStatusToProto } from '../mappers/user-status.mapper';
 import { UserStatus } from '@app/proto-schema';
-import { AuthorizationGuard } from '../../authorization/authorization.guard';
-import { RequirePermission } from '../../authorization/require-permission.decorator';
 
 @Controller('users')
 export class UserController {

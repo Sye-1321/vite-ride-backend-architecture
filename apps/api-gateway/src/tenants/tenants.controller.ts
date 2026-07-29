@@ -11,12 +11,11 @@ import {
 } from '@nestjs/common';
 import { firstValueFrom } from 'rxjs';
 
+import { AuthorizationGuard, RequirePermission } from '@app/application-core';
 import { AccessAuthGuard, GetCurrentUserId } from '@app/common';
 import { ProtoTenantStatus } from '@app/proto-schema';
 
 import { AuthorizationGrpcClient } from '../authorization/authorization.grpc.client';
-import { AuthorizationGuard } from '../authorization/authorization.guard';
-import { RequirePermission } from '../authorization/require-permission.decorator';
 import {
   AddMemberDto,
   ChangeTenantStatusDto,

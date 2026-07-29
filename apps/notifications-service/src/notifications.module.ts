@@ -3,7 +3,8 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
 
-import { TYPES } from '@app/shared-kernel';
+import { LoggingModule } from '@app/adapters';
+import { LoggerPort, TYPES } from '@app/shared-kernel';
 
 import { NotificationsConfig } from './config';
 import notificationsConfig from './config/notifications.config';
@@ -17,6 +18,7 @@ import { NotificationsGrpcController } from './transports/notifications.grpc.con
 
 @Module({
   imports: [
+    LoggingModule,
     HttpModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -29,8 +31,8 @@ import { NotificationsGrpcController } from './transports/notifications.grpc.con
     SendPushUseCase,
     {
       provide: TYPES.SmsPort,
-      inject: [ConfigService, HttpService],
-      useFactory: (configService: ConfigService, httpService: HttpService) => {
+      inject: [ConfigService, HttpService, TYPES.LoggerPort],
+      useFactory: (configService: ConfigService, httpService: HttpService, logger: LoggerPort) => {
         const config = configService.get<NotificationsConfig>('notifications');
 
         if (!config) {
@@ -39,13 +41,13 @@ import { NotificationsGrpcController } from './transports/notifications.grpc.con
 
         return config.SMS_DRIVER === 'afromessage'
           ? new AfroMessageAdapter(httpService, config)
-          : new DryRunSmsAdapter();
+          : new DryRunSmsAdapter(logger);
       },
     },
     {
       provide: TYPES.PushPort,
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => {
+      inject: [ConfigService, TYPES.LoggerPort],
+      useFactory: (configService: ConfigService, logger: LoggerPort) => {
         const config = configService.get<NotificationsConfig>('notifications');
 
         if (!config) {
@@ -54,7 +56,7 @@ import { NotificationsGrpcController } from './transports/notifications.grpc.con
 
         return config.PUSH_DRIVER === 'firebase'
           ? new FirebaseAdapter(config)
-          : new DryRunPushAdapter();
+          : new DryRunPushAdapter(logger);
       },
     },
   ],

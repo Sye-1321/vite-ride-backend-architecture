@@ -1,11 +1,12 @@
-import { Logger } from '@nestjs/common';
 import { randomUUID } from 'crypto';
+
+import { LoggerPort } from '@app/shared-kernel';
 
 import { DeliveryResult } from '../delivery.types';
 import { PushPort } from './push.port';
 
 export class DryRunPushAdapter implements PushPort {
-  private readonly logger = new Logger(DryRunPushAdapter.name);
+  constructor(private readonly logger: LoggerPort) {}
 
   async sendPush(params: {
     tokens: string[];
@@ -16,7 +17,11 @@ export class DryRunPushAdapter implements PushPort {
   }): Promise<DeliveryResult> {
     void params;
     const deliveryId = randomUUID();
-    this.logger.log({ deliveryId, channel: 'push', outcome: 'accepted' });
+    this.logger.log(
+      'notification accepted',
+      { deliveryId, channel: 'push', outcome: 'accepted' },
+      DryRunPushAdapter.name,
+    );
     return { deliveryId, outcome: 'accepted' };
   }
 }

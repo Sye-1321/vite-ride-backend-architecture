@@ -2,6 +2,11 @@ import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { from, Observable } from 'rxjs';
 
+import {
+  AuthorizationDecision,
+  AuthorizationDecisionPort,
+  AuthorizationDecisionRequest,
+} from '@app/application-core';
 import { GrpcClientContextInterceptor } from '@app/context';
 import {
   AccessCheckRequest,
@@ -25,7 +30,7 @@ interface AuthorizationGrpcService {
 }
 
 @Injectable()
-export class AuthorizationGrpcClient implements OnModuleInit {
+export class AuthorizationGrpcClient implements OnModuleInit, AuthorizationDecisionPort {
   private service!: AuthorizationGrpcService;
 
   constructor(
@@ -51,6 +56,10 @@ export class AuthorizationGrpcClient implements OnModuleInit {
 
   checkAccess(request: AccessCheckRequest): Observable<AccessCheckResponse> {
     return from(this.service.checkAccess(request));
+  }
+
+  authorize(request: AuthorizationDecisionRequest): Promise<AuthorizationDecision> {
+    return this.service.checkAccess(request);
   }
 
   assignRole(request: RoleRequest): Observable<RoleResponse> {

@@ -4,10 +4,10 @@ import { NextFunction, Request, Response } from 'express';
 import { of } from 'rxjs';
 import * as request from 'supertest';
 
+import { AuthorizationGuard } from '@app/application-core';
 import { AccessAuthGuard } from '@app/common';
 
 import { AuthorizationGrpcClient } from '../src/authorization/authorization.grpc.client';
-import { AuthorizationGuard } from '../src/authorization/authorization.guard';
 import { TenantsGrpcClient } from '../src/tenants/tenants.grpc.client';
 import { TenantsModule } from '../src/tenants/tenants.module';
 
