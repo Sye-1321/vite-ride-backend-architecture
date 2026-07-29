@@ -76,7 +76,7 @@ in the runnable core flow.
 
 ## Prerequisites
 
-- Node.js 20
+- Node.js 22
 - npm
 - Docker with Compose, or locally installed MongoDB and Redis
 
