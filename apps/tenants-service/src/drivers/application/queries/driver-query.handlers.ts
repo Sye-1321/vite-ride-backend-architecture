@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
+import { ApplicationError, requiredText } from '@app/application-core';
 import { TYPES } from '@app/shared-kernel';
 
-import { requiredText, TenantsApplicationError } from '../../../application/errors';
 import { Driver } from '../../domain/driver.entity';
 import { DriverRepositoryPort } from '../ports';
 import { GetDriverQuery } from './driver.queries';
@@ -21,7 +21,7 @@ export class GetDriverHandler implements IQueryHandler<GetDriverQuery> {
       requiredText(query.tenantId, 'tenantId'),
     );
     if (found.isNone()) {
-      throw new TenantsApplicationError('NOT_FOUND', 'Driver not found');
+      throw new ApplicationError('NOT_FOUND', 'Driver not found');
     }
     return found.unwrap();
   }

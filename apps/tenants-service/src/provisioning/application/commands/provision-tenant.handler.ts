@@ -1,10 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
+import { ApplicationError, requiredText } from '@app/application-core';
 import { AuditFactory } from '@app/audit';
 import { TYPES } from '@app/shared-kernel';
 
-import { requiredText, TenantsApplicationError } from '../../../application/errors';
 import { TenantMemberRepositoryPort } from '../../../membership/application/ports';
 import { TenantMember } from '../../../membership/domain/membership.entity';
 import { TenantMemberRole } from '../../../membership/domain/membership.types';
@@ -25,7 +25,7 @@ export class ProvisionTenantHandler implements ICommandHandler<ProvisionTenantCo
     const name = requiredText(command.name, 'name', 120);
     const ownerUserId = requiredText(command.ownerUserId, 'ownerUserId');
     if ((await this.tenants.findByName(name)).isSome()) {
-      throw new TenantsApplicationError('ALREADY_EXISTS', 'Tenant name already exists');
+      throw new ApplicationError('ALREADY_EXISTS', 'Tenant name already exists');
     }
 
     const tenant = Tenant.create({

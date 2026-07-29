@@ -245,6 +245,6 @@ describe('Tenants CQRS application', () => {
 
     await expect(
       commands.execute(new ProvisionTenantCommand(' east region ', 'owner-5')),
-    ).rejects.toMatchObject({ kind: 'ALREADY_EXISTS' });
+    ).rejects.toMatchObject({ code: 'ALREADY_EXISTS' });
   });
 });

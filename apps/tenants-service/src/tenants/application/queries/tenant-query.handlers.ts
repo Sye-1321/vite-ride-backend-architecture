@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
+import { ApplicationError, requiredText } from '@app/application-core';
 import { Paginated, TYPES } from '@app/shared-kernel';
 
-import { requiredText, TenantsApplicationError } from '../../../application/errors';
 import { Tenant } from '../../domain/tenant.entity';
 import { TenantRepositoryPort } from '../ports';
 import { GetTenantQuery, ListTenantsQuery } from './tenant.queries';
@@ -18,7 +18,7 @@ export class GetTenantHandler implements IQueryHandler<GetTenantQuery> {
   async execute(query: GetTenantQuery): Promise<Tenant> {
     const found = await this.tenants.findById(requiredText(query.tenantId, 'tenantId'));
     if (found.isNone()) {
-      throw new TenantsApplicationError('NOT_FOUND', 'Tenant not found');
+      throw new ApplicationError('NOT_FOUND', 'Tenant not found');
     }
     return found.unwrap();
   }

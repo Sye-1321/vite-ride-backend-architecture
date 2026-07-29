@@ -3,6 +3,7 @@ import { Controller } from '@nestjs/common';
 import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { GrpcMethod, RpcException } from '@nestjs/microservices';
 
+import { ApplicationError } from '@app/application-core';
 import {
   ChangeTenantStatusRequest,
   CreateTenantRequest,
@@ -27,7 +28,6 @@ import {
 } from '@app/proto-schema';
 import { Paginated } from '@app/shared-kernel';
 
-import { TenantsApplicationError } from '../application/errors';
 import { GetDriverQuery, RegisterDriverCommand } from '../drivers/application';
 import { Driver } from '../drivers/domain/driver.entity';
 import {
@@ -171,7 +171,7 @@ export class TenantsGrpcController {
   }
 
   private rethrow(error: unknown): never {
-    if (!(error instanceof TenantsApplicationError)) {
+    if (!(error instanceof ApplicationError)) {
       throw error;
     }
     const codes = {
@@ -180,7 +180,7 @@ export class TenantsGrpcController {
       INVALID_ARGUMENT: status.INVALID_ARGUMENT,
       NOT_FOUND: status.NOT_FOUND,
     } as const;
-    throw new RpcException({ code: codes[error.kind], message: error.message });
+    throw new RpcException({ code: codes[error.code], message: error.message });
   }
 
   private toTenantStatus(

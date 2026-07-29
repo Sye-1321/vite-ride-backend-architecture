@@ -1,10 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
+import { ApplicationError, requiredText } from '@app/application-core';
 import { AuditFactory } from '@app/audit';
 import { TYPES } from '@app/shared-kernel';
 
-import { requiredText, TenantsApplicationError } from '../../../application/errors';
 import { AddMemberCommand } from '../../../membership/application/commands';
 import { TenantMemberRepositoryPort } from '../../../membership/application/ports';
 import { TenantMemberRole } from '../../../membership/domain/membership.types';
@@ -29,10 +29,10 @@ export class RegisterDriverHandler implements ICommandHandler<RegisterDriverComm
     const tenantId = requiredText(command.tenantId, 'tenantId');
     const userId = requiredText(command.userId, 'userId');
     if ((await this.tenants.findById(tenantId)).isNone()) {
-      throw new TenantsApplicationError('NOT_FOUND', 'Tenant not found');
+      throw new ApplicationError('NOT_FOUND', 'Tenant not found');
     }
     if ((await this.drivers.findByUserIdAndTenantId(userId, tenantId)).isSome()) {
-      throw new TenantsApplicationError('ALREADY_EXISTS', 'Driver already exists');
+      throw new ApplicationError('ALREADY_EXISTS', 'Driver already exists');
     }
 
     if (!(await this.members.exists(tenantId, userId, TenantMemberRole.DRIVER))) {

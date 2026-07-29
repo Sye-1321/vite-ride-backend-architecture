@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
+import { ApplicationError, requiredText } from '@app/application-core';
 import { TYPES } from '@app/shared-kernel';
 
-import { requiredText, TenantsApplicationError } from '../../../application/errors';
 import { Tenant } from '../../domain/tenant.entity';
 import { TenantStatus } from '../../domain/tenant.types';
 import { TenantRepositoryPort } from '../ports';
@@ -12,7 +12,7 @@ import { ChangeTenantStatusCommand, UpdateTenantCommand } from './tenant.command
 async function tenantById(repository: TenantRepositoryPort, tenantId: string): Promise<Tenant> {
   const found = await repository.findById(requiredText(tenantId, 'tenantId'));
   if (found.isNone()) {
-    throw new TenantsApplicationError('NOT_FOUND', 'Tenant not found');
+    throw new ApplicationError('NOT_FOUND', 'Tenant not found');
   }
   return found.unwrap();
 }
@@ -29,7 +29,7 @@ export class UpdateTenantHandler implements ICommandHandler<UpdateTenantCommand>
     const name = requiredText(command.name, 'name', 120);
     const duplicate = await this.tenants.findByName(name);
     if (duplicate.isSome() && duplicate.unwrap().id !== tenant.id) {
-      throw new TenantsApplicationError('ALREADY_EXISTS', 'Tenant name already exists');
+      throw new ApplicationError('ALREADY_EXISTS', 'Tenant name already exists');
     }
 
     tenant.updateName(name);
@@ -51,7 +51,7 @@ export class ChangeTenantStatusHandler implements ICommandHandler<ChangeTenantSt
     if (command.status === TenantStatus.ACTIVE) {
       const result = tenant.activate();
       if (result.isErr()) {
-        throw new TenantsApplicationError(
+        throw new ApplicationError(
           'FAILED_PRECONDITION',
           'A suspended tenant cannot be reactivated',
         );

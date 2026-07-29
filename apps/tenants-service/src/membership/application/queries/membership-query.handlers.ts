@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common';
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 
+import { ApplicationError, requiredText } from '@app/application-core';
 import { Paginated, TYPES } from '@app/shared-kernel';
 
-import { requiredText, TenantsApplicationError } from '../../../application/errors';
 import { TenantRepositoryPort } from '../../../tenants/application/ports';
 import { TenantMember } from '../../domain/membership.entity';
 import { TenantMemberRepositoryPort } from '../ports';
@@ -21,7 +21,7 @@ export class ListMembersHandler implements IQueryHandler<ListMembersQuery> {
   async execute(query: ListMembersQuery): Promise<Paginated<TenantMember>> {
     const tenantId = requiredText(query.tenantId, 'tenantId');
     if ((await this.tenants.findById(tenantId)).isNone()) {
-      throw new TenantsApplicationError('NOT_FOUND', 'Tenant not found');
+      throw new ApplicationError('NOT_FOUND', 'Tenant not found');
     }
 
     const page = Number.isInteger(query.page) && query.page > 0 ? query.page : 1;

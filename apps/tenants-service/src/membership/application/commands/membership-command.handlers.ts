@@ -1,10 +1,10 @@
 import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
+import { ApplicationError, requiredText } from '@app/application-core';
 import { AuditFactory } from '@app/audit';
 import { TYPES } from '@app/shared-kernel';
 
-import { requiredText, TenantsApplicationError } from '../../../application/errors';
 import { TenantRepositoryPort } from '../../../tenants/application/ports';
 import { TenantMember } from '../../domain/membership.entity';
 import { TenantMemberRepositoryPort } from '../ports';
@@ -20,7 +20,7 @@ async function existingMember(
     requiredText(userId, 'userId'),
   );
   if (found.isNone()) {
-    throw new TenantsApplicationError('NOT_FOUND', 'Tenant member not found');
+    throw new ApplicationError('NOT_FOUND', 'Tenant member not found');
   }
   return found.unwrap();
 }
@@ -38,10 +38,10 @@ export class AddMemberHandler implements ICommandHandler<AddMemberCommand> {
     const tenantId = requiredText(command.tenantId, 'tenantId');
     const userId = requiredText(command.userId, 'userId');
     if ((await this.tenants.findById(tenantId)).isNone()) {
-      throw new TenantsApplicationError('NOT_FOUND', 'Tenant not found');
+      throw new ApplicationError('NOT_FOUND', 'Tenant not found');
     }
     if (await this.members.exists(tenantId, userId, command.role)) {
-      throw new TenantsApplicationError('ALREADY_EXISTS', 'Tenant membership already exists');
+      throw new ApplicationError('ALREADY_EXISTS', 'Tenant membership already exists');
     }
 
     const member = TenantMember.create({
