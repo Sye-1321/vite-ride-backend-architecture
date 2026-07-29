@@ -1,4 +1,5 @@
 export * from './app-logger.adapter';
+export * from './logging.module';
 export * from './bcrypt-hasher.adapter';
 export * from './numeric-otp-generator.adapter';
 export * from './token-generator.adapter';

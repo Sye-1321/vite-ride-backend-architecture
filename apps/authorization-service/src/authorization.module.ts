@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 
+import { LoggingModule } from '@app/adapters';
 import { TYPES } from '@app/shared-kernel';
 
 import { AuthorizationQueryService } from './application/services/authorization-query.service';
@@ -12,6 +13,7 @@ import { AuthorizationGrpcController } from './transports/grpc';
 
 @Module({
   imports: [
+    LoggingModule,
     ConfigModule.forRoot({
       isGlobal: true,
       load: [authorizationConfig],
