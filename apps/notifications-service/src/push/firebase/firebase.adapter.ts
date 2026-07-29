@@ -1,24 +1,34 @@
+import { OnApplicationShutdown } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import * as admin from 'firebase-admin';
+
+import { ApplicationError } from '@app/application-core';
+import { LoggerPort } from '@app/shared-kernel';
 
 import { NotificationsConfig } from '../../config';
 import { DeliveryResult } from '../../delivery.types';
 import { PushPort } from '../push.port';
 
-export class FirebaseAdapter implements PushPort {
+export class FirebaseAdapter implements PushPort, OnApplicationShutdown {
   private readonly app: admin.app.App;
 
-  constructor(config: NotificationsConfig) {
-    this.app = admin.initializeApp(
-      {
-        credential: admin.credential.cert({
-          projectId: config.FIREBASE_PROJECT_ID!,
-          clientEmail: config.FIREBASE_CLIENT_EMAIL!,
-          privateKey: config.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
-        }),
-      },
-      `notifications-${randomUUID()}`,
-    );
+  constructor(
+    config: NotificationsConfig,
+    private readonly logger: LoggerPort,
+    app?: admin.app.App,
+  ) {
+    this.app =
+      app ??
+      admin.initializeApp(
+        {
+          credential: admin.credential.cert({
+            projectId: config.FIREBASE_PROJECT_ID!,
+            clientEmail: config.FIREBASE_CLIENT_EMAIL!,
+            privateKey: config.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+          }),
+        },
+        `notifications-${randomUUID()}`,
+      );
   }
 
   async sendPush(params: {
@@ -28,15 +38,42 @@ export class FirebaseAdapter implements PushPort {
     data?: Record<string, string>;
     correlationId?: string;
   }): Promise<DeliveryResult> {
-    await this.app.messaging().sendEachForMulticast({
-      tokens: params.tokens,
-      notification: {
-        title: params.title,
-        body: params.body,
-      },
-      data: params.data,
-    });
+    const deliveryId = randomUUID();
+    try {
+      const response = await this.app.messaging().sendEachForMulticast({
+        tokens: params.tokens,
+        notification: {
+          title: params.title,
+          body: params.body,
+        },
+        data: params.data,
+      });
 
-    return { deliveryId: randomUUID(), outcome: 'delivered' };
+      if (response.successCount === 0) {
+        throw new ApplicationError('UNAVAILABLE', 'Push provider rejected every recipient');
+      }
+      if (response.failureCount > 0) {
+        this.logger.warn(
+          'push provider partially accepted batch',
+          {
+            deliveryId,
+            requestedCount: params.tokens.length,
+            failureCount: response.failureCount,
+          },
+          FirebaseAdapter.name,
+        );
+      }
+      return { deliveryId, outcome: 'accepted' };
+    } catch (error) {
+      this.logger.error('push provider request failed', error, FirebaseAdapter.name);
+      if (error instanceof ApplicationError) {
+        throw error;
+      }
+      throw new ApplicationError('UNAVAILABLE', 'Push provider is unavailable');
+    }
+  }
+
+  async onApplicationShutdown(): Promise<void> {
+    await this.app.delete();
   }
 }

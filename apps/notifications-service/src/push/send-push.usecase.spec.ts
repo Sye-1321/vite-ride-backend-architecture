@@ -41,4 +41,25 @@ describe('SendPushUseCase', () => {
     ).toThrow(ApplicationError);
     expect(pushPort.sendPush).not.toHaveBeenCalled();
   });
+
+  it('rejects reserved keys and oversized payloads before provider handoff', () => {
+    expect(() =>
+      useCase.execute({
+        deviceTokens: ['device-a'],
+        title: 'Update',
+        body: 'Message',
+        data: { 'google.internal': 'value' },
+      }),
+    ).toThrow(ApplicationError);
+
+    expect(() =>
+      useCase.execute({
+        deviceTokens: ['device-a'],
+        title: 'Update',
+        body: 'Message',
+        data: { route: 'x'.repeat(4_096) },
+      }),
+    ).toThrow(ApplicationError);
+    expect(pushPort.sendPush).not.toHaveBeenCalled();
+  });
 });

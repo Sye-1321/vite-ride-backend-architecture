@@ -137,6 +137,7 @@ services:
       NOTIFICATIONS_GRPC_BIND_URL: 0.0.0.0:50054
       SMS_DRIVER: ${SMS_DRIVER:-dry-run}
       PUSH_DRIVER: ${PUSH_DRIVER:-dry-run}
+      NOTIFICATION_PROVIDER_TIMEOUT_MS: ${NOTIFICATION_PROVIDER_TIMEOUT_MS:-5000}
 
   api-gateway:
     <<: *service-defaults

@@ -5,6 +5,7 @@ export const notificationsConfigSchema = z
     NOTIFICATIONS_GRPC_BIND_URL: z.string().default('0.0.0.0:50054'),
     SMS_DRIVER: z.enum(['dry-run', 'afromessage']).default('dry-run'),
     PUSH_DRIVER: z.enum(['dry-run', 'firebase']).default('dry-run'),
+    NOTIFICATION_PROVIDER_TIMEOUT_MS: z.coerce.number().int().min(500).max(30_000).default(5_000),
     AFROMESSAGE_BASE_URL: z.string().url().default('https://api.afromessage.com/api/send'),
     AFROMESSAGE_API_TOKEN: z.string().min(1).optional(),
     FIREBASE_PROJECT_ID: z.string().min(1).optional(),

@@ -8,6 +8,7 @@ describe('notificationsConfigSchema', () => {
       NOTIFICATIONS_GRPC_BIND_URL: '0.0.0.0:50054',
       SMS_DRIVER: 'dry-run',
       PUSH_DRIVER: 'dry-run',
+      NOTIFICATION_PROVIDER_TIMEOUT_MS: 5_000,
     });
   });
 

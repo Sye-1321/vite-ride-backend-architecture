@@ -40,7 +40,7 @@ import { NotificationsGrpcController } from './transports/notifications.grpc.con
         }
 
         return config.SMS_DRIVER === 'afromessage'
-          ? new AfroMessageAdapter(httpService, config)
+          ? new AfroMessageAdapter(httpService, config, logger)
           : new DryRunSmsAdapter(logger);
       },
     },
@@ -55,7 +55,7 @@ import { NotificationsGrpcController } from './transports/notifications.grpc.con
         }
 
         return config.PUSH_DRIVER === 'firebase'
-          ? new FirebaseAdapter(config)
+          ? new FirebaseAdapter(config, logger)
           : new DryRunPushAdapter(logger);
       },
     },

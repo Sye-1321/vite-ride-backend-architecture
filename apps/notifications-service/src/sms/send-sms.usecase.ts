@@ -22,11 +22,12 @@ export class SendSmsUseCase {
   execute(command: SendSmsCommand): Promise<DeliveryResult> {
     const recipient = command.recipient?.trim();
     const message = command.message?.trim();
+    const correlationId = command.correlationId?.trim() || undefined;
 
-    if (!recipient || recipient.length > 64) {
+    if (!recipient || !/^\+[1-9]\d{7,14}$/.test(recipient)) {
       throw new ApplicationError(
         'INVALID_ARGUMENT',
-        'recipient must contain between 1 and 64 characters',
+        'recipient must be a valid E.164 phone number',
       );
     }
 
@@ -37,10 +38,17 @@ export class SendSmsUseCase {
       );
     }
 
+    if (correlationId && correlationId.length > 128) {
+      throw new ApplicationError(
+        'INVALID_ARGUMENT',
+        'correlationId must not exceed 128 characters',
+      );
+    }
+
     return this.smsPort.sendSms({
       to: recipient,
       message,
-      correlationId: command.correlationId || undefined,
+      correlationId,
     });
   }
 }
