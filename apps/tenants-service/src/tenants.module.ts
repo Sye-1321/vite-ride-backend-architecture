@@ -1,30 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { CqrsModule } from '@nestjs/cqrs';
 
+import { LoggingModule } from '@app/adapters';
 import { MongoModule } from '@app/persistence';
-import { TYPES } from '@app/shared-kernel';
 
-import { TenantsApplicationService } from './application/tenants-application.service';
 import tenantsConfig from './config/tenants.config';
-import { DriverMapper, DriverMongoRepository } from './drivers/infrastructure/persistence';
-import {
-  DriverDataModel,
-  DriverSchema,
-} from './drivers/infrastructure/persistence/mongo/driver.schema';
-import {
-  TenantMemberMapper,
-  TenantMemberMongoRepository,
-} from './membership/infrastructure/persistence';
-import {
-  TenantMemberDataModel,
-  TenantMemberSchema,
-} from './membership/infrastructure/persistence/mongo/tenant-member.schema';
-import { TenantMapper, TenantRepository } from './tenants/infrastructure/persistence';
-import {
-  TenantDataModel,
-  TenantSchema,
-} from './tenants/infrastructure/persistence/mongo/tenant.schema';
+import { DriverModule } from './drivers/drivers.module';
+import { MembershipModule } from './membership/membership.module';
+import { ProvisioningModule } from './provisioning/provisioning.module';
+import { TenantModule } from './tenants/tenants.module';
 import { TenantsGrpcController } from './transports/tenants.grpc.controller';
 
 @Module({
@@ -33,34 +18,14 @@ import { TenantsGrpcController } from './transports/tenants.grpc.controller';
       isGlobal: true,
       load: [tenantsConfig],
     }),
+    LoggingModule,
+    CqrsModule,
     MongoModule.forRoot('TENANTS', 'TenantsConnection'),
-    MongooseModule.forFeature(
-      [
-        { name: TenantDataModel.name, schema: TenantSchema },
-        { name: TenantMemberDataModel.name, schema: TenantMemberSchema },
-        { name: DriverDataModel.name, schema: DriverSchema },
-      ],
-      'TenantsConnection',
-    ),
+    TenantModule,
+    MembershipModule,
+    DriverModule,
+    ProvisioningModule,
   ],
   controllers: [TenantsGrpcController],
-  providers: [
-    TenantsApplicationService,
-    TenantMapper,
-    TenantMemberMapper,
-    DriverMapper,
-    {
-      provide: TYPES.TenantRepositoryPort,
-      useClass: TenantRepository,
-    },
-    {
-      provide: TYPES.TenantMemberRepositoryPort,
-      useClass: TenantMemberMongoRepository,
-    },
-    {
-      provide: TYPES.DriverRepositoryPort,
-      useClass: DriverMongoRepository,
-    },
-  ],
 })
 export class TenantsModule {}
