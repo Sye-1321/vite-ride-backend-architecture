@@ -43,6 +43,7 @@ export class MongoTenantProvisioningAdapter implements TenantProvisioningPort {
         await this.outbox.create(
           [
             roleAssignmentOutboxRecord({
+              membershipId: owner.id,
               userId: owner.userId,
               domain: tenant.id,
               role: 'tenant-admin',

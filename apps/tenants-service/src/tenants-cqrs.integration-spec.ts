@@ -25,7 +25,11 @@ import {
   RemoveMemberCommand,
   SuspendMemberCommand,
 } from './membership/application/commands';
-import { TenantMemberRepositoryPort } from './membership/application/ports';
+import {
+  MEMBERSHIP_MUTATION_PORT,
+  MembershipMutationPort,
+  TenantMemberRepositoryPort,
+} from './membership/application/ports';
 import { ListMembersQuery, MembershipQueryHandlers } from './membership/application/queries';
 import { TenantMember } from './membership/domain/membership.entity';
 import { TenantMemberRole, TenantMemberStatus } from './membership/domain/membership.types';
@@ -190,6 +194,17 @@ describe('Tenants CQRS application', () => {
         {
           provide: TYPES.TenantMemberRepositoryPort,
           useClass: MemberRepositoryDouble,
+        },
+        {
+          provide: MEMBERSHIP_MUTATION_PORT,
+          inject: [TYPES.TenantMemberRepositoryPort],
+          useFactory: (members: TenantMemberRepositoryPort): MembershipMutationPort => ({
+            add: (member) => members.insert(member),
+            suspend: (member) => members.save(member),
+            remove: async (member) => {
+              await members.softDelete(member);
+            },
+          }),
         },
         { provide: TYPES.DriverRepositoryPort, useClass: DriverRepositoryDouble },
         {

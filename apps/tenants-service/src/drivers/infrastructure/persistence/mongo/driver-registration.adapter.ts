@@ -46,6 +46,7 @@ export class MongoDriverRegistrationAdapter implements DriverRegistrationPort {
         await this.outbox.create(
           [
             roleAssignmentOutboxRecord({
+              membershipId: membership?.id ?? driver.id,
               userId: driver.userId,
               domain: driver.tenantId,
               role: 'driver',

@@ -8,6 +8,7 @@ export const AUTHORIZATION_GRPC_CLIENT = 'TENANTS_AUTHORIZATION_GRPC_CLIENT';
 
 interface AuthorizationServiceClient {
   assignRole(request: RoleRequest): Observable<RoleResponse>;
+  removeRole(request: RoleRequest): Observable<RoleResponse>;
 }
 
 @Injectable()
@@ -28,6 +29,12 @@ export class AuthorizationRoleGrpcAdapter implements OnModuleInit {
   async assignRole(userId: string, domain: string, role: string): Promise<void> {
     await firstValueFrom(
       this.authorization.assignRole({ userId, domain, role }).pipe(timeout({ first: 3_000 })),
+    );
+  }
+
+  async removeRole(userId: string, domain: string, role: string): Promise<void> {
+    await firstValueFrom(
+      this.authorization.removeRole({ userId, domain, role }).pipe(timeout({ first: 3_000 })),
     );
   }
 }

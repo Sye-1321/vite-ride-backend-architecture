@@ -11,7 +11,11 @@ import {
   UserDirectoryPort,
 } from '../../../users/application/user-directory.port';
 import { TenantMember } from '../../domain/membership.entity';
-import { TenantMemberRepositoryPort } from '../ports';
+import {
+  MEMBERSHIP_MUTATION_PORT,
+  MembershipMutationPort,
+  TenantMemberRepositoryPort,
+} from '../ports';
 import { AddMemberCommand, RemoveMemberCommand, SuspendMemberCommand } from './membership.commands';
 
 async function existingMember(
@@ -38,6 +42,8 @@ export class AddMemberHandler implements ICommandHandler<AddMemberCommand> {
     private readonly members: TenantMemberRepositoryPort,
     @Inject(USER_DIRECTORY_PORT)
     private readonly users: UserDirectoryPort,
+    @Inject(MEMBERSHIP_MUTATION_PORT)
+    private readonly mutations: MembershipMutationPort,
   ) {}
 
   async execute(command: AddMemberCommand): Promise<TenantMember> {
@@ -57,7 +63,7 @@ export class AddMemberHandler implements ICommandHandler<AddMemberCommand> {
       role: command.role,
       audit: AuditFactory.createForCreate(userId),
     });
-    await this.members.insert(member);
+    await this.mutations.add(member);
     return member;
   }
 }
@@ -67,12 +73,14 @@ export class SuspendMemberHandler implements ICommandHandler<SuspendMemberComman
   constructor(
     @Inject(TYPES.TenantMemberRepositoryPort)
     private readonly members: TenantMemberRepositoryPort,
+    @Inject(MEMBERSHIP_MUTATION_PORT)
+    private readonly mutations: MembershipMutationPort,
   ) {}
 
   async execute(command: SuspendMemberCommand): Promise<TenantMember> {
     const member = await existingMember(this.members, command.tenantId, command.userId);
     member.suspend();
-    await this.members.save(member);
+    await this.mutations.suspend(member);
     return member;
   }
 }
@@ -82,11 +90,13 @@ export class RemoveMemberHandler implements ICommandHandler<RemoveMemberCommand>
   constructor(
     @Inject(TYPES.TenantMemberRepositoryPort)
     private readonly members: TenantMemberRepositoryPort,
+    @Inject(MEMBERSHIP_MUTATION_PORT)
+    private readonly mutations: MembershipMutationPort,
   ) {}
 
   async execute(command: RemoveMemberCommand): Promise<void> {
     const member = await existingMember(this.members, command.tenantId, command.userId);
-    await this.members.softDelete(member);
+    await this.mutations.remove(member);
   }
 }
 

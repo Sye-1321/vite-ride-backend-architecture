@@ -7,6 +7,11 @@ export enum RoleAssignmentOutboxStatus {
   PROCESSED = 'PROCESSED',
 }
 
+export enum RoleAssignmentOutboxOperation {
+  ASSIGN = 'ASSIGN',
+  REMOVE = 'REMOVE',
+}
+
 @Schema({ versionKey: false, timestamps: true })
 export class RoleAssignmentOutboxDataModel extends MongoDocument {
   @Prop({ required: true, unique: true, index: true })
@@ -20,6 +25,13 @@ export class RoleAssignmentOutboxDataModel extends MongoDocument {
 
   @Prop({ required: true })
   role: string;
+
+  @Prop({
+    required: true,
+    enum: Object.values(RoleAssignmentOutboxOperation),
+    default: RoleAssignmentOutboxOperation.ASSIGN,
+  })
+  operation: RoleAssignmentOutboxOperation;
 
   @Prop({
     required: true,
@@ -48,17 +60,21 @@ export const RoleAssignmentOutboxSchema = SchemaFactory.createForClass(
 RoleAssignmentOutboxSchema.index({ status: 1, nextAttemptAt: 1 });
 
 export function roleAssignmentOutboxRecord(input: {
+  membershipId: string;
   userId: string;
   domain: string;
   role: string;
+  operation?: RoleAssignmentOutboxOperation;
   createdBy: string;
 }): RoleAssignmentOutboxDataModel {
   const now = new Date();
+  const operation = input.operation ?? RoleAssignmentOutboxOperation.ASSIGN;
   return {
-    assignmentKey: `${input.userId}:${input.domain}:${input.role}`,
+    assignmentKey: `${input.membershipId}:${operation}`,
     userId: input.userId,
     domain: input.domain,
     role: input.role,
+    operation,
     status: RoleAssignmentOutboxStatus.PENDING,
     attempts: 0,
     nextAttemptAt: now,

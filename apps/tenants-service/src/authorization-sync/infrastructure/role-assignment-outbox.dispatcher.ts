@@ -7,6 +7,7 @@ import { LoggerPort, TYPES } from '@app/shared-kernel';
 import { AuthorizationRoleGrpcAdapter } from './authorization-role.grpc.adapter';
 import {
   RoleAssignmentOutboxDataModel,
+  RoleAssignmentOutboxOperation,
   RoleAssignmentOutboxStatus,
 } from './role-assignment-outbox.schema';
 
@@ -72,7 +73,11 @@ export class RoleAssignmentOutboxDispatcher
     },
   ): Promise<void> {
     try {
-      await this.authorization.assignRole(record.userId, record.domain, record.role);
+      if (record.operation === RoleAssignmentOutboxOperation.REMOVE) {
+        await this.authorization.removeRole(record.userId, record.domain, record.role);
+      } else {
+        await this.authorization.assignRole(record.userId, record.domain, record.role);
+      }
       record.status = RoleAssignmentOutboxStatus.PROCESSED;
       record.processedAt = new Date();
       record.lastError = undefined;

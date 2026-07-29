@@ -4,10 +4,19 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { TYPES } from '@app/shared-kernel';
 
+import { AuthorizationSyncModule } from '../authorization-sync/authorization-sync.module';
 import { TenantModule } from '../tenants/tenants.module';
 import { UsersModule } from '../users/users.module';
-import { MembershipCommandHandlers, MembershipQueryHandlers } from './application';
-import { TenantMemberMapper, TenantMemberMongoRepository } from './infrastructure/persistence';
+import {
+  MEMBERSHIP_MUTATION_PORT,
+  MembershipCommandHandlers,
+  MembershipQueryHandlers,
+} from './application';
+import {
+  MongoMembershipMutationAdapter,
+  TenantMemberMapper,
+  TenantMemberMongoRepository,
+} from './infrastructure/persistence';
 import {
   TenantMemberDataModel,
   TenantMemberSchema,
@@ -16,6 +25,7 @@ import {
 @Module({
   imports: [
     CqrsModule,
+    AuthorizationSyncModule,
     TenantModule,
     UsersModule,
     MongooseModule.forFeature(
@@ -27,6 +37,10 @@ import {
     ...MembershipCommandHandlers,
     ...MembershipQueryHandlers,
     TenantMemberMapper,
+    {
+      provide: MEMBERSHIP_MUTATION_PORT,
+      useClass: MongoMembershipMutationAdapter,
+    },
     {
       provide: TYPES.TenantMemberRepositoryPort,
       useClass: TenantMemberMongoRepository,
