@@ -2,7 +2,7 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { NextFunction, Request, Response } from 'express';
 import { of } from 'rxjs';
-import request = require('supertest');
+import * as request from 'supertest';
 
 import { AccessAuthGuard } from '@app/common';
 
