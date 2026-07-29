@@ -1,7 +1,6 @@
-import { status } from '@grpc/grpc-js';
 import { Inject, Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
 
+import { ApplicationError } from '@app/application-core';
 import { TYPES } from '@app/shared-kernel';
 
 import { DeliveryResult } from '../delivery.types';
@@ -28,24 +27,24 @@ export class SendPushUseCase {
     const body = command.body?.trim();
 
     if (!tokens?.length || tokens.length > 500) {
-      throw new RpcException({
-        code: status.INVALID_ARGUMENT,
-        message: 'deviceTokens must contain between 1 and 500 entries',
-      });
+      throw new ApplicationError(
+        'INVALID_ARGUMENT',
+        'deviceTokens must contain between 1 and 500 entries',
+      );
     }
 
     if (!title || title.length > 120) {
-      throw new RpcException({
-        code: status.INVALID_ARGUMENT,
-        message: 'title must contain between 1 and 120 characters',
-      });
+      throw new ApplicationError(
+        'INVALID_ARGUMENT',
+        'title must contain between 1 and 120 characters',
+      );
     }
 
     if (!body || body.length > 1000) {
-      throw new RpcException({
-        code: status.INVALID_ARGUMENT,
-        message: 'body must contain between 1 and 1000 characters',
-      });
+      throw new ApplicationError(
+        'INVALID_ARGUMENT',
+        'body must contain between 1 and 1000 characters',
+      );
     }
 
     return this.pushPort.sendPush({

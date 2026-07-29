@@ -1,7 +1,6 @@
-import { status } from '@grpc/grpc-js';
 import { Inject, Injectable } from '@nestjs/common';
-import { RpcException } from '@nestjs/microservices';
 
+import { ApplicationError } from '@app/application-core';
 import { TYPES } from '@app/shared-kernel';
 
 import { DeliveryResult } from '../delivery.types';
@@ -25,17 +24,17 @@ export class SendSmsUseCase {
     const message = command.message?.trim();
 
     if (!recipient || recipient.length > 64) {
-      throw new RpcException({
-        code: status.INVALID_ARGUMENT,
-        message: 'recipient must contain between 1 and 64 characters',
-      });
+      throw new ApplicationError(
+        'INVALID_ARGUMENT',
+        'recipient must contain between 1 and 64 characters',
+      );
     }
 
     if (!message || message.length > 1000) {
-      throw new RpcException({
-        code: status.INVALID_ARGUMENT,
-        message: 'message must contain between 1 and 1000 characters',
-      });
+      throw new ApplicationError(
+        'INVALID_ARGUMENT',
+        'message must contain between 1 and 1000 characters',
+      );
     }
 
     return this.smsPort.sendSms({

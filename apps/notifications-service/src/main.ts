@@ -3,6 +3,7 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { join } from 'path';
 
 import { AppLoggerAdapter } from '@app/adapters';
+import { GrpcExceptionFilter } from '@app/common';
 import { NOTIFICATIONS_PACKAGE_NAME } from '@app/proto-schema';
 
 import { notificationsConfigSchema } from './config';
@@ -22,6 +23,8 @@ async function bootstrap() {
     },
   });
 
+  app.useGlobalFilters(new GrpcExceptionFilter());
+  app.enableShutdownHooks();
   await app.listen();
   logger.log('service started', { bindAddress: config.NOTIFICATIONS_GRPC_BIND_URL }, 'Bootstrap');
 }

@@ -1,4 +1,4 @@
-import { RpcException } from '@nestjs/microservices';
+import { ApplicationError } from '@app/application-core';
 
 import { PushPort } from './push.port';
 import { SendPushUseCase } from './send-push.usecase';
@@ -38,7 +38,7 @@ describe('SendPushUseCase', () => {
         title: 'Update',
         body: 'Message',
       }),
-    ).toThrow(RpcException);
+    ).toThrow(ApplicationError);
     expect(pushPort.sendPush).not.toHaveBeenCalled();
   });
 });

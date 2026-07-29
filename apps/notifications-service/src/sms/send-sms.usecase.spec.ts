@@ -1,4 +1,4 @@
-import { RpcException } from '@nestjs/microservices';
+import { ApplicationError } from '@app/application-core';
 
 import { SmsPort } from './sms.port';
 import { SendSmsUseCase } from './send-sms.usecase';
@@ -34,7 +34,7 @@ describe('SendSmsUseCase', () => {
   });
 
   it('rejects an empty recipient before calling a provider', () => {
-    expect(() => useCase.execute({ recipient: ' ', message: 'message' })).toThrow(RpcException);
+    expect(() => useCase.execute({ recipient: ' ', message: 'message' })).toThrow(ApplicationError);
     expect(smsPort.sendSms).not.toHaveBeenCalled();
   });
 });
