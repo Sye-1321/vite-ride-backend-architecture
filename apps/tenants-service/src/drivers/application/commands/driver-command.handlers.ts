@@ -7,7 +7,7 @@ import { TYPES } from '@app/shared-kernel';
 
 import { TenantMemberRepositoryPort } from '../../../membership/application/ports';
 import { TenantMember } from '../../../membership/domain/membership.entity';
-import { TenantMemberRole } from '../../../membership/domain/membership.types';
+import { TenantMemberRole, TenantMemberStatus } from '../../../membership/domain/membership.types';
 import { TenantRepositoryPort } from '../../../tenants/application/ports';
 import {
   USER_DIRECTORY_PORT,
@@ -43,7 +43,20 @@ export class RegisterDriverHandler implements ICommandHandler<RegisterDriverComm
       throw new ApplicationError('ALREADY_EXISTS', 'Driver already exists');
     }
 
-    const membership = (await this.members.exists(tenantId, userId, TenantMemberRole.DRIVER))
+    const existingMembership = await this.members.findByTenantAndUser(tenantId, userId);
+    if (existingMembership.isSome()) {
+      const member = existingMembership.unwrap();
+      if (
+        member.role !== TenantMemberRole.DRIVER ||
+        member.getProps().status !== TenantMemberStatus.ACTIVE
+      ) {
+        throw new ApplicationError(
+          'FAILED_PRECONDITION',
+          'User must have an active driver membership',
+        );
+      }
+    }
+    const membership = existingMembership.isSome()
       ? undefined
       : TenantMember.create({
           tenantId,

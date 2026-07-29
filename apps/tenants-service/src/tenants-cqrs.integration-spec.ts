@@ -150,13 +150,6 @@ class MemberRepositoryDouble
       )
       .map((candidate) => candidate.tenantId);
   }
-
-  async exists(tenantId: string, userId: string, role: TenantMemberRole): Promise<boolean> {
-    return [...this.records.values()].some(
-      (candidate) =>
-        candidate.tenantId === tenantId && candidate.userId === userId && candidate.role === role,
-    );
-  }
 }
 
 class DriverRepositoryDouble extends RepositoryDouble<Driver> implements DriverRepositoryPort {
@@ -295,6 +288,19 @@ describe('Tenants CQRS application', () => {
         (member) => member.userId === 'driver-1' && member.role === TenantMemberRole.DRIVER,
       ),
     ).toBe(true);
+  });
+
+  it('rejects conflicting membership roles for the same tenant user', async () => {
+    const tenant = await commands.execute<ProvisionTenantCommand, Tenant>(
+      new ProvisionTenantCommand('Central Region', 'owner-7'),
+    );
+
+    await expect(
+      commands.execute(new AddMemberCommand(tenant.id, 'owner-7', TenantMemberRole.DRIVER)),
+    ).rejects.toMatchObject({ code: 'ALREADY_EXISTS' });
+    await expect(
+      commands.execute(new RegisterDriverCommand(tenant.id, 'owner-7')),
+    ).rejects.toMatchObject({ code: 'FAILED_PRECONDITION' });
   });
 
   it('returns only tenants where the user has an active membership', async () => {

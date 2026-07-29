@@ -53,7 +53,7 @@ export class AddMemberHandler implements ICommandHandler<AddMemberCommand> {
       throw new ApplicationError('NOT_FOUND', 'Tenant not found');
     }
     await this.users.assertExists(userId);
-    if (await this.members.exists(tenantId, userId, command.role)) {
+    if ((await this.members.findByTenantAndUser(tenantId, userId)).isSome()) {
       throw new ApplicationError('ALREADY_EXISTS', 'Tenant membership already exists');
     }
 
