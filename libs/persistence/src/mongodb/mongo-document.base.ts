@@ -1,9 +1,9 @@
+import { randomUUID } from 'crypto';
 import { Prop } from '@nestjs/mongoose';
-import { v4 as uuidv4 } from 'uuid';
 import { PersistentEntityProps } from '../core';
 
 export abstract class MongoDocument implements PersistentEntityProps {
-  @Prop({ type: String, default: () => uuidv4() })
+  @Prop({ type: String, default: () => randomUUID() })
   _id?: string;
 
   @Prop({ type: String, required: true, immutable: true })
