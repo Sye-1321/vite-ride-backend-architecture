@@ -3,7 +3,7 @@ export const TYPES = {
   AccessTokenExpiresIn: 'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
   jwtRefreshTokenSecret: 'JWT_REFRESH_TOKEN_SECRET',
   refreshTokenExpiresIn: 'JWT_REFRESH_TOKEN_EXPIRATION_TIME',
-  ILogger: Symbol('ILogger'),
+  LoggerPort: Symbol('LoggerPort'),
 
   //port
   AuthTokenProvider: Symbol('AuthTokenProvider'),

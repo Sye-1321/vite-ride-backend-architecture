@@ -3,4 +3,6 @@ export interface LoggerPort {
   error(message: string, trace?: unknown, ...meta: unknown[]): void;
   warn(message: string, ...meta: unknown[]): void;
   debug(message: string, ...meta: unknown[]): void;
+  verbose(message: string, ...meta: unknown[]): void;
+  fatal(message: string, ...meta: unknown[]): void;
 }
