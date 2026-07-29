@@ -1,17 +1,19 @@
 import { tenantsConfigSchema } from './tenants.config.schema';
 
 describe('tenantsConfigSchema', () => {
-  it('uses a credential-free in-memory store by default', () => {
-    expect(tenantsConfigSchema.parse({})).toEqual({
+  it('accepts MongoDB-backed tenant configuration', () => {
+    expect(
+      tenantsConfigSchema.parse({
+        DATABASE_URL_TENANTS: 'mongodb://127.0.0.1:27017/vite_ride_tenants',
+      }),
+    ).toEqual({
       TENANTS_GRPC_BIND_URL: '0.0.0.0:50053',
-      TENANTS_STORE_DRIVER: 'memory',
+      DATABASE_URL_TENANTS: 'mongodb://127.0.0.1:27017/vite_ride_tenants',
     });
   });
 
-  it('requires a database URL when MongoDB is selected', () => {
-    const result = tenantsConfigSchema.safeParse({
-      TENANTS_STORE_DRIVER: 'mongodb',
-    });
+  it('requires a MongoDB connection URL', () => {
+    const result = tenantsConfigSchema.safeParse({});
 
     expect(result.success).toBe(false);
   });
