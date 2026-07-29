@@ -12,6 +12,10 @@ export const gatewayConfigSchema = z.object({
         .map((origin) => origin.trim())
         .filter(Boolean),
     ),
+  GATEWAY_SWAGGER_ENABLED: z
+    .enum(['true', 'false'])
+    .default('true')
+    .transform((value) => value === 'true'),
   IDENTITY_GRPC_URL: z.string().default('127.0.0.1:50051'),
   AUTHORIZATION_GRPC_URL: z.string().default('127.0.0.1:50052'),
   TENANTS_GRPC_URL: z.string().default('127.0.0.1:50053'),

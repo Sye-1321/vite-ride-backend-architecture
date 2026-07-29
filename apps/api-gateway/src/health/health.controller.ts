@@ -1,4 +1,11 @@
-import { Controller, Get, Inject, ServiceUnavailableException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  ServiceUnavailableException,
+  VERSION_NEUTRAL,
+} from '@nestjs/common';
+import { SkipThrottle } from '@nestjs/throttler';
 
 import { RedisClientPort } from '@app/redis';
 import { TYPES } from '@app/shared-kernel';
@@ -6,7 +13,8 @@ import { TYPES } from '@app/shared-kernel';
 import { AuthorizationGrpcClient } from '../authorization/authorization.grpc.client';
 import { TenantsGrpcClient } from '../tenants/tenants.grpc.client';
 
-@Controller('health')
+@SkipThrottle()
+@Controller({ path: 'health', version: VERSION_NEUTRAL })
 export class HealthController {
   constructor(
     @Inject(TYPES.RedisClientPort)
