@@ -1,7 +1,8 @@
-# Vite Ride Core Services
+# Vite Ride — Sanitized Core Services
 
-A confidentiality-safe NestJS service subset centered on identity,
-authorization, tenant management, and internal notifications. The repository is
+This repository is a sanitized version of the Vite Ride backend architecture.
+It presents a confidentiality-safe NestJS service subset centered on identity,
+authorization, tenant management, and internal notifications. The code is
 structured as a TypeScript monorepo with one public HTTP boundary and four
 internal gRPC services.
 
@@ -19,24 +20,23 @@ flowchart LR
     Identity -->|gRPC :50054| Notifications[Notifications]
     Identity --> Mongo[(MongoDB)]
     Identity --> Redis[(Redis)]
-    Authorization -. optional .-> AuthzMongo[(MongoDB)]
-    Tenants -. optional .-> TenantMongo[(MongoDB)]
+    Authorization --> AuthzMongo[(MongoDB)]
+    Tenants --> TenantMongo[(MongoDB)]
 ```
 
 The Gateway is the only public HTTP process. Notifications is internal-only.
-Authorization and Tenants use credential-free in-memory drivers by default;
-MongoDB can be selected for durable data. Notifications uses dry-run SMS and
-push adapters by default.
+Identity, Authorization, and Tenants require MongoDB. Identity also requires
+Redis. Notifications uses dry-run SMS and push adapters by default.
 
 ## Applications
 
 | Application   | Transport | Default           | Documentation                                 |
 | ------------- | --------- | ----------------- | --------------------------------------------- |
-| API Gateway   | HTTP      | `:3000/vite-ride` | [Guide](apps/api-gateway/README.md)           |
-| Identity      | gRPC      | `:50051`          | [Guide](apps/identity-service/README.md)      |
-| Authorization | gRPC      | `:50052`          | [Guide](apps/authorization-service/README.md) |
-| Tenants       | gRPC      | `:50053`          | [Guide](apps/tenants-service/README.md)       |
-| Notifications | gRPC      | `:50054`          | [Guide](apps/notifications-service/README.md) |
+| API Gateway   | HTTP      | `:3000/vite-ride` | [Guide](apps/api-gateway/Readme.md)           |
+| Identity      | gRPC      | `:50051`          | [Guide](apps/identity-service/Readme.md)      |
+| Authorization | gRPC      | `:50052`          | [Guide](apps/authorization-service/Readme.md) |
+| Tenants       | gRPC      | `:50053`          | [Guide](apps/tenants-service/Readme.md)       |
+| Notifications | gRPC      | `:50054`          | [Guide](apps/notifications-service/Readme.md) |
 
 ### Verified service flows
 
@@ -57,19 +57,19 @@ Every retained library has its own technical boundary guide.
 
 | Library                                             | Purpose                                                |
 | --------------------------------------------------- | ------------------------------------------------------ |
-| [Adapters](libs/adapters/README.md)                 | Hashing, token, OTP, and logging adapters              |
-| [Application Core](libs/application-core/README.md) | Application decorator and guard scaffolding            |
-| [Audit](libs/audit/README.md)                       | Audit value objects, factories, and mapping            |
-| [Auth](libs/auth/README.md)                         | JWT contracts, token adapter, and strategies           |
-| [Common](libs/common/README.md)                     | Errors, filters, guards, validation, and API utilities |
-| [Context](libs/context/README.md)                   | HTTP and gRPC request-context propagation              |
-| [Persistence](libs/persistence/README.md)           | Mongo connection and repository foundations            |
-| [Proto Schema](libs/proto-schema/README.md)         | Internal gRPC contracts                                |
-| [Realtime](libs/realtime/README.md)                 | Authenticated Socket.IO and Redis fan-out adapter      |
-| [Redis](libs/redis/README.md)                       | Redis connectivity                                     |
-| [Redis Store](libs/redis-store/README.md)           | Redis key-value repository bases                       |
-| [Routing](libs/routing/README.md)                   | Geocoding and route-metric abstraction                 |
-| [Shared Kernel](libs/shared-kernel/README.md)       | Domain primitives, ports, and injection tokens         |
+| [Adapters](libs/adapters/Readme.md)                 | Hashing, token, OTP, and logging adapters              |
+| [Application Core](libs/application-core/Readme.md) | Application decorator and guard scaffolding            |
+| [Audit](libs/audit/Readme.md)                       | Audit value objects, factories, and mapping            |
+| [Auth](libs/auth/Readme.md)                         | JWT contracts, token adapter, and strategies           |
+| [Common](libs/common/Readme.md)                     | Errors, filters, guards, validation, and API utilities |
+| [Context](libs/context/Readme.md)                   | HTTP and gRPC request-context propagation              |
+| [Persistence](libs/persistence/Readme.md)           | Mongo connection and repository foundations            |
+| [Proto Schema](libs/proto-schema/Readme.md)         | Internal gRPC contracts                                |
+| [Realtime](libs/realtime/Readme.md)                 | Authenticated Socket.IO and Redis fan-out adapter      |
+| [Redis](libs/redis/Readme.md)                       | Redis connectivity                                     |
+| [Redis Store](libs/redis-store/Readme.md)           | Redis key-value repository bases                       |
+| [Routing](libs/routing/Readme.md)                   | Geocoding and route-metric abstraction                 |
+| [Shared Kernel](libs/shared-kernel/Readme.md)       | Domain primitives, ports, and injection tokens         |
 
 Routing and Realtime are reusable libraries; they are not active applications
 in the runnable core flow.
@@ -104,8 +104,7 @@ Start local infrastructure:
 docker compose up -d
 ```
 
-Authorization and Tenants do not use MongoDB unless their store drivers are
-changed from `memory` to `mongodb`.
+MongoDB and Redis must be healthy before the dependent services start.
 
 ## Start the core
 
@@ -142,15 +141,16 @@ The default API base is `http://127.0.0.1:3000/vite-ride`.
 | `NOTIFICATIONS_GRPC_BIND_URL` | `0.0.0.0:50054`        | Notifications |
 | `NOTIFICATIONS_GRPC_URL`      | `127.0.0.1:50054`      | Identity      |
 | `DATABASE_URL_IDENTITY`       | Local Mongo URI        | Identity      |
+| `DATABASE_URL_AUTHZ`          | Local Mongo URI        | Authorization |
+| `DATABASE_NAME_AUTHZ`         | `vite_ride_authz`      | Authorization |
+| `DATABASE_URL_TENANTS`        | Local Mongo URI        | Tenants       |
 | `REDIS_URL`                   | Local Redis URI        | Identity      |
-| `AUTHORIZATION_POLICY_DRIVER` | `memory`               | Authorization |
-| `TENANTS_STORE_DRIVER`        | `memory`               | Tenants       |
 | `SMS_DRIVER`                  | `dry-run`              | Notifications |
 | `PUSH_DRIVER`                 | `dry-run`              | Notifications |
 
 JWT secrets and expiration settings are documented in the
-[Identity](apps/identity-service/README.md) and
-[Gateway](apps/api-gateway/README.md) guides. External notification credentials
+[Identity](apps/identity-service/Readme.md) and
+[Gateway](apps/api-gateway/Readme.md) guides. External notification credentials
 are required only when their live drivers are selected.
 
 ## Verification
@@ -161,7 +161,7 @@ Build all supported applications:
 npm run build:core
 ```
 
-Run unit and integration tests:
+Run unit, integration, and Gateway boundary tests:
 
 ```bash
 npm run test:core
@@ -207,8 +207,8 @@ git diff core-services-baseline-2026-07-28..core-services-hardening-2026-07-28
 
 ## Known limitations
 
-- In-memory Authorization and Tenants data resets when their processes restart.
-- Identity requires MongoDB and Redis.
+- Identity, Authorization, and Tenants require MongoDB; Identity also requires
+  Redis.
 - Dry-run Notifications proves internal orchestration, not external delivery.
 - Tenant creation writes the tenant before assigning its Authorization role;
   this cross-service sequence is not a distributed transaction.

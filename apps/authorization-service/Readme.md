@@ -42,18 +42,17 @@ caller whether that request changed the stored policy.
 
 ## Configuration
 
-The default `memory` driver has no external dependency and resets policy
-assignments whenever the process restarts. Static policies are loaded again at
-startup.
+MongoDB persistence is mandatory. The service fails configuration validation
+when its database URL or database name is absent. Static policies are loaded
+idempotently at startup.
 
-| Variable                      | Default            | Required when                         |
-| ----------------------------- | ------------------ | ------------------------------------- |
-| `AUTHORIZATION_GRPC_BIND_URL` | `0.0.0.0:50052`    | Never                                 |
-| `AUTHORIZATION_POLICY_DRIVER` | `memory`           | Use `mongodb` for durable assignments |
-| `CASBIN_MODEL_PATH`           | Service model path | Never                                 |
-| `CASBIN_COLLECTION`           | `casbin`           | Never                                 |
-| `DATABASE_URL_AUTHZ`          | None               | MongoDB driver                        |
-| `DATABASE_NAME_AUTHZ`         | None               | MongoDB driver                        |
+| Variable                      | Default            | Required |
+| ----------------------------- | ------------------ | -------- |
+| `AUTHORIZATION_GRPC_BIND_URL` | `0.0.0.0:50052`    | No       |
+| `CASBIN_MODEL_PATH`           | Service model path | No       |
+| `CASBIN_COLLECTION`           | `casbin`           | No       |
+| `DATABASE_URL_AUTHZ`          | None               | Yes      |
+| `DATABASE_NAME_AUTHZ`         | None               | Yes      |
 
 Do not commit database credentials. Supply them through the runtime environment
 or a secret manager.
