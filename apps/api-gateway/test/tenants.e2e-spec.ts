@@ -19,7 +19,7 @@ describe('tenant HTTP boundary', () => {
       .mockReturnValue(of({ id: 'tenant-a', name: 'North Region', status: 1 })),
   };
   const authorization = {
-    assignRole: jest.fn().mockReturnValue(of({ changed: true, roles: ['tenant-admin'] })),
+    authorize: jest.fn().mockResolvedValue({ allowed: true }),
   };
 
   beforeAll(async () => {
@@ -55,7 +55,7 @@ describe('tenant HTTP boundary', () => {
     await app.close();
   });
 
-  it('creates a tenant and assigns ownership from authenticated context', async () => {
+  it('delegates provisioning with ownership from authenticated context', async () => {
     await request(app.getHttpServer())
       .post('/tenants')
       .send({ name: 'North Region' })
@@ -69,11 +69,6 @@ describe('tenant HTTP boundary', () => {
     expect(tenants.createTenant).toHaveBeenCalledWith({
       name: 'North Region',
       ownerUserId: 'owner-1',
-    });
-    expect(authorization.assignRole).toHaveBeenCalledWith({
-      userId: 'owner-1',
-      domain: 'tenant-a',
-      role: 'tenant-admin',
     });
   });
 

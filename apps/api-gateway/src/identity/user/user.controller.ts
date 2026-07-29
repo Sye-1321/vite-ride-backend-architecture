@@ -35,10 +35,10 @@ export class UserController {
 
   @UseGuards(RefreshAuthGuard)
   @Post('refresh-token')
-  refreshAccessToken(@GetCurrentUser() user: any) {
+  refreshAccessToken(@GetCurrentUser() user: { userId: string; refreshToken: string }) {
     return this.userGrpc.refreshAccessToken({
       userId: user.userId,
-      refreshToken: user.token,
+      refreshToken: user.refreshToken,
     });
   }
 

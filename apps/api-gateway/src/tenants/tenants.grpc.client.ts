@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { from, Observable } from 'rxjs';
 
@@ -24,7 +24,7 @@ import {
 } from '@app/proto-schema';
 
 import { GatewayConfig } from '../config';
-import { createGrpcUnaryClient } from '../grpc/grpc-unary-client.factory';
+import { createGrpcUnaryClient, GrpcClientLifecycle } from '../grpc/grpc-unary-client.factory';
 
 interface TenantsGrpcService {
   createTenant(request: CreateTenantRequest): Promise<TenantResponse>;
@@ -41,8 +41,8 @@ interface TenantsGrpcService {
 }
 
 @Injectable()
-export class TenantsGrpcClient implements OnModuleInit {
-  private service!: TenantsGrpcService;
+export class TenantsGrpcClient implements OnModuleInit, OnApplicationShutdown {
+  private service!: TenantsGrpcService & GrpcClientLifecycle;
 
   constructor(
     private readonly contextInterceptor: GrpcClientContextInterceptor,
@@ -75,6 +75,10 @@ export class TenantsGrpcClient implements OnModuleInit {
       ],
       contextInterceptor: this.contextInterceptor,
     });
+  }
+
+  onApplicationShutdown(): void {
+    this.service?.close();
   }
 
   createTenant(request: CreateTenantRequest): Observable<TenantResponse> {

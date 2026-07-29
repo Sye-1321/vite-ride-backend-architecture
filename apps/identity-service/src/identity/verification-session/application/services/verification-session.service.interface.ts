@@ -11,7 +11,7 @@ export interface IVerificationSessionService {
   requestSession(
     target: VerificationTarget,
     purpose: UserVerificationPurpose,
-    subjectMeta: Record<string, any>,
+    subjectMeta: Record<string, unknown>,
   ): Promise<Result<{ verificationToken: string }, Error>>;
 
   verifySession(
@@ -20,7 +20,7 @@ export interface IVerificationSessionService {
     otp: string,
   ): Promise<
     Result<
-      { subjectMeta: Record<string, any> },
+      { subjectMeta: Record<string, unknown> },
       | VerificationSessionNotFoundError
       | VerificationSessionExpiredError
       | VerificationSessionUsedError

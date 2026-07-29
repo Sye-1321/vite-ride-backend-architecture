@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { GlobalRedisRepositoryBase } from '@app/redis-store';
 import { VerificationSessionRepositoryPort } from '../application/ports';
 import { VerificationSession } from '../domain/verification-session.entity';

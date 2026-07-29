@@ -3,14 +3,14 @@ import { registerDecorator, ValidationOptions, ValidationArguments } from 'class
 const regex = /^\+2519\d{8}$/;
 
 export function IsEthiopianPhone(validationOptions?: ValidationOptions) {
-  return function (object: Object, propertyName: string) {
+  return function (object: object, propertyName: string) {
     registerDecorator({
       name: 'isEthiopianPhone',
       target: object.constructor,
       propertyName,
       options: validationOptions,
       validator: {
-        validate(value: any, args: ValidationArguments) {
+        validate(value: unknown) {
           return typeof value === 'string' && regex.test(value);
         },
         defaultMessage(args: ValidationArguments) {

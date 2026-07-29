@@ -20,7 +20,7 @@ export enum ProtoMemberStatus {
   MEMBER_STATUS_SUSPENDED = 2,
 }
 
-export interface TenantsEmpty {}
+export type TenantsEmpty = Record<string, never>;
 
 export interface CreateTenantRequest {
   name: string;

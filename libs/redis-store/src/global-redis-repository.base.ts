@@ -5,7 +5,7 @@ import { KeyValueStorePort, ValueObject } from '@app/shared-kernel';
 import { TYPES } from '@app/shared-kernel';
 import { RedisClientPort } from '@app/redis';
 
-export abstract class GlobalRedisRepositoryBase<Value, Key extends ValueObject<any>>
+export abstract class GlobalRedisRepositoryBase<Value, Key extends ValueObject<unknown>>
   implements KeyValueStorePort<Value, Key>
 {
   @Inject(TYPES.RedisClientPort)

@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { Injectable, OnApplicationShutdown, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { from, Observable } from 'rxjs';
 
@@ -20,7 +20,7 @@ import {
 } from '@app/proto-schema';
 
 import { GatewayConfig } from '../config';
-import { createGrpcUnaryClient } from '../grpc/grpc-unary-client.factory';
+import { createGrpcUnaryClient, GrpcClientLifecycle } from '../grpc/grpc-unary-client.factory';
 
 interface AuthorizationGrpcService {
   checkAccess(request: AccessCheckRequest): Promise<AccessCheckResponse>;
@@ -30,8 +30,10 @@ interface AuthorizationGrpcService {
 }
 
 @Injectable()
-export class AuthorizationGrpcClient implements OnModuleInit, AuthorizationDecisionPort {
-  private service!: AuthorizationGrpcService;
+export class AuthorizationGrpcClient
+  implements OnModuleInit, OnApplicationShutdown, AuthorizationDecisionPort
+{
+  private service!: AuthorizationGrpcService & GrpcClientLifecycle;
 
   constructor(
     private readonly contextInterceptor: GrpcClientContextInterceptor,
@@ -52,6 +54,10 @@ export class AuthorizationGrpcClient implements OnModuleInit, AuthorizationDecis
       methods: ['checkAccess', 'assignRole', 'removeRole', 'getRoles'],
       contextInterceptor: this.contextInterceptor,
     });
+  }
+
+  onApplicationShutdown(): void {
+    this.service?.close();
   }
 
   checkAccess(request: AccessCheckRequest): Observable<AccessCheckResponse> {

@@ -4,5 +4,5 @@
  */
 export interface MongoMapper<Aggregate, DbModel> {
   toPersistence(entity: Aggregate): Partial<DbModel>;
-  toDomain(raw: any): Aggregate;
+  toDomain(raw: DbModel): Aggregate;
 }

@@ -17,14 +17,14 @@ export interface CreateVerificationSessionProps {
   key: VerificationSessionKey;
   target: VerificationTarget;
   otpHash: string;
-  subjectMeta: Record<string, any>;
+  subjectMeta: Record<string, unknown>;
 }
 
 export interface VerificationSessionProps {
   id?: string;
   key: VerificationSessionKey;
   target: VerificationTarget;
-  subjectMeta: Record<string, any>;
+  subjectMeta: Record<string, unknown>;
   otpHash: string;
   createdAt: Date;
   expiresAt: Date;

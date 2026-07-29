@@ -15,7 +15,7 @@ import { TenantRepositoryPort } from '@app/shared-kernel';
  * - Services/controllers never pass tenantId
  */
 export abstract class TenantMongoRepositoryBase<
-    Aggregate extends AggregateRoot<any>,
+    Aggregate extends AggregateRoot<unknown>,
     DbModel extends Document & { tenantId: string },
   >
   extends MongoRepositoryBase<Aggregate, DbModel>
@@ -53,7 +53,7 @@ export abstract class TenantMongoRepositoryBase<
     return this.toAggregate(doc);
   }
 
-  async findOne(query: Record<string, any>): Promise<Option<Aggregate>> {
+  async findOne(query: Record<string, unknown>): Promise<Option<Aggregate>> {
     const doc = await this.model
       .findOne({
         ...query,
@@ -68,7 +68,7 @@ export abstract class TenantMongoRepositoryBase<
   async findAll(): Promise<Aggregate[]> {
     const docs = await this.model.find(this.tenantFilter()).lean().exec();
 
-    return docs.map((d) => this.mapper.toDomain(d));
+    return docs.map((d) => this.mapper.toDomain(d as DbModel));
   }
 
   async insert(entity: Aggregate | Aggregate[]): Promise<void> {

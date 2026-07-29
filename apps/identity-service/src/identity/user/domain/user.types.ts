@@ -1,4 +1,4 @@
-import { Audit, IAudit } from '@app/audit';
+import { Audit } from '@app/audit';
 
 export enum UserStatus {
   PENDING = 'PENDING',

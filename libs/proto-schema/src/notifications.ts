@@ -8,7 +8,7 @@ export enum DeliveryStatus {
   DELIVERY_STATUS_FAILED = 3,
 }
 
-export interface NotificationsEmpty {}
+export type NotificationsEmpty = Record<string, never>;
 
 export interface SendSmsRequest {
   recipient: string;

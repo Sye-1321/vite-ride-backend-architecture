@@ -1,7 +1,7 @@
 export const AUTHORIZATION_PACKAGE_NAME = 'authorization';
 export const AUTHORIZATION_SERVICE_NAME = 'AuthorizationService';
 
-export interface AuthorizationEmpty {}
+export type AuthorizationEmpty = Record<string, never>;
 
 export interface AccessCheckRequest {
   userId: string;

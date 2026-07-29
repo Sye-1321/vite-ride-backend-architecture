@@ -97,6 +97,8 @@ export abstract class Entity<EntityProps> {
   public abstract validate(): void;
 
   private validateProps(props: EntityProps): void {
-    // TODO
+    if (props === null || props === undefined) {
+      throw new Error('Entity properties are required');
+    }
   }
 }

@@ -1,4 +1,4 @@
-import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
+import { Catch, ExceptionFilter } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { status } from '@grpc/grpc-js';
 
@@ -8,7 +8,7 @@ import { ExceptionBase } from '../exceptions';
 export class GrpcExceptionFilter implements ExceptionFilter {
   constructor(private readonly errorCodeToStatus: Record<string, status>) {}
 
-  catch(exception: unknown, host: ArgumentsHost): never {
+  catch(exception: unknown): never {
     if (exception instanceof ExceptionBase) {
       const grpcStatus = this.errorCodeToStatus[exception.code] ?? status.INTERNAL;
 

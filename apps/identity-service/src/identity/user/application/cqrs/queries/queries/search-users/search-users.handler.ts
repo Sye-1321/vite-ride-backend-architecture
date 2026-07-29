@@ -16,7 +16,7 @@ export class SearchUsersHandler implements IQueryHandler<SearchUsersQuery> {
   ) {}
 
   async execute(query: SearchUsersQuery): Promise<Result<Paginated<UserResponseDto>, never>> {
-    const filter: Record<string, any> = {};
+    const filter: Record<string, unknown> = {};
 
     if (query.phoneNumber) {
       filter.phoneNumber = {

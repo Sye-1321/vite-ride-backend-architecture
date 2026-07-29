@@ -25,7 +25,7 @@
     "start:prod:tenants": "node dist/apps/tenants-service/main.js",
     "start:dev:core": "concurrently --names gateway,identity,authorization,tenants,notifications \"npm run start:dev:api-gateway\" \"npm run start:dev:identity\" \"npm run start:dev:authorization\" \"npm run start:dev:tenants\" \"npm run start:dev:notifications\"",
     "build:core": "npm run build:api-gateway && npm run build:identity && npm run build:authorization && npm run build:tenants && npm run build:notifications",
-    "lint": "eslint \"apps/**/*.ts\" \"libs/**/*.ts\"",
+    "lint": "eslint \"apps/**/*.ts\" \"libs/**/*.ts\" --max-warnings=0",
     "lint:fix": "eslint \"apps/**/*.ts\" \"libs/**/*.ts\" --fix",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "format:check": "prettier --check \"apps/**/*.ts\" \"libs/**/*.ts\"",

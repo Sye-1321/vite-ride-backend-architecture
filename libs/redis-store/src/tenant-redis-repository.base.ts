@@ -5,7 +5,7 @@ import { TenantKeyValueStorePort, ValueObject } from '@app/shared-kernel';
 import { RequestContextAccessor } from '@app/context';
 import { TYPES } from '@app/shared-kernel';
 
-export abstract class TenantRedisRepositoryBase<Value, Key extends ValueObject<any>>
+export abstract class TenantRedisRepositoryBase<Value, Key extends ValueObject<unknown>>
   implements TenantKeyValueStorePort<Value, Key>
 {
   @Inject(TYPES.RedisClientPort)

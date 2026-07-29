@@ -1,6 +1,7 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { ClsService } from 'nestjs-cls';
 import { Observable } from 'rxjs';
+import { Metadata } from '@grpc/grpc-js';
 
 import { RequestContext } from './request-context';
 
@@ -8,8 +9,8 @@ import { RequestContext } from './request-context';
 export class GrpcServerContextInterceptor implements NestInterceptor {
   constructor(private readonly cls: ClsService) {}
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const [, metadata] = context.getArgs();
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    const metadata = context.getArgByIndex<Metadata>(1);
 
     const correlationId = metadata?.get('x-correlation-id')?.[0] as string;
 

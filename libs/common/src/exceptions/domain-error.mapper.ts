@@ -1,5 +1,5 @@
 import { ExceptionBase } from './exception.base';
-import { INTERNAL_SERVER_ERROR, NOT_FOUND, CONFLICT, ARGUMENT_INVALID } from './exception.codes';
+import { INTERNAL_SERVER_ERROR } from './exception.codes';
 
 import {
   NotFoundException,

@@ -42,7 +42,7 @@ export class VerificationSessionService implements IVerificationSessionService {
   async requestSession(
     target: VerificationTarget,
     purpose: UserVerificationPurpose,
-    subjectMeta: Record<string, any>,
+    subjectMeta: Record<string, unknown>,
   ): Promise<Result<{ verificationToken: string }, Error>> {
     const verificationToken = this.tokenGenerator.generateToken(TOKEN_LENGTH);
     const rawOtp = this.otpGenerator.generateOtp(OTP_LENGTH);
@@ -79,7 +79,7 @@ export class VerificationSessionService implements IVerificationSessionService {
     otp: string,
   ): Promise<
     Result<
-      { subjectMeta: Record<string, any> },
+      { subjectMeta: Record<string, unknown> },
       | VerificationSessionNotFoundError
       | VerificationSessionExpiredError
       | VerificationSessionUsedError

@@ -23,7 +23,7 @@ export class ExceptionInterceptor implements NestInterceptor {
     private readonly requestContextAccessor: RequestContextAccessor,
   ) {}
 
-  intercept(_context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(_context: ExecutionContext, next: CallHandler): Observable<unknown> {
     return next.handle().pipe(
       catchError((error) => {
         let ctx: RequestContext | undefined;
