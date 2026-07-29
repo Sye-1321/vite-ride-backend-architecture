@@ -22,6 +22,8 @@ import { AccessAuthGuard, RefreshAuthGuard, GetCurrentUser, GetCurrentUserId } f
 import { mapDomainPurposeToProto } from '../mappers/user-verification-purpose.mapper';
 import { mapDomainUserStatusToProto } from '../mappers/user-status.mapper';
 import { UserStatus } from '@app/proto-schema';
+import { AuthorizationGuard } from '../../authorization/authorization.guard';
+import { RequirePermission } from '../../authorization/require-permission.decorator';
 
 @Controller('users')
 export class UserController {
@@ -132,6 +134,8 @@ export class UserController {
   }
 
   @Get()
+  @RequirePermission('user', 'read')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   listUsers(@Query() query: ListUsersQueryDto) {
     return this.userGrpc.listUsers({
       pagination: {
@@ -146,6 +150,8 @@ export class UserController {
   }
 
   @Get('search')
+  @RequirePermission('user', 'read')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   searchUsers(@Query() query: SearchUsersQueryDto) {
     return this.userGrpc.searchUsers({
       pagination: {
@@ -158,26 +164,36 @@ export class UserController {
   }
 
   @Get(':userId')
+  @RequirePermission('user', 'read')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   getUserById(@Param('userId') userId: string) {
     return this.userGrpc.getUserById({ userId });
   }
 
   @Post('exists')
+  @RequirePermission('user', 'read')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   checkUserExistsByPhone(@Body() dto: PhoneNumberRequestDto) {
     return this.userGrpc.checkUserExistsByPhone(dto);
   }
 
   @Post(':userId/suspend')
+  @RequirePermission('user', 'update')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   suspend(@Param('userId') userId: string) {
     return this.userGrpc.suspendUser({ userId });
   }
 
   @Post(':userId/unsuspend')
+  @RequirePermission('user', 'update')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   unsuspend(@Param('userId') userId: string) {
     return this.userGrpc.unsuspendUser({ userId });
   }
 
   @Post(':userId/delete')
+  @RequirePermission('user', 'delete')
+  @UseGuards(AccessAuthGuard, AuthorizationGuard)
   deleteUser(@Param('userId') userId: string) {
     return this.userGrpc.deleteUser({ userId });
   }

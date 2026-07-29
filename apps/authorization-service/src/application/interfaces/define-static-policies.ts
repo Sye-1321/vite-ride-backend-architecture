@@ -6,10 +6,10 @@ export function defineStaticPolicies(): PolicyDefinition[] {
       resource: 'user',
       domain: '*',
       permissions: {
-        read: ['user'],
-        create: ['user'],
-        update: ['user'],
-        delete: ['user'],
+        read: ['system-admin'],
+        create: ['system-admin'],
+        update: ['system-admin'],
+        delete: ['system-admin'],
       },
     },
     {
