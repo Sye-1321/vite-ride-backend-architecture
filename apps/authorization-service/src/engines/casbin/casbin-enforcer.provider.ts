@@ -17,13 +17,9 @@ export const casbinEnforcerProvider: Provider = {
       throw new Error('Authorization configuration is unavailable');
     }
 
-    if (config.AUTHORIZATION_POLICY_DRIVER === 'memory') {
-      return newEnforcer(config.CASBIN_MODEL_PATH);
-    }
-
     const adapter = await MongoAdapter.newAdapter({
-      uri: config.DATABASE_URL_AUTHZ!,
-      database: config.DATABASE_NAME_AUTHZ!,
+      uri: config.DATABASE_URL_AUTHZ,
+      database: config.DATABASE_NAME_AUTHZ,
       collection: config.CASBIN_COLLECTION,
     });
 
