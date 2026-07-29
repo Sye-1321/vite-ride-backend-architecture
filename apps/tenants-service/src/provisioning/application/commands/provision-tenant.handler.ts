@@ -5,11 +5,11 @@ import { ApplicationError, requiredText } from '@app/application-core';
 import { AuditFactory } from '@app/audit';
 import { TYPES } from '@app/shared-kernel';
 
-import { TenantMemberRepositoryPort } from '../../../membership/application/ports';
 import { TenantMember } from '../../../membership/domain/membership.entity';
 import { TenantMemberRole } from '../../../membership/domain/membership.types';
 import { TenantRepositoryPort } from '../../../tenants/application/ports';
 import { Tenant } from '../../../tenants/domain/tenant.entity';
+import { TENANT_PROVISIONING_PORT, TenantProvisioningPort } from '../ports';
 import { ProvisionTenantCommand } from './provision-tenant.command';
 
 @CommandHandler(ProvisionTenantCommand)
@@ -17,8 +17,8 @@ export class ProvisionTenantHandler implements ICommandHandler<ProvisionTenantCo
   constructor(
     @Inject(TYPES.TenantRepositoryPort)
     private readonly tenants: TenantRepositoryPort,
-    @Inject(TYPES.TenantMemberRepositoryPort)
-    private readonly members: TenantMemberRepositoryPort,
+    @Inject(TENANT_PROVISIONING_PORT)
+    private readonly provisioning: TenantProvisioningPort,
   ) {}
 
   async execute(command: ProvisionTenantCommand): Promise<Tenant> {
@@ -39,8 +39,7 @@ export class ProvisionTenantHandler implements ICommandHandler<ProvisionTenantCo
       audit: AuditFactory.createForCreate(ownerUserId),
     });
 
-    await this.tenants.insert(tenant);
-    await this.members.insert(owner);
+    await this.provisioning.provision(tenant, owner);
     return tenant;
   }
 }

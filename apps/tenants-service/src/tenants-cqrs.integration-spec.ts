@@ -12,7 +12,11 @@ import {
 } from '@app/shared-kernel';
 
 import { DriverCommandHandlers, RegisterDriverCommand } from './drivers/application/commands';
-import { DriverRepositoryPort } from './drivers/application/ports';
+import {
+  DRIVER_REGISTRATION_PORT,
+  DriverRegistrationPort,
+  DriverRepositoryPort,
+} from './drivers/application/ports';
 import { DriverQueryHandlers } from './drivers/application/queries';
 import { Driver } from './drivers/domain/driver.entity';
 import {
@@ -29,6 +33,7 @@ import {
   ProvisionTenantCommand,
   ProvisionTenantHandler,
 } from './provisioning/application/commands';
+import { TENANT_PROVISIONING_PORT, TenantProvisioningPort } from './provisioning/application/ports';
 import {
   ChangeTenantStatusCommand,
   TenantCommandHandlers,
@@ -166,6 +171,34 @@ describe('Tenants CQRS application', () => {
           useClass: MemberRepositoryDouble,
         },
         { provide: TYPES.DriverRepositoryPort, useClass: DriverRepositoryDouble },
+        {
+          provide: TENANT_PROVISIONING_PORT,
+          inject: [TYPES.TenantRepositoryPort, TYPES.TenantMemberRepositoryPort],
+          useFactory: (
+            tenants: TenantRepositoryPort,
+            members: TenantMemberRepositoryPort,
+          ): TenantProvisioningPort => ({
+            provision: async (tenant, owner) => {
+              await tenants.insert(tenant);
+              await members.insert(owner);
+            },
+          }),
+        },
+        {
+          provide: DRIVER_REGISTRATION_PORT,
+          inject: [TYPES.DriverRepositoryPort, TYPES.TenantMemberRepositoryPort],
+          useFactory: (
+            drivers: DriverRepositoryPort,
+            members: TenantMemberRepositoryPort,
+          ): DriverRegistrationPort => ({
+            register: async (driver, membership) => {
+              if (membership) {
+                await members.insert(membership);
+              }
+              await drivers.insert(driver);
+            },
+          }),
+        },
       ],
     }).compile();
 

@@ -25,6 +25,6 @@ import { TenantDataModel, TenantSchema } from './infrastructure/persistence/mong
       useClass: TenantRepository,
     },
   ],
-  exports: [TYPES.TenantRepositoryPort],
+  exports: [TYPES.TenantRepositoryPort, TenantMapper, MongooseModule],
 })
 export class TenantModule {}

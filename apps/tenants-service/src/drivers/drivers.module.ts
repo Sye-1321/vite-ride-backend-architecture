@@ -7,7 +7,12 @@ import { TYPES } from '@app/shared-kernel';
 import { MembershipModule } from '../membership/membership.module';
 import { TenantModule } from '../tenants/tenants.module';
 import { DriverCommandHandlers, DriverQueryHandlers } from './application';
-import { DriverMapper, DriverMongoRepository } from './infrastructure/persistence';
+import {
+  DriverMapper,
+  DriverMongoRepository,
+  MongoDriverRegistrationAdapter,
+} from './infrastructure/persistence';
+import { DRIVER_REGISTRATION_PORT } from './application/ports';
 import { DriverDataModel, DriverSchema } from './infrastructure/persistence/mongo/driver.schema';
 
 @Module({
@@ -24,6 +29,10 @@ import { DriverDataModel, DriverSchema } from './infrastructure/persistence/mong
     ...DriverCommandHandlers,
     ...DriverQueryHandlers,
     DriverMapper,
+    {
+      provide: DRIVER_REGISTRATION_PORT,
+      useClass: MongoDriverRegistrationAdapter,
+    },
     {
       provide: TYPES.DriverRepositoryPort,
       useClass: DriverMongoRepository,

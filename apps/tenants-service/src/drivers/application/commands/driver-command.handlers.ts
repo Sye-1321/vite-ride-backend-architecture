@@ -1,16 +1,16 @@
 import { Inject } from '@nestjs/common';
-import { CommandBus, CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 
 import { ApplicationError, requiredText } from '@app/application-core';
 import { AuditFactory } from '@app/audit';
 import { TYPES } from '@app/shared-kernel';
 
-import { AddMemberCommand } from '../../../membership/application/commands';
 import { TenantMemberRepositoryPort } from '../../../membership/application/ports';
+import { TenantMember } from '../../../membership/domain/membership.entity';
 import { TenantMemberRole } from '../../../membership/domain/membership.types';
 import { TenantRepositoryPort } from '../../../tenants/application/ports';
 import { Driver } from '../../domain/driver.entity';
-import { DriverRepositoryPort } from '../ports';
+import { DRIVER_REGISTRATION_PORT, DriverRegistrationPort, DriverRepositoryPort } from '../ports';
 import { RegisterDriverCommand } from './driver.commands';
 
 @CommandHandler(RegisterDriverCommand)
@@ -22,7 +22,8 @@ export class RegisterDriverHandler implements ICommandHandler<RegisterDriverComm
     private readonly members: TenantMemberRepositoryPort,
     @Inject(TYPES.DriverRepositoryPort)
     private readonly drivers: DriverRepositoryPort,
-    private readonly commandBus: CommandBus,
+    @Inject(DRIVER_REGISTRATION_PORT)
+    private readonly registration: DriverRegistrationPort,
   ) {}
 
   async execute(command: RegisterDriverCommand): Promise<Driver> {
@@ -35,18 +36,21 @@ export class RegisterDriverHandler implements ICommandHandler<RegisterDriverComm
       throw new ApplicationError('ALREADY_EXISTS', 'Driver already exists');
     }
 
-    if (!(await this.members.exists(tenantId, userId, TenantMemberRole.DRIVER))) {
-      await this.commandBus.execute(
-        new AddMemberCommand(tenantId, userId, TenantMemberRole.DRIVER),
-      );
-    }
+    const membership = (await this.members.exists(tenantId, userId, TenantMemberRole.DRIVER))
+      ? undefined
+      : TenantMember.create({
+          tenantId,
+          userId,
+          role: TenantMemberRole.DRIVER,
+          audit: AuditFactory.createForCreate(userId),
+        });
 
     const driver = Driver.create({
       tenantId,
       userId,
       audit: AuditFactory.createForCreate(userId),
     });
-    await this.drivers.insert(driver);
+    await this.registration.register(driver, membership);
     return driver;
   }
 }

@@ -30,6 +30,6 @@ import {
       useClass: TenantMemberMongoRepository,
     },
   ],
-  exports: [TYPES.TenantMemberRepositoryPort],
+  exports: [TYPES.TenantMemberRepositoryPort, TenantMemberMapper, MongooseModule],
 })
 export class MembershipModule {}
