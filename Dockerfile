@@ -1,4 +1,4 @@
-FROM node:20-bookworm-slim AS dependencies
+FROM node:22-bookworm-slim AS dependencies
 WORKDIR /workspace
 COPY package.json package-lock.json ./
 RUN npm ci
@@ -8,7 +8,7 @@ ARG BUILD_TARGET
 COPY . .
 RUN npm run "build:${BUILD_TARGET}"
 
-FROM node:20-bookworm-slim AS runtime
+FROM node:22-bookworm-slim AS runtime
 ENV NODE_ENV=production
 WORKDIR /workspace
 COPY package.json package-lock.json ./

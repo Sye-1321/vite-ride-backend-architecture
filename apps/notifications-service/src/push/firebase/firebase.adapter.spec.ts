@@ -1,4 +1,5 @@
-import * as admin from 'firebase-admin';
+import { App } from 'firebase-admin/app';
+import { Messaging } from 'firebase-admin/messaging';
 
 import { LoggerPort } from '@app/shared-kernel';
 
@@ -27,18 +28,19 @@ describe('FirebaseAdapter', () => {
       responses: [],
     });
     const deleteApp = jest.fn().mockResolvedValue(undefined);
-    const app = {
-      messaging: () => ({ sendEachForMulticast }),
-      delete: deleteApp,
-    } as unknown as admin.app.App;
+    const app = {} as App;
+    const messaging = { sendEachForMulticast } as unknown as Messaging;
 
-    return { app, deleteApp, sendEachForMulticast };
+    return { app, deleteApp, messaging, sendEachForMulticast };
   }
 
   it('reports partial handoff without exposing device tokens', async () => {
     const structuredLogger = logger();
-    const { app, sendEachForMulticast } = firebaseApp({ successCount: 1, failureCount: 1 });
-    const adapter = new FirebaseAdapter(config, structuredLogger, app);
+    const { app, deleteApp, messaging, sendEachForMulticast } = firebaseApp({
+      successCount: 1,
+      failureCount: 1,
+    });
+    const adapter = new FirebaseAdapter(config, structuredLogger, app, messaging, deleteApp);
 
     await expect(
       adapter.sendPush({
@@ -59,8 +61,8 @@ describe('FirebaseAdapter', () => {
 
   it('maps a total batch failure to unavailable and releases the Firebase app', async () => {
     const structuredLogger = logger();
-    const { app, deleteApp } = firebaseApp({ successCount: 0, failureCount: 2 });
-    const adapter = new FirebaseAdapter(config, structuredLogger, app);
+    const { app, deleteApp, messaging } = firebaseApp({ successCount: 0, failureCount: 2 });
+    const adapter = new FirebaseAdapter(config, structuredLogger, app, messaging, deleteApp);
 
     await expect(
       adapter.sendPush({

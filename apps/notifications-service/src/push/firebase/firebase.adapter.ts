@@ -1,6 +1,7 @@
 import { OnApplicationShutdown } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import * as admin from 'firebase-admin';
+import { App, cert, deleteApp, initializeApp } from 'firebase-admin/app';
+import { getMessaging, Messaging } from 'firebase-admin/messaging';
 
 import { ApplicationError } from '@app/application-core';
 import { LoggerPort } from '@app/shared-kernel';
@@ -10,18 +11,21 @@ import { DeliveryResult } from '../../delivery.types';
 import { PushPort } from '../push.port';
 
 export class FirebaseAdapter implements PushPort, OnApplicationShutdown {
-  private readonly app: admin.app.App;
+  private readonly app: App;
+  private readonly messaging: Messaging;
 
   constructor(
     config: NotificationsConfig,
     private readonly logger: LoggerPort,
-    app?: admin.app.App,
+    app?: App,
+    messaging?: Messaging,
+    private readonly deleteApplication: (app: App) => Promise<void> = deleteApp,
   ) {
     this.app =
       app ??
-      admin.initializeApp(
+      initializeApp(
         {
-          credential: admin.credential.cert({
+          credential: cert({
             projectId: config.FIREBASE_PROJECT_ID!,
             clientEmail: config.FIREBASE_CLIENT_EMAIL!,
             privateKey: config.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
@@ -29,6 +33,7 @@ export class FirebaseAdapter implements PushPort, OnApplicationShutdown {
         },
         `notifications-${randomUUID()}`,
       );
+    this.messaging = messaging ?? getMessaging(this.app);
   }
 
   async sendPush(params: {
@@ -40,7 +45,7 @@ export class FirebaseAdapter implements PushPort, OnApplicationShutdown {
   }): Promise<DeliveryResult> {
     const deliveryId = randomUUID();
     try {
-      const response = await this.app.messaging().sendEachForMulticast({
+      const response = await this.messaging.sendEachForMulticast({
         tokens: params.tokens,
         notification: {
           title: params.title,
@@ -74,6 +79,6 @@ export class FirebaseAdapter implements PushPort, OnApplicationShutdown {
   }
 
   async onApplicationShutdown(): Promise<void> {
-    await this.app.delete();
+    await this.deleteApplication(this.app);
   }
 }
