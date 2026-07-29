@@ -38,6 +38,7 @@ import {
 } from '../membership/application';
 import { TenantMember } from '../membership/domain/membership.entity';
 import { TenantMemberRole, TenantMemberStatus } from '../membership/domain/membership.types';
+import { TenantsReadinessService } from '../health/tenants-readiness.service';
 import { ProvisionTenantCommand } from '../provisioning/application/commands';
 import {
   ChangeTenantStatusCommand,
@@ -53,6 +54,7 @@ export class TenantsGrpcController {
   constructor(
     private readonly commandBus: CommandBus,
     private readonly queryBus: QueryBus,
+    private readonly readiness: TenantsReadinessService,
   ) {}
 
   @GrpcMethod(TENANTS_SERVICE_NAME, 'CreateTenant')
@@ -151,7 +153,7 @@ export class TenantsGrpcController {
 
   @GrpcMethod(TENANTS_SERVICE_NAME, 'Health')
   health(): TenantsHealthResponse {
-    return { status: 'SERVING' };
+    return { status: this.readiness.status() };
   }
 
   private async command<T>(command: object): Promise<T> {

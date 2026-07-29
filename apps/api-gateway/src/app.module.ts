@@ -7,6 +7,7 @@ import { RedisClientModule } from '@app/redis';
 
 import gatewayConfig from './config/gateway.config';
 import { AuthorizationModule } from './authorization/authorization.module';
+import { HealthModule } from './health/health.module';
 import { RealtimeModule } from './realtime/realtime.module';
 import { TenantsModule } from './tenants/tenants.module';
 
@@ -27,6 +28,7 @@ import { TenantsModule } from './tenants/tenants.module';
     RedisClientModule,
     GatewayContextModule,
     RealtimeModule,
+    HealthModule,
   ],
 })
 export class AppModule {}

@@ -11,6 +11,8 @@ import { GrpcClientContextInterceptor } from '@app/context';
 import {
   AccessCheckRequest,
   AccessCheckResponse,
+  AuthorizationEmpty,
+  AuthorizationHealthResponse,
   AUTHORIZATION_PACKAGE_NAME,
   AUTHORIZATION_SERVICE_NAME,
   GetRolesRequest,
@@ -27,6 +29,7 @@ interface AuthorizationGrpcService {
   assignRole(request: RoleRequest): Promise<RoleResponse>;
   removeRole(request: RoleRequest): Promise<RoleResponse>;
   getRoles(request: GetRolesRequest): Promise<GetRolesResponse>;
+  health(request: AuthorizationEmpty): Promise<AuthorizationHealthResponse>;
 }
 
 @Injectable()
@@ -51,7 +54,7 @@ export class AuthorizationGrpcClient
       serviceName: AUTHORIZATION_SERVICE_NAME,
       protoFile: 'authorization.proto',
       url: config.AUTHORIZATION_GRPC_URL,
-      methods: ['checkAccess', 'assignRole', 'removeRole', 'getRoles'],
+      methods: ['checkAccess', 'assignRole', 'removeRole', 'getRoles', 'health'],
       contextInterceptor: this.contextInterceptor,
     });
   }
@@ -78,5 +81,9 @@ export class AuthorizationGrpcClient
 
   getRoles(request: GetRolesRequest): Observable<GetRolesResponse> {
     return from(this.service.getRoles(request));
+  }
+
+  health(): Promise<AuthorizationHealthResponse> {
+    return this.service.health({});
   }
 }

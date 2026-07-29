@@ -20,6 +20,7 @@ import {
   TenantListResponse,
   TenantResponse,
   TenantsEmpty,
+  TenantsHealthResponse,
   UpdateTenantRequest,
 } from '@app/proto-schema';
 
@@ -38,6 +39,7 @@ interface TenantsGrpcService {
   listMembers(request: ListMembersRequest): Promise<MemberListResponse>;
   registerDriver(request: DriverRequest): Promise<DriverResponse>;
   getDriver(request: DriverRequest): Promise<DriverResponse>;
+  health(request: TenantsEmpty): Promise<TenantsHealthResponse>;
 }
 
 @Injectable()
@@ -72,6 +74,7 @@ export class TenantsGrpcClient implements OnModuleInit, OnApplicationShutdown {
         'listMembers',
         'registerDriver',
         'getDriver',
+        'health',
       ],
       contextInterceptor: this.contextInterceptor,
     });
@@ -123,5 +126,9 @@ export class TenantsGrpcClient implements OnModuleInit, OnApplicationShutdown {
 
   getDriver(request: DriverRequest): Observable<DriverResponse> {
     return from(this.service.getDriver(request));
+  }
+
+  health(): Promise<TenantsHealthResponse> {
+    return this.service.health({});
   }
 }
