@@ -4,6 +4,10 @@ import { Connection, Model } from 'mongoose';
 
 import { ApplicationError } from '@app/application-core';
 
+import {
+  RoleAssignmentOutboxDataModel,
+  roleAssignmentOutboxRecord,
+} from '../../../../authorization-sync/infrastructure/role-assignment-outbox.schema';
 import { TenantMember } from '../../../../membership/domain/membership.entity';
 import {
   TenantMemberDataModel,
@@ -23,6 +27,8 @@ export class MongoDriverRegistrationAdapter implements DriverRegistrationPort {
     private readonly drivers: Model<DriverDataModel>,
     @InjectModel(TenantMemberDataModel.name, 'TenantsConnection')
     private readonly members: Model<TenantMemberDataModel>,
+    @InjectModel(RoleAssignmentOutboxDataModel.name, 'TenantsConnection')
+    private readonly outbox: Model<RoleAssignmentOutboxDataModel>,
     private readonly driverMapper: DriverMapper,
     private readonly memberMapper: TenantMemberMapper,
   ) {}
@@ -37,6 +43,17 @@ export class MongoDriverRegistrationAdapter implements DriverRegistrationPort {
           await this.members.create([this.memberMapper.toPersistence(membership)], { session });
         }
         await this.drivers.create([this.driverMapper.toPersistence(driver)], { session });
+        await this.outbox.create(
+          [
+            roleAssignmentOutboxRecord({
+              userId: driver.userId,
+              domain: driver.tenantId,
+              role: 'driver',
+              createdBy: driver.userId,
+            }),
+          ],
+          { session },
+        );
       });
     } catch (error) {
       if (this.isDuplicateKey(error)) {

@@ -4,6 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { TYPES } from '@app/shared-kernel';
 
+import { AuthorizationSyncModule } from '../authorization-sync/authorization-sync.module';
 import { MembershipModule } from '../membership/membership.module';
 import { TenantModule } from '../tenants/tenants.module';
 import { UsersModule } from '../users/users.module';
@@ -22,6 +23,7 @@ import { DriverDataModel, DriverSchema } from './infrastructure/persistence/mong
     TenantModule,
     MembershipModule,
     UsersModule,
+    AuthorizationSyncModule,
     MongooseModule.forFeature(
       [{ name: DriverDataModel.name, schema: DriverSchema }],
       'TenantsConnection',

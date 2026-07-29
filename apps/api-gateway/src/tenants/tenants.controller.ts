@@ -9,13 +9,10 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { firstValueFrom } from 'rxjs';
-
 import { AuthorizationGuard, RequirePermission } from '@app/application-core';
 import { AccessAuthGuard, GetCurrentUserId } from '@app/common';
 import { ProtoTenantStatus } from '@app/proto-schema';
 
-import { AuthorizationGrpcClient } from '../authorization/authorization.grpc.client';
 import {
   AddMemberDto,
   ChangeTenantStatusDto,
@@ -30,22 +27,11 @@ import { TenantsGrpcClient } from './tenants.grpc.client';
 @Controller('tenants')
 @UseGuards(AccessAuthGuard)
 export class TenantsController {
-  constructor(
-    private readonly tenants: TenantsGrpcClient,
-    private readonly authorization: AuthorizationGrpcClient,
-  ) {}
+  constructor(private readonly tenants: TenantsGrpcClient) {}
 
   @Post()
-  async createTenant(@GetCurrentUserId() ownerUserId: string, @Body() dto: CreateTenantDto) {
-    const tenant = await firstValueFrom(this.tenants.createTenant({ name: dto.name, ownerUserId }));
-    await firstValueFrom(
-      this.authorization.assignRole({
-        userId: ownerUserId,
-        domain: tenant.id,
-        role: 'tenant-admin',
-      }),
-    );
-    return tenant;
+  createTenant(@GetCurrentUserId() ownerUserId: string, @Body() dto: CreateTenantDto) {
+    return this.tenants.createTenant({ name: dto.name, ownerUserId });
   }
 
   @Get()

@@ -5,6 +5,10 @@ import { Connection, Model } from 'mongoose';
 import { ApplicationError } from '@app/application-core';
 
 import {
+  RoleAssignmentOutboxDataModel,
+  roleAssignmentOutboxRecord,
+} from '../../authorization-sync/infrastructure/role-assignment-outbox.schema';
+import {
   TenantMemberDataModel,
   TenantMemberMapper,
 } from '../../membership/infrastructure/persistence';
@@ -22,6 +26,8 @@ export class MongoTenantProvisioningAdapter implements TenantProvisioningPort {
     private readonly tenants: Model<TenantDataModel>,
     @InjectModel(TenantMemberDataModel.name, 'TenantsConnection')
     private readonly members: Model<TenantMemberDataModel>,
+    @InjectModel(RoleAssignmentOutboxDataModel.name, 'TenantsConnection')
+    private readonly outbox: Model<RoleAssignmentOutboxDataModel>,
     private readonly tenantMapper: TenantMapper,
     private readonly memberMapper: TenantMemberMapper,
   ) {}
@@ -34,6 +40,17 @@ export class MongoTenantProvisioningAdapter implements TenantProvisioningPort {
       await this.connection.transaction(async (session) => {
         await this.tenants.create([this.tenantMapper.toPersistence(tenant)], { session });
         await this.members.create([this.memberMapper.toPersistence(owner)], { session });
+        await this.outbox.create(
+          [
+            roleAssignmentOutboxRecord({
+              userId: owner.userId,
+              domain: tenant.id,
+              role: 'tenant-admin',
+              createdBy: owner.userId,
+            }),
+          ],
+          { session },
+        );
       });
     } catch (error) {
       if (this.isDuplicateKey(error)) {
